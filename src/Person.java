@@ -6,13 +6,13 @@ public class Person {
 
     boolean dead;
 
-    private Graveyard graveyard;
+    private Cemetery cemetery;
 
     private String deathCause;
 
     private String motherId, fatherId;
 
-    Person(String name, String surname, String id, String sex, Date birthDate, String motherId, String fatherId, boolean dead, Date deathDate, Graveyard graveyard, String deathCause) {
+    Person(String name, String surname, String id, String sex, Date birthDate, String motherId, String fatherId, boolean dead, Date deathDate, Cemetery cemetery, String deathCause) {
         this.name = name;
         this.surname = surname;
         this.id = id;
@@ -22,7 +22,7 @@ public class Person {
         this.fatherId = fatherId;
         this.dead = dead;
         this.deathDate = deathDate;
-        this.graveyard = graveyard;
+        this.cemetery = cemetery;
         this.deathCause = deathCause;
     }
 
@@ -78,12 +78,12 @@ public class Person {
         this.dead = dead;
     }
 
-    public Graveyard getGraveyard() {
-        return graveyard;
+    public Cemetery getGraveyard() {
+        return cemetery;
     }
 
-    public void setGraveyard(Graveyard graveyard) {
-        this.graveyard = graveyard;
+    public void setGraveyard(Cemetery cemetery) {
+        this.cemetery = cemetery;
     }
 
     public String getDeathCause() {
