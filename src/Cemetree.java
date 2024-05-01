@@ -12,6 +12,8 @@ public class Cemetree {
     HashMap<String, Person> people;
     DirectedGraph<Person, Relationship> graph;
 
+    Person selectedPerson;
+
     public Cemetree() {
         people = new HashMap<>();
     }

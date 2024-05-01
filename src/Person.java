@@ -4,7 +4,7 @@ public class Person {
     private String name, surname, id, sex;
     private Date birthDate, deathDate;
 
-    boolean dead;
+    boolean dead, admin;
 
     private Cemetery cemetery;
 
