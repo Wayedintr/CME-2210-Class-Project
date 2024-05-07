@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Person {
     private String name, surname, id, sex;
@@ -12,10 +14,15 @@ public class Person {
 
     private String motherId, fatherId;
 
-    Person(String name, String surname, String id, String sex, Date birthDate, String motherId, String fatherId, boolean dead, Date deathDate, Cemetery cemetery, String deathCause) {
+    private Person mother, father, spouse;
+
+    private final List<Person> children;
+
+    Person(String name, String surname, String id, String sex, boolean admin, Date birthDate, String motherId, String fatherId, boolean dead, Date deathDate, Cemetery cemetery, String deathCause) {
         this.name = name;
         this.surname = surname;
         this.id = id;
+        this.admin = admin;
         this.sex = sex;
         this.birthDate = birthDate;
         this.motherId = motherId;
@@ -24,6 +31,8 @@ public class Person {
         this.deathDate = deathDate;
         this.cemetery = cemetery;
         this.deathCause = deathCause;
+
+        this.children = new ArrayList<>();
     }
 
     public String getName() {
@@ -44,6 +53,10 @@ public class Person {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getSex() {
@@ -116,5 +129,45 @@ public class Person {
 
     public String getFatherId(Person person) {
         return person.fatherId;
+    }
+
+    public Cemetery getCemetery() {
+        return cemetery;
+    }
+
+    public void setCemetery(Cemetery cemetery) {
+        this.cemetery = cemetery;
+    }
+
+    public Person getMother() {
+        return mother;
+    }
+
+    public void setMother(Person mother) {
+        this.mother = mother;
+    }
+
+    public Person getFather() {
+        return father;
+    }
+
+    public void setFather(Person father) {
+        this.father = father;
+    }
+
+    public Person getSpouse() {
+        return spouse;
+    }
+
+    public void setSpouse(Person spouse) {
+        this.spouse = spouse;
+    }
+
+    public void addChild(Person child) {
+        children.add(child);
+    }
+
+    public List<Person> getChildren() {
+        return children;
     }
 }
