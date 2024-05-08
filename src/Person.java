@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class Person {
     private String name, surname, id, sex;
-    private Date birthDate, deathDate;
+    private GregorianCalendar birthDate, deathDate;
 
     boolean dead, admin;
 
@@ -12,13 +13,13 @@ public class Person {
 
     private String deathCause;
 
-    private String motherId, fatherId;
+    private String motherId, fatherId, spouseId;
 
     private Person mother, father, spouse;
 
     private final List<Person> children;
 
-    Person(String name, String surname, String id, String sex, boolean admin, Date birthDate, String motherId, String fatherId, boolean dead, Date deathDate, Cemetery cemetery, String deathCause) {
+    Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, GregorianCalendar birthDate, GregorianCalendar deathDate, String motherId, String fatherId, String spouseId) {
         this.name = name;
         this.surname = surname;
         this.id = id;
@@ -27,12 +28,32 @@ public class Person {
         this.birthDate = birthDate;
         this.motherId = motherId;
         this.fatherId = fatherId;
+        this.spouseId = spouseId;
         this.dead = dead;
         this.deathDate = deathDate;
         this.cemetery = cemetery;
         this.deathCause = deathCause;
 
         this.children = new ArrayList<>();
+    }
+
+    Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, GregorianCalendar birthDate, GregorianCalendar deathDate) {
+        this.name = name;
+        this.surname = surname;
+        this.id = id;
+        this.admin = admin;
+        this.sex = sex;
+        this.birthDate = birthDate;
+        this.dead = dead;
+        this.deathDate = deathDate;
+        this.cemetery = cemetery;
+        this.deathCause = deathCause;
+
+        this.children = new ArrayList<>();
+    }
+
+    public String toString() {
+        return name + " " + surname + " " + id;
     }
 
     public String getName() {
@@ -67,19 +88,19 @@ public class Person {
         this.sex = sex;
     }
 
-    public Date getBirthDate() {
+    public GregorianCalendar getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(GregorianCalendar birthDate) {
         this.birthDate = birthDate;
     }
 
-    public Date getDeathDate() {
+    public GregorianCalendar getDeathDate() {
         return deathDate;
     }
 
-    public void setDeathDate(Date deathDate) {
+    public void setDeathDate(GregorianCalendar deathDate) {
         this.deathDate = deathDate;
     }
 
@@ -131,6 +152,14 @@ public class Person {
         return person.fatherId;
     }
 
+    public String getSpouseId() {
+        return spouseId;
+    }
+
+    public void setSpouseId(String spouseId) {
+        this.spouseId = spouseId;
+    }
+
     public Cemetery getCemetery() {
         return cemetery;
     }
@@ -161,6 +190,18 @@ public class Person {
 
     public void setSpouse(Person spouse) {
         this.spouse = spouse;
+    }
+
+    public boolean hasMotherId() {
+        return motherId != null;
+    }
+
+    public boolean hasFatherId() {
+        return fatherId != null;
+    }
+
+    public boolean hasSpouseId() {
+        return spouseId != null;
     }
 
     public void addChild(Person child) {
