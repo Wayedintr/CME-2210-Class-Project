@@ -78,12 +78,11 @@ public class Cemetree {
         line = reader.readLine();
         while (line != null) {
             String[] data = line.split(",");
-            String cemeteryId = data[7].split(";")[0];
             String[] birthDate = data[8].split("/");
             String[] deathDate = data[9].split("/");
 
             Person person = new Person(data[0], data[1], data[2], data[3], !data[4].equals("0"), !data[5].equals("0"), data[6],
-                    cemeteries.get(cemeteryId),
+                    cemeteries.get(data[7]),
                     birthDate.length == 3 ? new GregorianCalendar(Integer.parseInt(birthDate[2]), Integer.parseInt(birthDate[1]), Integer.parseInt(birthDate[0])) : null,
                     deathDate.length == 3 ? new GregorianCalendar(Integer.parseInt(deathDate[2]), Integer.parseInt(deathDate[1]), Integer.parseInt(deathDate[0])) : null,
                     data[10].equals("") ? null : data[10],
@@ -115,7 +114,7 @@ public class Cemetree {
         }
 
         // Test
-        Person person = people.get("57846860510");
+        Person person = people.get("77417819532");
 
         System.out.println(person);
         System.out.println("Spouse: " + person.getSpouse());
