@@ -3,14 +3,20 @@ public class Cemetery {
 
     private String name, id;
 
-    private int count, capacity;
+    private int count;
 
-    public Cemetery(Address address, String name, String id, int capacity) {
+    private int capacity = 20000;
+
+    public Cemetery(String id, String name, Address address) {
         this.address = address;
         this.name = name;
         this.id = id;
         this.count = 0;
-        this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + ", Name: " + name + ", Address: " + address;
     }
 
     public Address getAddress() {

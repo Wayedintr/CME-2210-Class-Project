@@ -8,6 +8,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Cemetree c = new Cemetree();
 
-        c.loadFromFile("people_50k.csv");
+        c.loadFromFile("people_50k.csv", "cemeteries.csv");
     }
 }

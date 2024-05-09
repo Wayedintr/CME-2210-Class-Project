@@ -53,7 +53,7 @@ public class Person {
     }
 
     public String toString() {
-        return name + " " + surname + " " + id;
+        return name + " " + surname + " ID: " + id + " \nCemetery: " + cemetery;
     }
 
     public String getName() {

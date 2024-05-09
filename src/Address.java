@@ -1,20 +1,19 @@
 public class Address {
-    private String street, neighbourhood, number, district, city, country;
+    private String street, neighbourhood, district, city, country;
 
     private double latitude, longitude;
 
-    Address(String neighbourhood, String street, String number, String district, String city, String country, double latitude, double longitude) {
+    Address(String country, String city, String district, String neighbourhood, String street, double latitude, double longitude) {
+        this.country = country;
+        this.city = city;
+        this.district = district;
         this.neighbourhood = neighbourhood;
         this.street = street;
-        this.number = number;
-        this.district = district;
-        this.city = city;
-        this.country = country;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
     public String toString() {
-        return neighbourhood + " " + street + " No: " + number + ", " + district + "/" + city + " " + country;
+        return neighbourhood + ", " + street + ", " + district + "/" + city + ", " + country;
     }
 }

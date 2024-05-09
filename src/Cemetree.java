@@ -50,35 +50,48 @@ public class Cemetree {
         return 0;
     }
 
-    public void loadFromFile(String fileName) throws IOException {
+    public void loadFromFile(String peopleFileName, String cemeteriesFileName) throws IOException {
         BufferedReader reader;
+        String line;
 
-        reader = new BufferedReader(new FileReader(fileName));
-
-        String line = reader.readLine();
+        // Load cemeteries
+        reader = new BufferedReader(new FileReader(cemeteriesFileName));
 
         // skip header
-        line = reader.readLine();
+        reader.readLine();
 
+        line = reader.readLine();
+        while (line != null) {
+            String[] data = line.split(";");
+            Address address = new Address(data[2], data[3], data[4], data[5], data[6], Double.parseDouble(data[7]), Double.parseDouble(data[8]));
+            Cemetery cemetery = new Cemetery(data[0], data[1], address);
+            cemeteries.put(cemetery.getId(), cemetery);
+            line = reader.readLine();
+        }
+
+        // Load people
+        reader = new BufferedReader(new FileReader(peopleFileName));
+
+        // skip header
+        reader.readLine();
+
+        line = reader.readLine();
         while (line != null) {
             String[] data = line.split(",");
+            String cemeteryId = data[7].split(";")[0];
             String[] birthDate = data[8].split("/");
             String[] deathDate = data[9].split("/");
 
             Person person = new Person(data[0], data[1], data[2], data[3], !data[4].equals("0"), !data[5].equals("0"), data[6],
-                    null,
-                    new GregorianCalendar(Integer.parseInt(birthDate[2]), Integer.parseInt(birthDate[1]), Integer.parseInt(birthDate[0])),
+                    cemeteries.get(cemeteryId),
+                    birthDate.length == 3 ? new GregorianCalendar(Integer.parseInt(birthDate[2]), Integer.parseInt(birthDate[1]), Integer.parseInt(birthDate[0])) : null,
                     deathDate.length == 3 ? new GregorianCalendar(Integer.parseInt(deathDate[2]), Integer.parseInt(deathDate[1]), Integer.parseInt(deathDate[0])) : null,
                     data[10].equals("") ? null : data[10],
                     data[11].equals("") ? null : data[11],
                     data.length == 13 ? data[12] : null
             );
 
-            if (data[0].equals("36071817384"))
-                System.out.println("found");
-
             if (person.hasMotherId()) {
-//                System.out.println(people.size() + " " + person.getMotherId());
                 Person mother = people.get(person.getMotherId());
                 person.setMother(mother);
                 mother.addChild(person);
@@ -102,12 +115,7 @@ public class Cemetree {
         }
 
         // Test
-        Person person = people.get("80609910306");
-
-        for (Person p : people.values()) {
-            if (p.getChildren().size() > 1)
-                person = p;
-        }
+        Person person = people.get("57846860510");
 
         System.out.println(person);
         System.out.println("Spouse: " + person.getSpouse());
