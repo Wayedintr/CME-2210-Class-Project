@@ -96,9 +96,7 @@ public class Person {
         this.birthDate = birthDate;
     }
 
-    public GregorianCalendar getDeathDate() {
-        return deathDate;
-    }
+    public GregorianCalendar getDeathDate() {return deathDate;}
 
     public void setDeathDate(GregorianCalendar deathDate) {
         this.deathDate = deathDate;

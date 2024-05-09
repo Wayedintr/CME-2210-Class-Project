@@ -121,6 +121,8 @@ public class Cemetree {
         System.out.println("Father: " + person.getFather());
         System.out.println("Mother: " + person.getMother());
         System.out.println("Children: " + person.getChildren());
+
+        searchPeopleByDate( new GregorianCalendar(1970, 01, 01), new GregorianCalendar(2000, 01, 01));
     }
 
     public void setSelectedPerson(Person person) {
@@ -136,7 +138,20 @@ public class Cemetree {
     }
 
     public List<Person> searchPeopleByDate(GregorianCalendar startDate, GregorianCalendar endDate) {
-        return null;
+
+        List<Person> result = new ArrayList<>();
+        if (startDate != null && endDate != null) {
+            for (Person person : people.values()) {
+                if (person.getBirthDate() != null && person.getDeathDate() != null && person.getBirthDate().after(startDate) && person.getDeathDate().before(endDate)) {
+                    result.add(person);
+                }
+            }
+        }
+        //Printing for test
+        for (Person person : result) {
+            System.out.println(person.getName() + " " + person.getSurname());
+        }
+        return result;
     }
 
     public List<Person> searchRelatives(int generationInterval) {
