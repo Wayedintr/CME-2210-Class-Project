@@ -133,7 +133,7 @@ public class Cemetree {
         }
 
         // Test
-        Person person = people.get("77417819532");
+        Person person = people.get("46266354792");
         System.out.println(person.getBirthDate());
 
         System.out.println(person);
