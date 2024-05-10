@@ -14,9 +14,26 @@ public class Cemetery {
         this.count = 0;
     }
 
-    @Override
     public String toString() {
         return "ID: " + id + ", Name: " + name + ", Address: " + address;
+    }
+
+    public static String toCsvHeader() {
+        return "id,name,country,city,district,neighbourhood,street,latitude,longitude";
+    }
+
+    public String toCsvString() {
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                id == null ? "" : id,
+                name == null ? "" : name,
+                address.getCountry() == null ? "" : address.getCountry(),
+                address.getCity() == null ? "" : address.getCity(),
+                address.getDistrict() == null ? "" : address.getDistrict(),
+                address.getNeighbourhood() == null ? "" : address.getNeighbourhood(),
+                address.getStreet() == null ? "" : address.getStreet(),
+                address.getLatitude() == 0 ? "" : address.getLatitude(),
+                address.getLongitude() == 0 ? "" : address.getLongitude()
+        );
     }
 
     public Address getAddress() {

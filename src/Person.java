@@ -1,11 +1,9 @@
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class Person {
     private String name, surname, id, sex;
-    private GregorianCalendar birthDate, deathDate;
+    private Date birthDate, deathDate;
 
     boolean dead, admin;
 
@@ -19,7 +17,7 @@ public class Person {
 
     private final List<Person> children;
 
-    Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, GregorianCalendar birthDate, GregorianCalendar deathDate, String motherId, String fatherId, String spouseId) {
+    Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, Date birthDate, Date deathDate, String motherId, String fatherId, String spouseId) {
         this.name = name;
         this.surname = surname;
         this.id = id;
@@ -37,7 +35,7 @@ public class Person {
         this.children = new ArrayList<>();
     }
 
-    Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, GregorianCalendar birthDate, GregorianCalendar deathDate) {
+    Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, Date birthDate, Date deathDate) {
         this.name = name;
         this.surname = surname;
         this.id = id;
@@ -54,6 +52,32 @@ public class Person {
 
     public String toString() {
         return name + " " + surname + " ID: " + id + " \nCemetery: " + cemetery;
+    }
+
+    public static String toCsvHeader() {
+        return "id,name,surname,sex,admin,dead,deathCause,cemeteryId,birthDate,deathDate,motherId,fatherId,spouseId";
+    }
+
+    public String toCsvString() {
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                id == null ? "" : id,
+                name == null ? "" : name,
+                surname == null ? "" : surname,
+                sex == null ? "" : sex,
+                admin ? "1" : "0",
+                dead ? "1" : "0",
+                deathCause == null ? "" : deathCause,
+                cemetery == null ? "" : cemetery.getId(),
+                birthDate == null ? "" : birthDate,
+                deathDate == null ? "" : deathDate,
+                motherId == null ? "" : motherId,
+                fatherId == null ? "" : fatherId,
+                spouseId == null ? "" : spouseId
+        );
+    }
+
+    public int compareTo(Person person) {
+        return birthDate.compareTo(person.getBirthDate());
     }
 
     public String getName() {
@@ -88,17 +112,19 @@ public class Person {
         this.sex = sex;
     }
 
-    public GregorianCalendar getBirthDate() {
+    public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(GregorianCalendar birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
-    public GregorianCalendar getDeathDate() {return deathDate;}
+    public Date getDeathDate() {
+        return deathDate;
+    }
 
-    public void setDeathDate(GregorianCalendar deathDate) {
+    public void setDeathDate(Date deathDate) {
         this.deathDate = deathDate;
     }
 

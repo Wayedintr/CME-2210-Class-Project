@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -46,8 +47,28 @@ public class Cemetree {
         cemeteries.remove(id);
     }
 
-    public int saveToFile(String fileName) {
-        return 0;
+    public void saveToFile(String peopleFileName, String cemeteriesFileName) throws IOException {
+        FileWriter writer;
+
+        // Save cemeteries
+        writer = new FileWriter(cemeteriesFileName);
+
+        writer.write(Cemetery.toCsvHeader() + "\n");
+        for (Cemetery cemetery : cemeteries.values())
+            writer.write(cemetery.toCsvString() + "\n");
+        writer.close();
+
+        // Save people
+        writer = new FileWriter(peopleFileName);
+
+        // Sort people by birthdate
+        List<Person> peopleList = new ArrayList<>(people.values());
+        peopleList.sort(Person::compareTo);
+
+        writer.write(Person.toCsvHeader() + "\n");
+        for (Person person : peopleList)
+            writer.write(person.toCsvString() + "\n");
+        writer.close();
     }
 
     public void loadFromFile(String peopleFileName, String cemeteriesFileName) throws IOException {
@@ -62,7 +83,7 @@ public class Cemetree {
 
         line = reader.readLine();
         while (line != null) {
-            String[] data = line.split(";");
+            String[] data = line.split(",");
             Address address = new Address(data[2], data[3], data[4], data[5], data[6], Double.parseDouble(data[7]), Double.parseDouble(data[8]));
             Cemetery cemetery = new Cemetery(data[0], data[1], address);
             cemeteries.put(cemetery.getId(), cemetery);
@@ -78,15 +99,13 @@ public class Cemetree {
         line = reader.readLine();
         while (line != null) {
             String[] data = line.split(",");
-            String[] birthDate = data[8].split("/");
-            String[] deathDate = data[9].split("/");
 
             Person person = new Person(data[0], data[1], data[2], data[3], !data[4].equals("0"), !data[5].equals("0"), data[6],
                     cemeteries.get(data[7]),
-                    birthDate.length == 3 ? new GregorianCalendar(Integer.parseInt(birthDate[2]), Integer.parseInt(birthDate[1]), Integer.parseInt(birthDate[0])) : null,
-                    deathDate.length == 3 ? new GregorianCalendar(Integer.parseInt(deathDate[2]), Integer.parseInt(deathDate[1]), Integer.parseInt(deathDate[0])) : null,
-                    data[10].equals("") ? null : data[10],
-                    data[11].equals("") ? null : data[11],
+                    !data[8].isBlank() ? new Date(data[8]) : null,
+                    !data[9].isBlank() ? new Date(data[9]) : null,
+                    data[10].isBlank() ? null : data[10],
+                    data[11].isBlank() ? null : data[11],
                     data.length == 13 ? data[12] : null
             );
 
@@ -115,6 +134,7 @@ public class Cemetree {
 
         // Test
         Person person = people.get("77417819532");
+        System.out.println(person.getBirthDate());
 
         System.out.println(person);
         System.out.println("Spouse: " + person.getSpouse());
@@ -122,7 +142,6 @@ public class Cemetree {
         System.out.println("Mother: " + person.getMother());
         System.out.println("Children: " + person.getChildren());
 
-        searchPeopleByDate( new GregorianCalendar(1970, 01, 01), new GregorianCalendar(2000, 01, 01));
     }
 
     public void setSelectedPerson(Person person) {
@@ -137,7 +156,7 @@ public class Cemetree {
         return null;
     }
 
-    public List<Person> searchPeopleByDate(GregorianCalendar startDate, GregorianCalendar endDate) {
+    public List<Person> searchPeopleByDate(Date startDate, Date endDate) {
 
         List<Person> result = new ArrayList<>();
         if (startDate != null && endDate != null) {

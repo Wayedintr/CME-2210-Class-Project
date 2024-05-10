@@ -1,128 +1,128 @@
-id;name;country;city;district;neighbourhood;street;latitude;logitude
-34-052;Büyükada Mezarlığı;Türkiye;İstanbul;Adalar;Maden Mahallesi;Çarkıfelek Caddesi;40.8670326916208;29.129033270431975
-34-066;Heybeliada Mezarlığı;Türkiye;İstanbul;Adalar;Heybeliada Mahallesi;;40.871601568814576;29.095486925751835
-34-025;İçerenköy Mezarlığı;Türkiye;İstanbul;Ataşehir;İçerenköy Mahallesi;Harman Sokak;40.96977110906723;29.10931635206137
-34-055;Çobançeşme Mezarlığı;Türkiye;İstanbul;Bahçelievler;Çobançeşme Mahallesi;Mithatpaşa Caddesi;40.99696039984438;28.82715163379854
-34-072;Merter Mezarlığı;Türkiye;İstanbul;Bahçelievler;Bahçelievler Mahallesi;Yaşar Erol Akansel Sokak;41.0016745646398;28.882651644322443
-34-083;Zuhurat Baba Mezarlığı;Türkiye;İstanbul;Bakırköy;Zuhuratbaba Mahallesi;Zuhuratbaba Caddesi;40.98177003888793;28.87236446102429
-34-077;Ortaköy Mezarlığı;Türkiye;İstanbul;Beşiktaş;Levazım Mahallesi;Çayır Sokak;41.05953144020245;29.018731005123158
-34-068;Maçka Mezarlığı;Türkiye;İstanbul;Beşiktaş;Vişnezade Mahallesi;Bayıldım Caddesi;41.04345313506623;28.99569623152807
-34-091;Ulus Mezarlığı;Türkiye;İstanbul;Beşiktaş;Kültür Mahallesi;Körkadı Sokak;41.071085837235835;29.03302945677249
-34-023;Kanlıca Mezarlığı;Türkiye;İstanbul;Beykoz;Kanlıca Mahallesi;Barış Manço Caddesi;41.097487105113366;29.06579344906698
-34-033;Çavuşbaşı Mezarlığı;Türkiye;İstanbul;Beykoz;Çiftlik Mahallesi;Gazi Mustafa Kemal Bulvarı;41.080289281077434;29.13616148145766
-34-056;Kulaksız Mezarlığı;Türkiye;İstanbul;Beyoğlu;Kulaksız Mahallesi;Kulaksız Caddesi;41.04061608767424;28.961440347951125
-34-024;Zindan Arkası Mezarlığı;Türkiye;İstanbul;Beyoğlu;Kulaksız Mahallesi;Hasbahçe Sokak;41.03794818642137;28.959256177303406
-34-031;Büyükçekmece Mezarlığı;Türkiye;İstanbul;Büyükçekmece;Ulus Mahallesi;Çatalca Yolu Caddesi;41.038963499999994;28.549668511435094
-34-026;Esenyurt Mezarlığı;Türkiye;İstanbul;Esenyurt;Fatih Mahallesi;Esenyurt Kavşağı;41.03190836001923;28.681231984785093
-34-042;Gülbahçe Mezarlığı;Türkiye;İstanbul;Esenyurt;Orhan Gazi Mahallesi;Sanayi Caddesi;41.08561451843021;28.639191572098706
-34-076;İstiklâl Mezarlığı;Türkiye;İstanbul;Esenyurt;Selahaddin Eyyubi Mahallesi;2642. Sokak;41.04842827736853;28.652343910438027
-34-081;Eyüp Sultan Mezarlığı;Türkiye;İstanbul;Eyüpsultan;Merkez Mahallesi;Silahtarağa Caddesi;41.053410238757735;28.93444354153051
-34-001;Karlıtepe Mezarlığı;Türkiye;İstanbul;Gaziosmanpaşa;Yıldıztabya Mahallesi;Karanfil Sokak;41.06483713805929;28.922966148127184
-34-047;Güngören Mezarlığı;Türkiye;İstanbul;Güngören;Güneştepe Mahallesi;Bağlar Caddesi;41.027863220019256;28.8699283195769
-34-039;Sahrayıcedit Mezarlığı;Türkiye;İstanbul;Kadıköy;Sahrayıcedit Mahallesi;Orta Sokak;40.98389449628905;29.07696343280928
-34-046;Merdivenköy Mezarlığı;Türkiye;İstanbul;Kadıköy;Merdivenköy Mahallesi;Ayışığı Sokak;40.98946773080454;29.075504499451654
-34-019;Sanayi Mezarlığı;Türkiye;İstanbul;Kağıthane;Şirintepe Mahallesi;Armağan Sokak;41.088659421904325;28.99606569487241
-34-029;Hasdal Mezarlığı;Türkiye;İstanbul;Kağıthane;Hamidiye Mahallesi;Selvi Caddesi;41.10215738692276;28.95711322244491
-34-053;Kurfalı Mezarlığı;Türkiye;İstanbul;Kartal;Hürriyet Mahallesi;Adnan Kahveci Caddesi;40.90063987731505;29.227225127638853
-34-082;Soğanlık Mezarlığı;Türkiye;İstanbul;Kartal;Gümüşpınar Mahallesi;Atatürk Caddesi;40.917179608882684;29.210356542558713
-34-030;Yakacık Mezarlığı;Türkiye;İstanbul;Kartal;Yakacık Çarşı Mahallesi;Havuz Sokak;40.91576516932655;29.223453807287196
-34-004;Başıbüyük Mezarlığı;Türkiye;İstanbul;Maltepe;Başıbüyük Mahallesi;Mezarlık Caddesi;40.958987614891456;29.140727118587517
-34-007;Küçükyalı Mezarlığı;Türkiye;İstanbul;Maltepe;Aydınevler Mahallesi;İnönü Caddesi;40.958326400000004;29.11459793799266
-34-011;Maltepe Mezarlığı;Türkiye;İstanbul;Maltepe;Feyzullah Mahallesi;Sevinç Sokak;40.93246041220567;29.125624526915527
-34-099;Kurtköy Mezarlığı;Türkiye;İstanbul;Pendik;Sanayi Mahallesi;Uran Sokak;40.90973632099802;29.306555253511945
-34-050;Şeyhli Mezarlığı;Türkiye;İstanbul;Pendik;Şeyhli Mahallesi;Nur Sokağı;40.90554394757928;29.281282208342333
-34-073;Veysel Karani Mezarlığı;Türkiye;İstanbul;Sancaktepe;Veysel Karani Mahallesi;Aytemur Caddesi;40.96171247458985;29.236046996176672
-34-034;Aşiyan Mezarlığı;Türkiye;İstanbul;Beşiktaş;Bebek Mahallesi;Aşiyan Yolu;41.0828483719602;29.055560587741525
-34-059;Kilyos Mezarlığı;Türkiye;İstanbul;Sarıyer;Uskumruköy Mahallesi;Kilyos Caddesi;41.23293614024097;29.03938021371193
-34-036;Ayazağa Mezarlığı;Türkiye;İstanbul;Sarıyer;Ayazağa Mahallesi;208. Sokak;41.1222263520177;28.99186299322619
-34-016;İstinye Mezarlığı;Türkiye;İstanbul;Sarıyer;İstinye Mahallesi;Nuri Paşa Caddesi;41.117424684248206;29.050411240744417
-34-032;Şile Mezarlığı;Türkiye;İstanbul;Şile;Bucaklı Mahallesi;Miray Sokak;41.11548019494015;29.891611472738898
-34-058;Feriköy Mezarlığı;Türkiye;İstanbul;Şişli;Paşa Mahallesi;Darülaceze Yolu Caddesi;41.0514001334927;28.975159443828975
-34-009;Ateştuğla Mezarlığı;Türkiye;İstanbul;Bağcılar;Mahmutbey Mahallesi;Halkalı Caddesi;41.04756472426088;28.82911775705652
-34-070;Kirazlı Mezarlığı;Türkiye;İstanbul;Bağcılar;Kirazlı Mahallesi;Mahmutbey Caddesi;41.03199429133679;28.83433496413488
-34-098;Kemer Mezarlığı;Türkiye;İstanbul;Esenler;Kemer Mahallesi;Mustafa Dündar Caddesi;41.05070931039382;28.884450687974667
-34-065;Zincirlikuyu Mezarlığı;Türkiye;İstanbul;Şişli;Esentepe Mahallesi;Zincirlidere Caddesi;41.07374687893742;29.007856278111497
-34-020;Tuzla Mezarlığı;Türkiye;İstanbul;Tuzla;Cami Mahallesi;Şehitler Caddesi;40.813454211061426;29.30987617750371
-34-008;Hekimbaşı Mezarlığı;Türkiye;İstanbul;Ümraniye;Hekimbaşı Mahallesi;Yıldıztepe Caddesi;41.058398144252045;29.093621988691517
-34-074;Ihlamurkuyu Mezarlığı;Türkiye;İstanbul;Ümraniye;Cemil Meriç Mahallesi;;41.033258700000005;29.14560388029386
-34-017;Ümraniye Kocatepe Mezarlığı;Türkiye;İstanbul;Ümraniye;İnkılap Mahallesi;Küçüksu Caddesi;41.04530367304817;29.11655461094737
-34-063;Bülbüldere Mezarlığı;Türkiye;İstanbul;Üsküdar;Selami Ali Mahallesi;Selanikliler Sokak;41.02605953189076;29.02493411632289
-34-037;Çengelköy Mezarlığı;Türkiye;İstanbul;Üsküdar;Kuleli Mahallesi;Kaldırım Caddesi;41.05582717485283;29.058776885555783
-34-005;Karacaahmet Mezarlığı;Türkiye;İstanbul;Üsküdar;Barbaros Mahallesi;Nuhkuyusu Caddesi;41.009121024485445;29.026416573754812
-34-080;Küplüce Mezarlığı;Türkiye;İstanbul;Üsküdar;Beylerbeyi Mahallesi;Şemsi Efendi Sokak;41.04080573817499;29.047347966724335
-34-061;Nakkaştepe Mezarlığı;Türkiye;İstanbul;Üsküdar;Kuzguncuk Mahallesi;Abdullahağa Caddesi;41.03800910197292;29.034775449703137
-34-038;Yedikule Mezarlığı;Türkiye;İstanbul;Zeytinburnu;Kazlıçeşme Mahallesi;Yedikule Caddesi;40.99237507961244;28.92131793113741
-34-012;Kazlıçeşme Mezarlığı;Türkiye;İstanbul;Zeytinburnu;Kazlıçeşme Mahallesi;40. Sokak;40.99191449989183;28.912799338126668
-34-087;Merkezefendi Mezarlığı;Türkiye;İstanbul;Zeytinburnu;Merkezefendi Mahallesi;Merkezefendi Caddesi;41.01555449830292;28.920727259967236
-34-069;Topkapı Mezarlığı;Türkiye;İstanbul;Zeytinburnu;Maltepe Mahallesi;Davutpaşa Caddesi;41.025477473051524;28.92460583570463
-06-018;Etimesgut Mezarlığı;Türkiye;Ankara;Etimesgut;Elvan Mahallesi;1840. Cadde;39.94049215263672;32.627557447626764
-06-004;Cebeci Asri Mezarlığı;Türkiye;Ankara;Altındağ;Gültepe Mahallesi;Gültepe Caddesi;39.94839759852058;32.88756816786876
-06-010;Cimşit Mezarlığı;Türkiye;Ankara;Sincan;Malazgirt Mahallesi;Buhara Caddesi;39.95385359947009;32.55528390957792
-06-015;Bayındır Mezarlığı;Türkiye;Ankara;Mamak;Yeni Bayındır Mahallesi;1900. Sokak;39.90674284988958;32.97823970804913
-06-016;Gölbaşı Mezarlığı;Türkiye;Ankara;Gölbaşı;Şafak Mahallesi;858. Sokak;39.80562709319685;32.80538951238054
-06-005;Karşıyaka Mezarlığı;Türkiye;Ankara;Yenimahalle;Çiğdemtepe Mahallesi;52. Cadde;40.00793336266677;32.79165685199126
-06-002;Ortaköy Mezarlığı;Türkiye;Ankara;Mamak;Ortaköy Mahallesi;;39.92833345674135;33.02414102213442
-06-009;Kayaş Mezarlığı;Türkiye;Ankara;Mamak;Kayaş Mahallesi;1483. Sokak;39.917415831289155;32.96092110686703
-35-047;Balçova Mezarlığı;Türkiye;İzmir;Balçova;Çetin Emeç Mahallesi;Sokullu Sokak;38.387824688708584;27.059940114914035
-35-068;Bornova Yeni Mezarlığı;Türkiye;İzmir;Bornova;Erzene Mahallesi;116/21. Sokak;38.48738447340478;27.257686431319023
-35-043;Çiğli Mezarlığı;Türkiye;İzmir;Çiğli;Ataşehir Mahallesi;8021. Sokak;38.490413187701606;27.05754853867065
-35-008;Doğançay Mezarlığı;Türkiye;İzmir;Bayraklı;Doğançay Mahallesi;7355. Sokak;38.50104392005785;27.148384727651216
-35-087;Sarnıç Mezarlığı;Türkiye;İzmir;Gaziemir;Atatürk Mahallesi;1014. Sokak;38.29025447344882;27.169933809381074
-35-098;Soğukkuyu Mezarlığı;Türkiye;İzmir;Bayraklı;Soğukkuyu Mahallesi;Akın Kıvanç Sokak;38.474561457213504;27.119312836945383
-35-077;Zeytinalanı Mezarlığı;Türkiye;İzmir;Urla;Şirinkent Mahallesi;Muammer Aksoy Caddesi;38.35788438672314;26.83455789929292
-16-072;Ahmet Paşa Mezarlığı;Türkiye;Bursa;Osmangazi;Ahmetpaşa Mahallesi;Fahri Korutürk Caddesi;40.19278623806621;29.058580602609116
-16-042;Alacahırka Mezarlığı;Türkiye;Bursa;Osmangazi;Pınarbaşı Mahallesi;Cafer Sokak;40.18184636769624;29.050610336673213
-16-004;Arabayatağı Mezarlığı;Türkiye;Bursa;Yıldırım;Arabayatağı Mahallesi;Düzcan Sokak;40.193812700294075;29.12690241866865
-16-020;Baruthane Mezarlığı;Türkiye;Bursa;Yıldırım;Sinandede Mahallesi;Barutluk Caddesi;40.18696145499624;29.086687149560678
-16-047;Geçit Mezarlığı;Türkiye;Bursa;Nilüfer;Ahmet Yesevi Mahallesi;Eren Sokak;40.27100451514125;28.942038801824584
-16-039;Değirmenlikızık Mezarlığı;Türkiye;Bursa;Yıldırım;Değirmenlikızık Mahallesi;Teyyareci Mehmet Ali Caddesi;40.18020729219285;29.103476021206202
-16-055;Emir Sultan Mezarlığı;Türkiye;Bursa;Yıldırım;Emirsultan Mahallesi;Dibekönü Sokak;40.18170429654893;29.080493491870993
-16-098;Küçükbalıklı Mezarlığı;Türkiye;Bursa;Osmangazi;Küçükbalıklı Mahallesi;Şanlı Caddesi;40.21829957217017;29.075271156883232
-16-044;Hamitler Mezarlığı;Türkiye;Bursa;Osmangazi;Hamitler Mahallesi;Huzur Caddesi;40.24041388662322;28.98159752982795
-16-084;Sarıkaya Mezarlığı;Türkiye;Bursa;Yıldırım;Mollaarap Mahallesi;6. Gür Sokak;40.170089895756554;29.077173861113536
-16-068;Soğanlı Mezarlığı;Türkiye;Bursa;Osmangazi;Soğanlı Mahallesi;3. Meltem Sokak;40.214839752907025;29.043033647251477
-07-058;Andızlı Mezarlığı;Türkiye;Antalya;Muratpaşa;Yüksekalan Mahallesi;1. Cadde;36.89337497593046;30.708245118715393
-07-072;Uncalı Mezarlığı;Türkiye;Antalya;Konyaaltı;Molla Yusuf Mahallesi;Hürriyet Caddesi;36.89953642108719;30.62763288001271
-42-079;Üçler Mezarlığı;Türkiye;Konya;Karatay;Aziziye Mahallesi;Aslanlı Kışla Caddesi;37.869803235690625;32.504254320606556
-42-021;Yaka Mezarlığı;Türkiye;Konya;Meram;Alavardı Mahallesi;Betül Sokak;37.87065829947369;32.43968549141775
-42-074;Hacı Fettah Mezarlığı;Türkiye;Konya;Meram;Çaybaşı Mahallesi;Abdullah Çavuş Sokak;37.863367646821104;32.4955631156794
-42-069;Musalla Mezarlığı;Türkiye;Konya;Selçuklu;Feritpaşa Mahallesi;Ankara Caddesi;37.88375671901795;32.49450925041063
-42-072;Yazır Mezarlığı;Türkiye;Konya;Selçuklu;Yazır Mahallesi;Büyükşehir Caddesi;37.97604210402058;32.50634685464041
-01-066;Asri Mezarlığı;Türkiye;Adana;Yüreğir;Dede Korkut Mahallesi;İlbey Güneş Caddesi;36.9862346868028;35.3537000403701
-01-002;Buruk Mezarlığı;Türkiye;Adana;Sarıçam;Orhangazi Mahallesi;Buruk Caddesi;37.039556649999994;35.435791285990774
-01-030;Kabasakal Mezarlığı;Türkiye;Adana;Çukurova;Kabasakal Mahallesi;Turgut Özal Bulvarı;37.05374065694639;35.20742618532713
-63-059;Bediüzzaman Mezarlığı;Türkiye;Şanlıurfa;Haliliye;Hızmalı Mahallesi;11 Nisan Fuar Caddesi;37.15698266615041;38.7845528717721
-33-024;Akbelen Şehir Mezarlığı;Türkiye;Mersin;Toroslar;Yusuf Kılıç Mahallesi;Mezarlık Caddesi;36.81927888454838;34.60295984303104
-21-000;Alipınar Mezarlığı;Türkiye;Diyarbakır;Bağlar;Körhat Mahallesi;Alipınar Caddesi;37.90848222563083;40.212429694688915
-21-079;Mardinkapı Mezarlığı;Türkiye;Diyarbakır;Yenişehir;Şehitlik Mahallesi;208. Cadde;37.9018955209934;40.23079026575578
-38-032;Anbar Mezarlığı;Türkiye;Kayseri;Melikgazi;Anbar Mahallesi;14. Cadde;38.74986499122526;35.372760527693856
-38-033;Argıncık Mezarlığı;Türkiye;Kayseri;Kocasinan;Argıncık Mahallesi;Yavuz Sultan Selim Caddesi;38.75218169419006;35.51676633874353
-38-058;Bülbül Pınarı Mezarlığı;Türkiye;Kayseri;Kocasinan;Erkilet Tepe Mahallesi;Bülbülpınarı Caddesi;38.82350637215627;35.482978352483464
-38-079;Erkilet Mezarlığı;Türkiye;Kayseri;Kocasinan;Erkilet Tepe Mahallesi;Ustalar Sokak;38.82369619346506;35.44629766908028
-38-065;İldem Mezarlığı;Türkiye;Kayseri;Melikgazi;Gesi Cumhuriyet Mahallesi;2337. Sokak;38.79127661980104;35.62451909598398
-55-011;Kıranköy Mezarlığı;Türkiye;Samsun;İlkadım;Kıran Mahallesi;Barış Bulvarı;41.27600630814065;36.29629158722064
-09-023;Kadıköy Mezarlığı;Türkiye;Aydın;Efeler;Osman Yozgatlı Mahallesi;Kadıköy Bulvarı;37.828571388503725;27.820549177730665
-09-063;Tellidede Mezarlığı;Türkiye;Aydın;Efeler;İstiklal Mahallesi;Rıza Toprak Caddesi;37.829491250715094;27.838814506044223
-65-006;Akköprü Mezarlığı;Türkiye;Van;Tuşba;Akköprü Mahallesi;Yavuz Sokak;38.511184823792;43.37816554302971
-20-034;Çakmak Mezarlığı;Türkiye;Denizli;Merkezefendi;Çakmak Mahallesi;260. Sokak;37.796677429011694;29.00889834525678
-20-074;Hallaçlar Mezarlığı;Türkiye;Denizli;Merkezefendi;Hallaçlar Mahallesi;3014. Sokak;37.776043545323674;29.00067944322454
-20-002;İlbadı Mezarlığı;Türkiye;Denizli;Merkezefendi;İlbade Mahallesi;Örnek Caddesi;37.789770353182405;29.079763763204614
-20-056;Saruhan Mezarlığı;Türkiye;Denizli;Merkezefendi;Saruhan Mahallesi;12108. Sokak;37.79823950444971;28.987832296005305
-48-051;Dereköy Mezarlığı;Türkiye;Muğla;Bodrum;Dereköy Mahallesi;;37.042026493467745;27.287868344137916
-48-004;Gürece Mezarlığı;Türkiye;Muğla;Bodrum;Gürece Mahallesi;Göktepe Sokak;37.03799967198697;27.322683057894153
-48-058;Torba Mezarlığı;Türkiye;Muğla;Bodrum;Torba Mahallesi;Atatürk Caddesi;37.07065154236713;27.461072692809935
-48-085;Karaburgaz Asri Mezarlık;Türkiye;Muğla;Bodrum;Eskiçeşme Mahallesi;Turgut Reis Caddesi;37.0382014879367;27.413811995951246
-48-021;Killik Mezarlığı;Türkiye;Muğla;Dalaman;Atakent Mahallesi;;36.79376357777602;28.82648054800914
-48-067;Gölbaşı Köyü Mezarlığı;Türkiye;Muğla;Ortaca;Gölbaşı Mahallesi;Tirikler Sokak;36.85066021995285;28.759023482119456
-48-020;Armutalan Mezarlığı;Türkiye;Muğla;Marmaris;Armutalan Mahallesi;225. Sokak;36.84977926986496;28.24107186801093
-48-015;Muğla Şehir Eski Mezarlığı;Türkiye;Muğla;Menteşe;Orhaniye Mahallesi;Şehit Asteğmen Yıldıray Çeltiklioğlu Caddesi;37.20290853443695;28.372267561794782
-48-070;Bayır Mezarlığı;Türkiye;Muğla;Menteşe;Orhaniye Mahallesi;Bayır Sokak;37.219035858173804;28.373434570968474
-48-098;Seydiler Mezarlığı;Türkiye;Muğla;Seydikemer;Belen Mahallesi;Mimar Sinan Caddesi;36.65723014809731;29.36727226523456
-48-098;Seydiler Mezarlığı;Türkiye;Muğla;Seydikemer;Belen Mahallesi;Mimar Sinan Caddesi;36.65723014809731;29.36727226523456
-48-062;Şehir Yeni Mezarlığı;Türkiye;Muğla;Menteşe;Akkaya Mahallesi;5. Cadde;37.2069253277624;28.335274839674568
-48-073;Düğerek Mezarlığı;Türkiye;Muğla;Menteşe;Düğerek Mahallesi;Hakim Aylin Barut Caddesi;37.20502242569509;28.411881480196318
-26-075;Esentepe Mezarlığı;Türkiye;Eskişehir;Tepebaşı;Sütlüce Mahallesi;İstiklal Caddesi;39.802838411733205;30.504528815574904
-26-049;Odunpazarı Mezarlığı;Türkiye;Eskişehir;Odunpazarı;Dede Mahallesi;Hacı Eyüp Sokak;39.76139750070887;30.526051972083515
-32-064;Isparta Belediyesi Asri Mezarlığı;Türkiye;Isparta;Merkez;Işıkkent Mahallesi;1599. Sokak;37.76649718302164;30.530272449311276
-68-001;Ervah Mezarlığı;Türkiye;Aksaray;Merkez;Coğlaki Mahallesi;Şht. İmdat Pala Sokak;38.3717234707728;34.04206544292917
-13-074;Ahlat Selçuklu Mezarlığı;Türkiye;Bitlis;Ahlat;İki Kubbe Mahallesi;Ova Kışla Caddesi;38.740424576813396;42.458950490374555
+id,name,country,city,district,neighbourhood,street,latitude,longitude
+34-052,Büyükada Mezarlığı,Türkiye,İstanbul,Adalar,Maden Mahallesi,Çarkıfelek Caddesi,40.8670326916208,29.129033270431975
+34-066,Heybeliada Mezarlığı,Türkiye,İstanbul,Adalar,Heybeliada Mahallesi,,40.871601568814576,29.095486925751835
+34-025,İçerenköy Mezarlığı,Türkiye,İstanbul,Ataşehir,İçerenköy Mahallesi,Harman Sokak,40.96977110906723,29.10931635206137
+34-055,Çobançeşme Mezarlığı,Türkiye,İstanbul,Bahçelievler,Çobançeşme Mahallesi,Mithatpaşa Caddesi,40.99696039984438,28.82715163379854
+34-072,Merter Mezarlığı,Türkiye,İstanbul,Bahçelievler,Bahçelievler Mahallesi,Yaşar Erol Akansel Sokak,41.0016745646398,28.882651644322443
+34-083,Zuhurat Baba Mezarlığı,Türkiye,İstanbul,Bakırköy,Zuhuratbaba Mahallesi,Zuhuratbaba Caddesi,40.98177003888793,28.87236446102429
+34-077,Ortaköy Mezarlığı,Türkiye,İstanbul,Beşiktaş,Levazım Mahallesi,Çayır Sokak,41.05953144020245,29.018731005123158
+34-068,Maçka Mezarlığı,Türkiye,İstanbul,Beşiktaş,Vişnezade Mahallesi,Bayıldım Caddesi,41.04345313506623,28.99569623152807
+34-091,Ulus Mezarlığı,Türkiye,İstanbul,Beşiktaş,Kültür Mahallesi,Körkadı Sokak,41.071085837235835,29.03302945677249
+34-023,Kanlıca Mezarlığı,Türkiye,İstanbul,Beykoz,Kanlıca Mahallesi,Barış Manço Caddesi,41.097487105113366,29.06579344906698
+34-033,Çavuşbaşı Mezarlığı,Türkiye,İstanbul,Beykoz,Çiftlik Mahallesi,Gazi Mustafa Kemal Bulvarı,41.080289281077434,29.13616148145766
+34-056,Kulaksız Mezarlığı,Türkiye,İstanbul,Beyoğlu,Kulaksız Mahallesi,Kulaksız Caddesi,41.04061608767424,28.961440347951125
+34-024,Zindan Arkası Mezarlığı,Türkiye,İstanbul,Beyoğlu,Kulaksız Mahallesi,Hasbahçe Sokak,41.03794818642137,28.959256177303406
+34-031,Büyükçekmece Mezarlığı,Türkiye,İstanbul,Büyükçekmece,Ulus Mahallesi,Çatalca Yolu Caddesi,41.038963499999994,28.549668511435094
+34-026,Esenyurt Mezarlığı,Türkiye,İstanbul,Esenyurt,Fatih Mahallesi,Esenyurt Kavşağı,41.03190836001923,28.681231984785093
+34-042,Gülbahçe Mezarlığı,Türkiye,İstanbul,Esenyurt,Orhan Gazi Mahallesi,Sanayi Caddesi,41.08561451843021,28.639191572098706
+34-076,İstiklâl Mezarlığı,Türkiye,İstanbul,Esenyurt,Selahaddin Eyyubi Mahallesi,2642. Sokak,41.04842827736853,28.652343910438027
+34-081,Eyüp Sultan Mezarlığı,Türkiye,İstanbul,Eyüpsultan,Merkez Mahallesi,Silahtarağa Caddesi,41.053410238757735,28.93444354153051
+34-001,Karlıtepe Mezarlığı,Türkiye,İstanbul,Gaziosmanpaşa,Yıldıztabya Mahallesi,Karanfil Sokak,41.06483713805929,28.922966148127184
+34-047,Güngören Mezarlığı,Türkiye,İstanbul,Güngören,Güneştepe Mahallesi,Bağlar Caddesi,41.027863220019256,28.8699283195769
+34-039,Sahrayıcedit Mezarlığı,Türkiye,İstanbul,Kadıköy,Sahrayıcedit Mahallesi,Orta Sokak,40.98389449628905,29.07696343280928
+34-046,Merdivenköy Mezarlığı,Türkiye,İstanbul,Kadıköy,Merdivenköy Mahallesi,Ayışığı Sokak,40.98946773080454,29.075504499451654
+34-019,Sanayi Mezarlığı,Türkiye,İstanbul,Kağıthane,Şirintepe Mahallesi,Armağan Sokak,41.088659421904325,28.99606569487241
+34-029,Hasdal Mezarlığı,Türkiye,İstanbul,Kağıthane,Hamidiye Mahallesi,Selvi Caddesi,41.10215738692276,28.95711322244491
+34-053,Kurfalı Mezarlığı,Türkiye,İstanbul,Kartal,Hürriyet Mahallesi,Adnan Kahveci Caddesi,40.90063987731505,29.227225127638853
+34-082,Soğanlık Mezarlığı,Türkiye,İstanbul,Kartal,Gümüşpınar Mahallesi,Atatürk Caddesi,40.917179608882684,29.210356542558713
+34-030,Yakacık Mezarlığı,Türkiye,İstanbul,Kartal,Yakacık Çarşı Mahallesi,Havuz Sokak,40.91576516932655,29.223453807287196
+34-004,Başıbüyük Mezarlığı,Türkiye,İstanbul,Maltepe,Başıbüyük Mahallesi,Mezarlık Caddesi,40.958987614891456,29.140727118587517
+34-007,Küçükyalı Mezarlığı,Türkiye,İstanbul,Maltepe,Aydınevler Mahallesi,İnönü Caddesi,40.958326400000004,29.11459793799266
+34-011,Maltepe Mezarlığı,Türkiye,İstanbul,Maltepe,Feyzullah Mahallesi,Sevinç Sokak,40.93246041220567,29.125624526915527
+34-099,Kurtköy Mezarlığı,Türkiye,İstanbul,Pendik,Sanayi Mahallesi,Uran Sokak,40.90973632099802,29.306555253511945
+34-050,Şeyhli Mezarlığı,Türkiye,İstanbul,Pendik,Şeyhli Mahallesi,Nur Sokağı,40.90554394757928,29.281282208342333
+34-073,Veysel Karani Mezarlığı,Türkiye,İstanbul,Sancaktepe,Veysel Karani Mahallesi,Aytemur Caddesi,40.96171247458985,29.236046996176672
+34-034,Aşiyan Mezarlığı,Türkiye,İstanbul,Beşiktaş,Bebek Mahallesi,Aşiyan Yolu,41.0828483719602,29.055560587741525
+34-059,Kilyos Mezarlığı,Türkiye,İstanbul,Sarıyer,Uskumruköy Mahallesi,Kilyos Caddesi,41.23293614024097,29.03938021371193
+34-036,Ayazağa Mezarlığı,Türkiye,İstanbul,Sarıyer,Ayazağa Mahallesi,208. Sokak,41.1222263520177,28.99186299322619
+34-016,İstinye Mezarlığı,Türkiye,İstanbul,Sarıyer,İstinye Mahallesi,Nuri Paşa Caddesi,41.117424684248206,29.050411240744417
+34-032,Şile Mezarlığı,Türkiye,İstanbul,Şile,Bucaklı Mahallesi,Miray Sokak,41.11548019494015,29.891611472738898
+34-058,Feriköy Mezarlığı,Türkiye,İstanbul,Şişli,Paşa Mahallesi,Darülaceze Yolu Caddesi,41.0514001334927,28.975159443828975
+34-009,Ateştuğla Mezarlığı,Türkiye,İstanbul,Bağcılar,Mahmutbey Mahallesi,Halkalı Caddesi,41.04756472426088,28.82911775705652
+34-070,Kirazlı Mezarlığı,Türkiye,İstanbul,Bağcılar,Kirazlı Mahallesi,Mahmutbey Caddesi,41.03199429133679,28.83433496413488
+34-098,Kemer Mezarlığı,Türkiye,İstanbul,Esenler,Kemer Mahallesi,Mustafa Dündar Caddesi,41.05070931039382,28.884450687974667
+34-065,Zincirlikuyu Mezarlığı,Türkiye,İstanbul,Şişli,Esentepe Mahallesi,Zincirlidere Caddesi,41.07374687893742,29.007856278111497
+34-020,Tuzla Mezarlığı,Türkiye,İstanbul,Tuzla,Cami Mahallesi,Şehitler Caddesi,40.813454211061426,29.30987617750371
+34-008,Hekimbaşı Mezarlığı,Türkiye,İstanbul,Ümraniye,Hekimbaşı Mahallesi,Yıldıztepe Caddesi,41.058398144252045,29.093621988691517
+34-074,Ihlamurkuyu Mezarlığı,Türkiye,İstanbul,Ümraniye,Cemil Meriç Mahallesi,,41.033258700000005,29.14560388029386
+34-017,Ümraniye Kocatepe Mezarlığı,Türkiye,İstanbul,Ümraniye,İnkılap Mahallesi,Küçüksu Caddesi,41.04530367304817,29.11655461094737
+34-063,Bülbüldere Mezarlığı,Türkiye,İstanbul,Üsküdar,Selami Ali Mahallesi,Selanikliler Sokak,41.02605953189076,29.02493411632289
+34-037,Çengelköy Mezarlığı,Türkiye,İstanbul,Üsküdar,Kuleli Mahallesi,Kaldırım Caddesi,41.05582717485283,29.058776885555783
+34-005,Karacaahmet Mezarlığı,Türkiye,İstanbul,Üsküdar,Barbaros Mahallesi,Nuhkuyusu Caddesi,41.009121024485445,29.026416573754812
+34-080,Küplüce Mezarlığı,Türkiye,İstanbul,Üsküdar,Beylerbeyi Mahallesi,Şemsi Efendi Sokak,41.04080573817499,29.047347966724335
+34-061,Nakkaştepe Mezarlığı,Türkiye,İstanbul,Üsküdar,Kuzguncuk Mahallesi,Abdullahağa Caddesi,41.03800910197292,29.034775449703137
+34-038,Yedikule Mezarlığı,Türkiye,İstanbul,Zeytinburnu,Kazlıçeşme Mahallesi,Yedikule Caddesi,40.99237507961244,28.92131793113741
+34-012,Kazlıçeşme Mezarlığı,Türkiye,İstanbul,Zeytinburnu,Kazlıçeşme Mahallesi,40. Sokak,40.99191449989183,28.912799338126668
+34-087,Merkezefendi Mezarlığı,Türkiye,İstanbul,Zeytinburnu,Merkezefendi Mahallesi,Merkezefendi Caddesi,41.01555449830292,28.920727259967236
+34-069,Topkapı Mezarlığı,Türkiye,İstanbul,Zeytinburnu,Maltepe Mahallesi,Davutpaşa Caddesi,41.025477473051524,28.92460583570463
+06-018,Etimesgut Mezarlığı,Türkiye,Ankara,Etimesgut,Elvan Mahallesi,1840. Cadde,39.94049215263672,32.627557447626764
+06-004,Cebeci Asri Mezarlığı,Türkiye,Ankara,Altındağ,Gültepe Mahallesi,Gültepe Caddesi,39.94839759852058,32.88756816786876
+06-010,Cimşit Mezarlığı,Türkiye,Ankara,Sincan,Malazgirt Mahallesi,Buhara Caddesi,39.95385359947009,32.55528390957792
+06-015,Bayındır Mezarlığı,Türkiye,Ankara,Mamak,Yeni Bayındır Mahallesi,1900. Sokak,39.90674284988958,32.97823970804913
+06-016,Gölbaşı Mezarlığı,Türkiye,Ankara,Gölbaşı,Şafak Mahallesi,858. Sokak,39.80562709319685,32.80538951238054
+06-005,Karşıyaka Mezarlığı,Türkiye,Ankara,Yenimahalle,Çiğdemtepe Mahallesi,52. Cadde,40.00793336266677,32.79165685199126
+06-002,Ortaköy Mezarlığı,Türkiye,Ankara,Mamak,Ortaköy Mahallesi,,39.92833345674135,33.02414102213442
+06-009,Kayaş Mezarlığı,Türkiye,Ankara,Mamak,Kayaş Mahallesi,1483. Sokak,39.917415831289155,32.96092110686703
+35-047,Balçova Mezarlığı,Türkiye,İzmir,Balçova,Çetin Emeç Mahallesi,Sokullu Sokak,38.387824688708584,27.059940114914035
+35-068,Bornova Yeni Mezarlığı,Türkiye,İzmir,Bornova,Erzene Mahallesi,116/21. Sokak,38.48738447340478,27.257686431319023
+35-043,Çiğli Mezarlığı,Türkiye,İzmir,Çiğli,Ataşehir Mahallesi,8021. Sokak,38.490413187701606,27.05754853867065
+35-008,Doğançay Mezarlığı,Türkiye,İzmir,Bayraklı,Doğançay Mahallesi,7355. Sokak,38.50104392005785,27.148384727651216
+35-087,Sarnıç Mezarlığı,Türkiye,İzmir,Gaziemir,Atatürk Mahallesi,1014. Sokak,38.29025447344882,27.169933809381074
+35-098,Soğukkuyu Mezarlığı,Türkiye,İzmir,Bayraklı,Soğukkuyu Mahallesi,Akın Kıvanç Sokak,38.474561457213504,27.119312836945383
+35-077,Zeytinalanı Mezarlığı,Türkiye,İzmir,Urla,Şirinkent Mahallesi,Muammer Aksoy Caddesi,38.35788438672314,26.83455789929292
+16-072,Ahmet Paşa Mezarlığı,Türkiye,Bursa,Osmangazi,Ahmetpaşa Mahallesi,Fahri Korutürk Caddesi,40.19278623806621,29.058580602609116
+16-042,Alacahırka Mezarlığı,Türkiye,Bursa,Osmangazi,Pınarbaşı Mahallesi,Cafer Sokak,40.18184636769624,29.050610336673213
+16-004,Arabayatağı Mezarlığı,Türkiye,Bursa,Yıldırım,Arabayatağı Mahallesi,Düzcan Sokak,40.193812700294075,29.12690241866865
+16-020,Baruthane Mezarlığı,Türkiye,Bursa,Yıldırım,Sinandede Mahallesi,Barutluk Caddesi,40.18696145499624,29.086687149560678
+16-047,Geçit Mezarlığı,Türkiye,Bursa,Nilüfer,Ahmet Yesevi Mahallesi,Eren Sokak,40.27100451514125,28.942038801824584
+16-039,Değirmenlikızık Mezarlığı,Türkiye,Bursa,Yıldırım,Değirmenlikızık Mahallesi,Teyyareci Mehmet Ali Caddesi,40.18020729219285,29.103476021206202
+16-055,Emir Sultan Mezarlığı,Türkiye,Bursa,Yıldırım,Emirsultan Mahallesi,Dibekönü Sokak,40.18170429654893,29.080493491870993
+16-098,Küçükbalıklı Mezarlığı,Türkiye,Bursa,Osmangazi,Küçükbalıklı Mahallesi,Şanlı Caddesi,40.21829957217017,29.075271156883232
+16-044,Hamitler Mezarlığı,Türkiye,Bursa,Osmangazi,Hamitler Mahallesi,Huzur Caddesi,40.24041388662322,28.98159752982795
+16-084,Sarıkaya Mezarlığı,Türkiye,Bursa,Yıldırım,Mollaarap Mahallesi,6. Gür Sokak,40.170089895756554,29.077173861113536
+16-068,Soğanlı Mezarlığı,Türkiye,Bursa,Osmangazi,Soğanlı Mahallesi,3. Meltem Sokak,40.214839752907025,29.043033647251477
+07-058,Andızlı Mezarlığı,Türkiye,Antalya,Muratpaşa,Yüksekalan Mahallesi,1. Cadde,36.89337497593046,30.708245118715393
+07-072,Uncalı Mezarlığı,Türkiye,Antalya,Konyaaltı,Molla Yusuf Mahallesi,Hürriyet Caddesi,36.89953642108719,30.62763288001271
+42-079,Üçler Mezarlığı,Türkiye,Konya,Karatay,Aziziye Mahallesi,Aslanlı Kışla Caddesi,37.869803235690625,32.504254320606556
+42-021,Yaka Mezarlığı,Türkiye,Konya,Meram,Alavardı Mahallesi,Betül Sokak,37.87065829947369,32.43968549141775
+42-074,Hacı Fettah Mezarlığı,Türkiye,Konya,Meram,Çaybaşı Mahallesi,Abdullah Çavuş Sokak,37.863367646821104,32.4955631156794
+42-069,Musalla Mezarlığı,Türkiye,Konya,Selçuklu,Feritpaşa Mahallesi,Ankara Caddesi,37.88375671901795,32.49450925041063
+42-072,Yazır Mezarlığı,Türkiye,Konya,Selçuklu,Yazır Mahallesi,Büyükşehir Caddesi,37.97604210402058,32.50634685464041
+01-066,Asri Mezarlığı,Türkiye,Adana,Yüreğir,Dede Korkut Mahallesi,İlbey Güneş Caddesi,36.9862346868028,35.3537000403701
+01-002,Buruk Mezarlığı,Türkiye,Adana,Sarıçam,Orhangazi Mahallesi,Buruk Caddesi,37.039556649999994,35.435791285990774
+01-030,Kabasakal Mezarlığı,Türkiye,Adana,Çukurova,Kabasakal Mahallesi,Turgut Özal Bulvarı,37.05374065694639,35.20742618532713
+63-059,Bediüzzaman Mezarlığı,Türkiye,Şanlıurfa,Haliliye,Hızmalı Mahallesi,11 Nisan Fuar Caddesi,37.15698266615041,38.7845528717721
+33-024,Akbelen Şehir Mezarlığı,Türkiye,Mersin,Toroslar,Yusuf Kılıç Mahallesi,Mezarlık Caddesi,36.81927888454838,34.60295984303104
+21-000,Alipınar Mezarlığı,Türkiye,Diyarbakır,Bağlar,Körhat Mahallesi,Alipınar Caddesi,37.90848222563083,40.212429694688915
+21-079,Mardinkapı Mezarlığı,Türkiye,Diyarbakır,Yenişehir,Şehitlik Mahallesi,208. Cadde,37.9018955209934,40.23079026575578
+38-032,Anbar Mezarlığı,Türkiye,Kayseri,Melikgazi,Anbar Mahallesi,14. Cadde,38.74986499122526,35.372760527693856
+38-033,Argıncık Mezarlığı,Türkiye,Kayseri,Kocasinan,Argıncık Mahallesi,Yavuz Sultan Selim Caddesi,38.75218169419006,35.51676633874353
+38-058,Bülbül Pınarı Mezarlığı,Türkiye,Kayseri,Kocasinan,Erkilet Tepe Mahallesi,Bülbülpınarı Caddesi,38.82350637215627,35.482978352483464
+38-079,Erkilet Mezarlığı,Türkiye,Kayseri,Kocasinan,Erkilet Tepe Mahallesi,Ustalar Sokak,38.82369619346506,35.44629766908028
+38-065,İldem Mezarlığı,Türkiye,Kayseri,Melikgazi,Gesi Cumhuriyet Mahallesi,2337. Sokak,38.79127661980104,35.62451909598398
+55-011,Kıranköy Mezarlığı,Türkiye,Samsun,İlkadım,Kıran Mahallesi,Barış Bulvarı,41.27600630814065,36.29629158722064
+09-023,Kadıköy Mezarlığı,Türkiye,Aydın,Efeler,Osman Yozgatlı Mahallesi,Kadıköy Bulvarı,37.828571388503725,27.820549177730665
+09-063,Tellidede Mezarlığı,Türkiye,Aydın,Efeler,İstiklal Mahallesi,Rıza Toprak Caddesi,37.829491250715094,27.838814506044223
+65-006,Akköprü Mezarlığı,Türkiye,Van,Tuşba,Akköprü Mahallesi,Yavuz Sokak,38.511184823792,43.37816554302971
+20-034,Çakmak Mezarlığı,Türkiye,Denizli,Merkezefendi,Çakmak Mahallesi,260. Sokak,37.796677429011694,29.00889834525678
+20-074,Hallaçlar Mezarlığı,Türkiye,Denizli,Merkezefendi,Hallaçlar Mahallesi,3014. Sokak,37.776043545323674,29.00067944322454
+20-002,İlbadı Mezarlığı,Türkiye,Denizli,Merkezefendi,İlbade Mahallesi,Örnek Caddesi,37.789770353182405,29.079763763204614
+20-056,Saruhan Mezarlığı,Türkiye,Denizli,Merkezefendi,Saruhan Mahallesi,12108. Sokak,37.79823950444971,28.987832296005305
+48-051,Dereköy Mezarlığı,Türkiye,Muğla,Bodrum,Dereköy Mahallesi,,37.042026493467745,27.287868344137916
+48-004,Gürece Mezarlığı,Türkiye,Muğla,Bodrum,Gürece Mahallesi,Göktepe Sokak,37.03799967198697,27.322683057894153
+48-058,Torba Mezarlığı,Türkiye,Muğla,Bodrum,Torba Mahallesi,Atatürk Caddesi,37.07065154236713,27.461072692809935
+48-085,Karaburgaz Asri Mezarlık,Türkiye,Muğla,Bodrum,Eskiçeşme Mahallesi,Turgut Reis Caddesi,37.0382014879367,27.413811995951246
+48-021,Killik Mezarlığı,Türkiye,Muğla,Dalaman,Atakent Mahallesi,,36.79376357777602,28.82648054800914
+48-067,Gölbaşı Köyü Mezarlığı,Türkiye,Muğla,Ortaca,Gölbaşı Mahallesi,Tirikler Sokak,36.85066021995285,28.759023482119456
+48-020,Armutalan Mezarlığı,Türkiye,Muğla,Marmaris,Armutalan Mahallesi,225. Sokak,36.84977926986496,28.24107186801093
+48-015,Muğla Şehir Eski Mezarlığı,Türkiye,Muğla,Menteşe,Orhaniye Mahallesi,Şehit Asteğmen Yıldıray Çeltiklioğlu Caddesi,37.20290853443695,28.372267561794782
+48-070,Bayır Mezarlığı,Türkiye,Muğla,Menteşe,Orhaniye Mahallesi,Bayır Sokak,37.219035858173804,28.373434570968474
+48-098,Seydiler Mezarlığı,Türkiye,Muğla,Seydikemer,Belen Mahallesi,Mimar Sinan Caddesi,36.65723014809731,29.36727226523456
+48-098,Seydiler Mezarlığı,Türkiye,Muğla,Seydikemer,Belen Mahallesi,Mimar Sinan Caddesi,36.65723014809731,29.36727226523456
+48-062,Şehir Yeni Mezarlığı,Türkiye,Muğla,Menteşe,Akkaya Mahallesi,5. Cadde,37.2069253277624,28.335274839674568
+48-073,Düğerek Mezarlığı,Türkiye,Muğla,Menteşe,Düğerek Mahallesi,Hakim Aylin Barut Caddesi,37.20502242569509,28.411881480196318
+26-075,Esentepe Mezarlığı,Türkiye,Eskişehir,Tepebaşı,Sütlüce Mahallesi,İstiklal Caddesi,39.802838411733205,30.504528815574904
+26-049,Odunpazarı Mezarlığı,Türkiye,Eskişehir,Odunpazarı,Dede Mahallesi,Hacı Eyüp Sokak,39.76139750070887,30.526051972083515
+32-064,Isparta Belediyesi Asri Mezarlığı,Türkiye,Isparta,Merkez,Işıkkent Mahallesi,1599. Sokak,37.76649718302164,30.530272449311276
+68-001,Ervah Mezarlığı,Türkiye,Aksaray,Merkez,Coğlaki Mahallesi,Şht. İmdat Pala Sokak,38.3717234707728,34.04206544292917
+13-074,Ahlat Selçuklu Mezarlığı,Türkiye,Bitlis,Ahlat,İki Kubbe Mahallesi,Ova Kışla Caddesi,38.740424576813396,42.458950490374555
