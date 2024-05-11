@@ -141,6 +141,8 @@ public class Cemetree {
         System.out.println("Father: " + person.getFather());
         System.out.println("Mother: " + person.getMother());
         System.out.println("Children: " + person.getChildren());
+        System.out.println("-------------------------------------------");
+        searchRelativesRecursive(4, person);
 
     }
 
@@ -173,7 +175,50 @@ public class Cemetree {
         return result;
     }
 
-    public List<Person> searchRelatives(int generationInterval) {
-        return null;
+    public List<Person> searchRelativesRecursive(int generationInterval , Person person) {
+        List<Person> result = new ArrayList<>();
+        Stack<Person> childrenStack = new Stack<>();
+        Stack<Person> ancestorsStack = new Stack<>();
+        searchRelativesAncestors(generationInterval , person , ancestorsStack , result);
+        searchRelativesChildren(generationInterval , person , childrenStack , result);
+        return result;
+    }
+
+    public void searchRelativesAncestors(int generationInterval , Person person , Stack<Person> ancestorsStack , List<Person> result) {
+        //TODO İnstert the results into the result list with correct order
+        if (generationInterval == 0) {
+            return;
+        }
+        else if (generationInterval > 0) {
+            if (person.getMother() != null) {
+                Person mother = person.getMother();
+                System.out.println(person.getName() + " " + person.getSurname() + "'s mother: " + mother.getName() + " " + mother.getSurname());
+                ancestorsStack.push(mother);
+                searchRelativesAncestors(generationInterval - 1 , mother , ancestorsStack , result);
+                ancestorsStack.pop();
+            }
+            if (person.getFather() != null) {
+                Person father = person.getFather();
+                System.out.println(person.getName() + " " + person.getSurname() + "'s father: " + father.getName() + " " + father.getSurname());
+                ancestorsStack.push(father);
+                searchRelativesAncestors(generationInterval - 1 , father , ancestorsStack , result);
+                ancestorsStack.pop();
+            }
+        }
+    }
+
+    public void searchRelativesChildren(int generationInterval , Person person , Stack<Person> childrenStack , List<Person> result) {
+        //TODO İnstert the results into the result list with correct order
+        if (generationInterval == 0) {
+            return;
+        }
+        else if (generationInterval > 0) {
+            for (Person child : person.getChildren()) {
+                System.out.println(person.getName() + " " + person.getSurname() + "'s child: " + child.getName() + " " + child.getSurname());
+                childrenStack.push(child);
+                searchRelativesChildren(generationInterval - 1 , child , childrenStack , result);
+                childrenStack.pop();
+            }
+        }
     }
 }
