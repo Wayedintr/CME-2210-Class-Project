@@ -6,7 +6,9 @@ public class Main {
         Cemetree c = new Cemetree();
         c.loadFromFile("people_50k.csv", "cemeteries.csv");
 
-        c.searchPeopleByDate(new Date(01, 01, 1970), new Date(01, 01, 2000));
-        c.saveToFile("people_50k_saved.csv", "cemeteries_saved.csv");
+        c.consoleMode();
+
+//        c.searchPeopleByDate(new Date(01, 01, 1970), new Date(01, 01, 2000));
+//        c.saveToFile("people_50k_saved.csv", "cemeteries_saved.csv");
     }
 }

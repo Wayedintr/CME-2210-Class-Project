@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.CancellationException;
 
 public class Person {
     private String name, surname, id, sex;
@@ -15,7 +18,60 @@ public class Person {
 
     private Person mother, father, spouse;
 
-    private final List<Person> children;
+    private final List<Person> children = new ArrayList<>();
+
+    public static final List<ConsoleReader.Question> QUESTIONS = new ArrayList<>(List.of(
+            new ConsoleReader.Question("ID", "[0-9]{11}", "Invalid ID.", true),
+            new ConsoleReader.Question("Name", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid name. Must contain only letters, 2-64 characters.", true),
+            new ConsoleReader.Question("Surname", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid surname. Must contain only letters, 2-64 characters.", true),
+            new ConsoleReader.Question("Sex", "(?i)^(male|female|m|f)$", "Invalid sex. Must be 'male' or 'female'.", false),
+            new ConsoleReader.Question("Birthdate", Date.REGEX, "Invalid birthdate. Must be in the format DD/MM/YYYY or DD-MM-YYYY", true),
+            new ConsoleReader.Question("Mother ID", "[0-9]{11}", "Invalid mother ID.", false),
+            new ConsoleReader.Question("Father ID", "[0-9]{11}", "Invalid father ID.", false),
+            new ConsoleReader.Question("Spouse ID", "[0-9]{11}", "Invalid spouse ID.", false),
+            new ConsoleReader.Question("Dead", "(?i)^(true|false|t|f)$", "Invalid dead. Must be 'true' or 'false'.", true),
+            new ConsoleReader.Question("Death Date", Date.REGEX, "Invalid death date. Must be in the format DD/MM/YYYY or DD-MM-YYYY", false),
+            new ConsoleReader.Question("Death Cause", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid death cause. Must contain only letters, 2-64 characters.", false),
+            new ConsoleReader.Question("Cemetery ID", "[0-9]{2}-[0-9]{3}", "Invalid cemetery ID. Must be in the format 'XX-XXX", true)
+    ));
+
+    Person(final Scanner scanner, final Map<String, Person> people, final Map<String, Cemetery> cemeteries) throws CancellationException {
+        ConsoleReader reader = new ConsoleReader(scanner);
+
+        String id;
+        for (id = reader.getAnswer(QUESTIONS.getFirst()); people.containsKey(id); id = reader.getAnswer(QUESTIONS.getFirst())) {
+            System.out.println("ID already exists. Please enter a different ID.");
+        }
+        this.id = id;
+
+        this.name = reader.getAnswer(QUESTIONS.get(1));
+        this.surname = reader.getAnswer(QUESTIONS.get(2));
+        this.sex = reader.getAnswer(QUESTIONS.get(3)).matches("(?i)^(male|m)$") ? "Male" : "Female";
+        this.birthDate = new Date(reader.getAnswer(QUESTIONS.get(4)));
+
+        this.motherId = reader.getAnswer(QUESTIONS.get(5));
+        this.fatherId = reader.getAnswer(QUESTIONS.get(6));
+        this.spouseId = reader.getAnswer(QUESTIONS.get(7));
+
+        this.dead = reader.getAnswer(QUESTIONS.get(8)).matches("(?i)^(true|t)$");
+        if (this.dead) {
+            Date deathDate = new Date(reader.getAnswer(QUESTIONS.get(9)));
+            while (deathDate.before(this.birthDate)) {
+                System.out.println("Death date cannot be before birth date. Please enter a valid death date.");
+                deathDate = new Date(reader.getAnswer(QUESTIONS.get(9)));
+            }
+            this.deathDate = deathDate;
+
+            this.deathCause = reader.getAnswer(QUESTIONS.get(10));
+
+            String cemeteryId;
+            for (cemeteryId = reader.getAnswer(QUESTIONS.get(11)); !cemeteries.containsKey(cemeteryId); cemeteryId = reader.getAnswer(QUESTIONS.get(11))) {
+                System.out.println("Cemetery ID does not exist. Please enter a different ID.");
+            }
+            this.cemetery = cemeteries.get(cemeteryId);
+        }
+
+    }
 
     Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, Date birthDate, Date deathDate, String motherId, String fatherId, String spouseId) {
         this.name = name;
@@ -31,8 +87,6 @@ public class Person {
         this.deathDate = deathDate;
         this.cemetery = cemetery;
         this.deathCause = deathCause;
-
-        this.children = new ArrayList<>();
     }
 
     Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, Date birthDate, Date deathDate) {
@@ -46,12 +100,22 @@ public class Person {
         this.deathDate = deathDate;
         this.cemetery = cemetery;
         this.deathCause = deathCause;
-
-        this.children = new ArrayList<>();
     }
 
     public String toString() {
-        return name + " " + surname + " ID: " + id + " \nCemetery: " + cemetery;
+        return "ID: " + id + "\n" +
+                "Name: " + name + "\n" +
+                "Surname: " + surname + "\n" +
+                "Sex: " + sex + "\n" +
+                "Admin: " + admin + "\n" +
+                "Dead: " + dead + "\n" +
+                "Death Cause: " + deathCause + "\n" +
+                "Cemetery ID: " + (cemetery == null ? "" : cemetery.getId()) + "\n" +
+                "Birth Date: " + birthDate + "\n" +
+                "Death Date: " + deathDate + "\n" +
+                "Mother ID: " + motherId + "\n" +
+                "Father ID: " + fatherId + "\n" +
+                "Spouse ID: " + spouseId + "\n";
     }
 
     public static String toCsvHeader() {

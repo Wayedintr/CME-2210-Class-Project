@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CancellationException;
 
 public class Cemetree {
     Map<String, Person> people;
@@ -133,16 +134,16 @@ public class Cemetree {
         }
 
         // Test
-        Person person = people.get("46266354792");
-        System.out.println(person.getBirthDate());
-
-        System.out.println(person);
-        System.out.println("Spouse: " + person.getSpouse());
-        System.out.println("Father: " + person.getFather());
-        System.out.println("Mother: " + person.getMother());
-        System.out.println("Children: " + person.getChildren());
-        System.out.println("-------------------------------------------");
-        searchRelativesRecursive(4, person);
+//        Person person = people.get("46266354792");
+//        System.out.println(person.getBirthDate());
+//
+//        System.out.println(person);
+//        System.out.println("Spouse: " + person.getSpouse());
+//        System.out.println("Father: " + person.getFather());
+//        System.out.println("Mother: " + person.getMother());
+//        System.out.println("Children: " + person.getChildren());
+//        System.out.println("-------------------------------------------");
+//        searchRelativesRecursive(4, person);
 
     }
 
@@ -196,50 +197,59 @@ public class Cemetree {
         return result;
     }
 
-    public List<Person> searchRelativesRecursive(int generationInterval , Person person) {
+    public List<Person> searchRelativesRecursive(int generationInterval, Person person) {
         List<Person> result = new ArrayList<>();
         Stack<Person> childrenStack = new Stack<>();
         Stack<Person> ancestorsStack = new Stack<>();
-        searchRelativesAncestors(generationInterval , person , ancestorsStack , result , "" , person);
-        searchRelativesChildren(generationInterval , person , childrenStack , result , "" , person);
+        searchRelativesAncestors(generationInterval, person, ancestorsStack, result, "", person);
+        searchRelativesChildren(generationInterval, person, childrenStack, result, "", person);
         return result;
     }
 
-    public void searchRelativesAncestors(int generationInterval , Person person , Stack<Person> ancestorsStack , List<Person> result , String relationship , Person startPerson) {
+    public void searchRelativesAncestors(int generationInterval, Person person, Stack<Person> ancestorsStack, List<Person> result, String relationship, Person startPerson) {
         //TODO İnstert the results into the result list with correct order
         if (generationInterval == 0) {
             return;
-        }
-        else if (generationInterval > 0) {
+        } else if (generationInterval > 0) {
             if (person.getMother() != null) {
                 Person mother = person.getMother();
-                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " mother: " + mother.getName() + " " + mother.getSurname() + "(" + person.getName() + " " + person.getSurname() +  "'s mother)");
+                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " mother: " + mother.getName() + " " + mother.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s mother)");
                 ancestorsStack.push(mother);
-                searchRelativesAncestors(generationInterval - 1 , mother , ancestorsStack , result , relationship + " grand" , startPerson);
+                searchRelativesAncestors(generationInterval - 1, mother, ancestorsStack, result, relationship + " grand", startPerson);
                 ancestorsStack.pop();
             }
             if (person.getFather() != null) {
                 Person father = person.getFather();
                 System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " father: " + father.getName() + " " + father.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s father)");
                 ancestorsStack.push(father);
-                searchRelativesAncestors(generationInterval - 1 , father , ancestorsStack , result , relationship + " grand" , startPerson);
+                searchRelativesAncestors(generationInterval - 1, father, ancestorsStack, result, relationship + " grand", startPerson);
                 ancestorsStack.pop();
             }
         }
     }
 
-    public void searchRelativesChildren(int generationInterval , Person person , Stack<Person> childrenStack , List<Person> result , String relationship , Person startPerson) {
+    public void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<Person> result, String relationship, Person startPerson) {
         //TODO İnstert the results into the result list with correct order
         if (generationInterval == 0) {
             return;
-        }
-        else if (generationInterval > 0) {
+        } else if (generationInterval > 0) {
             for (Person child : person.getChildren()) {
                 System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " child: " + child.getName() + " " + child.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s child)");
                 childrenStack.push(child);
-                searchRelativesChildren(generationInterval - 1 , child , childrenStack , result , relationship + " grand" , startPerson);
+                searchRelativesChildren(generationInterval - 1, child, childrenStack, result, relationship + " grand", startPerson);
                 childrenStack.pop();
             }
+        }
+    }
+
+    public void consoleMode() {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            Person person = new Person(scanner, people, cemeteries);
+            System.out.println(person);
+        } catch (CancellationException e) {
+            System.out.println("Cancelled operation.");
         }
     }
 }
