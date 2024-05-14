@@ -20,7 +20,7 @@ public class Person {
 
     private final List<Person> children = new ArrayList<>();
 
-    public static final List<ConsoleReader.Question> QUESTIONS = new ArrayList<>(List.of(
+    public static final List<ConsoleReader.Question> QUESTIONS = List.of(
             new ConsoleReader.Question("ID", "[0-9]{11}", "Invalid ID.", true),
             new ConsoleReader.Question("Name", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid name. Must contain only letters, 2-64 characters.", true),
             new ConsoleReader.Question("Surname", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid surname. Must contain only letters, 2-64 characters.", true),
@@ -33,7 +33,7 @@ public class Person {
             new ConsoleReader.Question("Death Date", Date.REGEX, "Invalid death date. Must be in the format DD/MM/YYYY or DD-MM-YYYY", false),
             new ConsoleReader.Question("Death Cause", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid death cause. Must contain only letters, 2-64 characters.", false),
             new ConsoleReader.Question("Cemetery ID", "[0-9]{2}-[0-9]{3}", "Invalid cemetery ID. Must be in the format 'XX-XXX", true)
-    ));
+    );
 
     Person(final Scanner scanner, final Map<String, Person> people, final Map<String, Cemetery> cemeteries) throws CancellationException {
         ConsoleReader reader = new ConsoleReader(scanner);
@@ -44,8 +44,8 @@ public class Person {
         }
         this.id = id;
 
-        this.name = reader.getAnswer(QUESTIONS.get(1));
-        this.surname = reader.getAnswer(QUESTIONS.get(2));
+        this.name = reader.getAnswer(QUESTIONS.get(1)).toUpperCase();
+        this.surname = reader.getAnswer(QUESTIONS.get(2)).toUpperCase();
         this.sex = reader.getAnswer(QUESTIONS.get(3)).matches("(?i)^(male|m)$") ? "Male" : "Female";
         this.birthDate = new Date(reader.getAnswer(QUESTIONS.get(4)));
 

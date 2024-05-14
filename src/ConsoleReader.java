@@ -20,7 +20,7 @@ public class ConsoleReader {
                     System.out.print("This field is required.\n");
                 else
                     break;
-            } else if (answer.equals("cancel")) {
+            } else if (answer.matches("cancel|quit|exit")) {
                 throw new CancellationException();
             } else if (!answer.matches(question.regex())) {
                 System.out.print(question.errorMessage() + "\n");

@@ -244,12 +244,39 @@ public class Cemetree {
 
     public void consoleMode() {
         Scanner scanner = new Scanner(System.in);
+        ConsoleReader reader = new ConsoleReader(scanner);
 
-        try {
-            Person person = new Person(scanner, people, cemeteries);
-            System.out.println(person);
-        } catch (CancellationException e) {
-            System.out.println("Cancelled operation.");
+        String command = "";
+        while (!command.matches("quit|exit")) {
+            try {
+                if (selectedPerson == null) {
+                    ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", Person.QUESTIONS.getFirst().regex(), Person.QUESTIONS.getFirst().errorMessage(), true);
+                    String id;
+                    for (id = reader.getAnswer(loginQuestion); !people.containsKey(id); id = reader.getAnswer(loginQuestion))
+                        System.out.println("Person with ID " + id + " not found.");
+                    selectedPerson = people.get(id);
+                    System.out.println("Successfully logged in as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
+                } else if (command.equalsIgnoreCase("logout")) {
+                    selectedPerson = null;
+                    System.out.println("Successfully logged out.");
+                    continue;
+                } else if (command.equalsIgnoreCase("add person")) {
+                    Person newPerson = new Person(scanner, people, cemeteries);
+                    people.put(newPerson.getId(), newPerson);
+                    System.out.println("Successfully added person with ID " + newPerson.getId() + ".");
+                } else if (command.equalsIgnoreCase("add cemetery")) {
+                    Cemetery newCemetery = new Cemetery(scanner, cemeteries);
+                    cemeteries.put(newCemetery.getId(), newCemetery);
+                    System.out.println("Successfully added cemetery with ID " + newCemetery.getId() + ".");
+                }
+            } catch (CancellationException e) {
+                if (selectedPerson == null)
+                    break;
+                System.out.println("Cancelled operation.");
+            }
+            System.out.print("> ");
+
+            command = scanner.nextLine();
         }
     }
 }
