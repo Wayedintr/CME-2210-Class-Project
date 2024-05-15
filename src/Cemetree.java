@@ -100,9 +100,12 @@ public class Cemetree {
         line = reader.readLine();
         while (line != null) {
             String[] data = line.split(",");
+            Cemetery cemetery = cemeteries.get(data[7]);
+            if (cemetery != null)
+                cemetery.incrementCount();
 
             Person person = new Person(data[0], data[1], data[2], data[3], !data[4].equals("0"), !data[5].equals("0"), data[6],
-                    cemeteries.get(data[7]),
+                    cemetery,
                     !data[8].isBlank() ? new Date(data[8]) : null,
                     !data[9].isBlank() ? new Date(data[9]) : null,
                     data[10].isBlank() ? null : data[10],
@@ -256,6 +259,9 @@ public class Cemetree {
                         System.out.println("Person with ID " + id + " not found.");
                     selectedPerson = people.get(id);
                     System.out.println("Successfully logged in as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
+                } else if (command.equalsIgnoreCase("help")) {
+                    //TODO: List commands
+                    System.out.println("Help ");
                 } else if (command.equalsIgnoreCase("logout")) {
                     selectedPerson = null;
                     System.out.println("Successfully logged out.");
@@ -264,7 +270,7 @@ public class Cemetree {
                     Person newPerson = new Person(scanner, people, cemeteries);
                     people.put(newPerson.getId(), newPerson);
                     System.out.println("Successfully added person with ID " + newPerson.getId() + ".");
-                } else if (command.matches("(?i)^remove\\sperson\\s.+$")) {
+                } else if (command.matches("(?i)^remove\\sperson\\s(?!\\s).+$")) {
                     String id = command.split(" ")[2];
                     Person personToRemove = people.get(id);
 
@@ -285,6 +291,28 @@ public class Cemetree {
                     Cemetery newCemetery = new Cemetery(scanner, cemeteries);
                     cemeteries.put(newCemetery.getId(), newCemetery);
                     System.out.println("Successfully added cemetery with ID " + newCemetery.getId() + ".");
+                } else if (command.matches("(?i)^remove\\scemetery\\s(?!\\s).+$")) {
+                    String id = command.split(" ")[2];
+                    Cemetery cemeteryToRemove = cemeteries.get(id);
+
+                    if (cemeteryToRemove != null) {
+                        String answer = reader.getAnswer(ConsoleReader.yesNo(
+                                "There are " + cemeteryToRemove.getCount() + " people in this cemetery. Confirm removal?"));
+
+                        if (answer.matches(ConsoleReader.YES_REGEX)) {
+                            cemeteries.remove(id);
+                            for (Person person : people.values()) {
+                                person.removeCemeteryIfId(id);
+                            }
+                            System.out.println("Successfully removed cemetery with ID " + id + ".");
+                        } else {
+                            throw new CancellationException();
+                        }
+                    } else {
+                        System.out.println("Cemetery with ID " + id + " not found.");
+                    }
+                } else if (!command.isBlank()) {
+                    System.out.println("Invalid command. Type \"help\" for a list of commands.");
                 }
             } catch (CancellationException e) {
                 if (selectedPerson == null)

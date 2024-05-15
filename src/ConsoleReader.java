@@ -12,25 +12,33 @@ public class ConsoleReader {
     public String getAnswer(Question question) throws CancellationException {
         String answer;
         do {
-            System.out.print(question.label() + ": ");
+            System.out.print(question.label + ": ");
             answer = scanner.nextLine();
 
             if (answer.isBlank()) {
-                if (question.isRequired())
+                if (question.isRequired)
                     System.out.print("This field is required.\n");
                 else
                     break;
             } else if (answer.matches("cancel|quit|exit")) {
                 throw new CancellationException();
-            } else if (!answer.matches(question.regex())) {
-                System.out.print(question.errorMessage() + "\n");
+            } else if (!answer.matches(question.regex)) {
+                System.out.print(question.errorMessage + "\n");
             }
-        } while (!answer.matches(question.regex()) || (question.isRequired() && answer.isBlank()));
+        } while (!answer.matches(question.regex) || (question.isRequired && answer.isBlank()));
 
         return answer;
     }
 
     public record Question(String label, String regex, String errorMessage, boolean isRequired) {
 
+    }
+
+    public static final Question YES_NO = new Question("Yes or No", "(?i)^(yes|no|y|n)$", "Please enter 'yes' or 'no'.", true);
+
+    public static final String YES_REGEX = "(?i)^(yes|y)$";
+
+    public static Question yesNo(String label) {
+        return new Question(label, YES_NO.regex, YES_NO.errorMessage, YES_NO.isRequired);
     }
 }

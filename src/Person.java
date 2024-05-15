@@ -270,6 +270,13 @@ public class Person {
         this.cemetery = cemetery;
     }
 
+    public void removeCemeteryIfId(String id) {
+        if (cemetery != null && cemetery.getId().equals(id)) {
+            this.cemetery.decrementCount();
+            this.cemetery = null;
+        }
+    }
+
     public Person getMother() {
         return mother;
     }
