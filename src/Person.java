@@ -102,6 +102,20 @@ public class Person {
         this.deathCause = deathCause;
     }
 
+    public void remove() {
+        if (this.cemetery != null) this.cemetery.decrementCount();
+        if (this.father != null) this.father.getChildren().remove(this);
+        if (this.mother != null) this.mother.getChildren().remove(this);
+        this.spouse = null;
+        for (Person child : this.getChildren()) {
+            if (this.sex.equals("Male")) {
+                child.setFather(null);
+            } else {
+                child.setMother(null);
+            }
+        }
+    }
+
     public String toString() {
         return "ID: " + id + "\n" +
                 "Name: " + name + "\n" +

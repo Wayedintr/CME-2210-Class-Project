@@ -264,6 +264,20 @@ public class Cemetree {
                     Person newPerson = new Person(scanner, people, cemeteries);
                     people.put(newPerson.getId(), newPerson);
                     System.out.println("Successfully added person with ID " + newPerson.getId() + ".");
+                } else if (command.matches("(?i)^remove\\sperson\\s.+$")) {
+                    String id = command.split(" ")[2];
+                    if (people.containsKey(id)) {
+                        people.get(id).remove();
+                        people.remove(id);
+                        System.out.println("Successfully removed person with ID " + id + ".");
+                    } else {
+                        System.out.println("Person with ID " + id + " not found.");
+                    }
+                    if (id.equals(selectedPerson.getId())) {
+                        selectedPerson = null;
+                        System.out.println("Successfully logged out.");
+                        continue;
+                    }
                 } else if (command.equalsIgnoreCase("add cemetery")) {
                     Cemetery newCemetery = new Cemetery(scanner, cemeteries);
                     cemeteries.put(newCemetery.getId(), newCemetery);

@@ -98,4 +98,8 @@ public class Cemetery {
     public void incrementCount() {
         count++;
     }
+
+    public void decrementCount() {
+        count--;
+    }
 }
