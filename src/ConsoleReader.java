@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CancellationException;
 
@@ -28,6 +30,20 @@ public class ConsoleReader {
         } while (!answer.matches(question.regex) || (question.isRequired && answer.isBlank()));
 
         return answer;
+    }
+
+    public static Map<String, String> parseArguments(String command) {
+        Map<String, String> argsMap = new HashMap<>();
+        String[] args = command.split(" ");
+
+        for (String arg : args) {
+            String[] pair = arg.split("=");
+            if (pair.length == 2) {
+                argsMap.put(pair[0], pair[1]);
+            }
+        }
+
+        return argsMap;
     }
 
     public record Question(String label, String regex, String errorMessage, boolean isRequired) {

@@ -158,25 +158,25 @@ public class Cemetree {
         return selectedPerson;
     }
 
-    public List<Person> searchPeopleByFilter(Person person) {
-
+    public List<Person> searchPeopleByFilter(Person filter) {
         List<Person> result = new ArrayList<>();
-        if (person != null) {
-            for (Person p : people.values()) {
-                if (person.getName() != null && person.getName().equals(p.getName())
-                        && person.getSurname() != null && person.getSurname().equals(p.getSurname())
-                        && person.getBirthDate() != null && person.getBirthDate().equals(p.getBirthDate())
-                        && person.getDeathDate() != null && person.getDeathDate().equals(p.getDeathDate())
-                        && person.getId() != null && person.getId().equals(p.getId())
-                        && person.getSex() != null && person.getSex().equals(p.getSex())
-                        && person.getSpouseId() != null && person.getSpouseId().equals(p.getSpouseId())
-                        && person.getFatherId() != null && person.getFatherId().equals(p.getFatherId())
-                        && person.getMotherId() != null && person.getMotherId().equals(p.getMotherId())
-                        && person.isDead() == p.isDead() //??? ölü mü aratabiliyoruz sadece ki bilemedim
-                        && person.getCemetery() != null && person.getCemetery().equals(p.getCemetery())
-                        && person.getDeathCause() != null && person.getDeathCause().equals(p.getDeathCause())
+
+        if (filter != null) {
+            for (Person person : people.values()) {
+                if ((filter.getName() == null || filter.getName().equalsIgnoreCase(person.getName()))
+                        && (filter.getSurname() == null || filter.getSurname().equalsIgnoreCase(person.getSurname()))
+                        && (filter.getBirthDate() == null || filter.getBirthDate().equals(person.getBirthDate()))
+                        && (filter.getDeathDate() == null || filter.getDeathDate().equals(person.getDeathDate()))
+                        && (filter.getId() == null || filter.getId().equals(person.getId()))
+                        && (filter.getSex() == null || filter.getSex().equals(person.getSex()))
+                        && (filter.getSpouseId() == null || filter.getSpouseId().equals(person.getSpouseId()))
+                        && (filter.getFatherId() == null || filter.getFatherId().equals(person.getFatherId()))
+                        && (filter.getMotherId() == null || filter.getMotherId().equals(person.getMotherId()))
+                        && person.isDead()
+                        && (filter.getCemetery() == null || filter.getCemetery().equals(person.getCemetery()))
+                        && (filter.getDeathCause() == null || filter.getDeathCause().equals(person.getDeathCause()))
                 ) {
-                    result.add(p);
+                    result.add(person);
                 }
             }
         }
@@ -287,6 +287,23 @@ public class Cemetree {
                         System.out.println("Successfully logged out.");
                         continue;
                     }
+                } else if (command.matches("(?i)^search\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=\\w+)*")) {
+                    String[] args = command.split(" ");
+
+                    if (args.length == 2) {
+
+                    } else {
+                        Map<String, String> argsMap = ConsoleReader.parseArguments(command);
+                        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemeteries.get(argsMap.get("cemetery_id")));
+
+                        List<Person> result = searchPeopleByFilter(filter);
+                        System.out.println("Found " + result.size() + " people.");
+
+                        for (int i = 0; i < result.size(); i++) {
+                            Person person = result.get(i);
+                            System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname());
+                        }
+                    }
                 } else if (command.equalsIgnoreCase("add cemetery")) {
                     Cemetery newCemetery = new Cemetery(scanner, cemeteries);
                     cemeteries.put(newCemetery.getId(), newCemetery);
@@ -321,7 +338,7 @@ public class Cemetree {
             }
             System.out.print("> ");
 
-            command = scanner.nextLine();
+            command = scanner.nextLine().trim();
         }
     }
 }
