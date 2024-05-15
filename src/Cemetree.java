@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CancellationException;
 
 public class Cemetree {
     Map<String, Person> people;
@@ -99,9 +100,12 @@ public class Cemetree {
         line = reader.readLine();
         while (line != null) {
             String[] data = line.split(",");
+            Cemetery cemetery = cemeteries.get(data[7]);
+            if (cemetery != null)
+                cemetery.incrementCount();
 
             Person person = new Person(data[0], data[1], data[2], data[3], !data[4].equals("0"), !data[5].equals("0"), data[6],
-                    cemeteries.get(data[7]),
+                    cemetery,
                     !data[8].isBlank() ? new Date(data[8]) : null,
                     !data[9].isBlank() ? new Date(data[9]) : null,
                     data[10].isBlank() ? null : data[10],
@@ -133,16 +137,16 @@ public class Cemetree {
         }
 
         // Test
-        Person person = people.get("46266354792");
-        System.out.println(person.getBirthDate());
-
-        System.out.println(person);
-        System.out.println("Spouse: " + person.getSpouse());
-        System.out.println("Father: " + person.getFather());
-        System.out.println("Mother: " + person.getMother());
-        System.out.println("Children: " + person.getChildren());
-        System.out.println("-------------------------------------------");
-        searchRelativesRecursive(4, person);
+//        Person person = people.get("46266354792");
+//        System.out.println(person.getBirthDate());
+//
+//        System.out.println(person);
+//        System.out.println("Spouse: " + person.getSpouse());
+//        System.out.println("Father: " + person.getFather());
+//        System.out.println("Mother: " + person.getMother());
+//        System.out.println("Children: " + person.getChildren());
+//        System.out.println("-------------------------------------------");
+//        searchRelativesRecursive(4, person);
 
     }
 
@@ -154,25 +158,25 @@ public class Cemetree {
         return selectedPerson;
     }
 
-    public List<Person> searchPeopleByFilter(Person person) {
-
+    public List<Person> searchPeopleByFilter(Person filter) {
         List<Person> result = new ArrayList<>();
-        if (person != null) {
-            for (Person p : people.values()) {
-                if (person.getName() != null && person.getName().equals(p.getName())
-                        && person.getSurname() != null && person.getSurname().equals(p.getSurname())
-                        && person.getBirthDate() != null && person.getBirthDate().equals(p.getBirthDate())
-                        && person.getDeathDate() != null && person.getDeathDate().equals(p.getDeathDate())
-                        && person.getId() != null && person.getId().equals(p.getId())
-                        && person.getSex() != null && person.getSex().equals(p.getSex())
-                        && person.getSpouseId() != null && person.getSpouseId().equals(p.getSpouseId())
-                        && person.getFatherId() != null && person.getFatherId().equals(p.getFatherId())
-                        && person.getMotherId() != null && person.getMotherId().equals(p.getMotherId())
-                        && person.isDead() == p.isDead() //??? ölü mü aratabiliyoruz sadece ki bilemedim
-                        && person.getCemetery() != null && person.getCemetery().equals(p.getCemetery())
-                        && person.getDeathCause() != null && person.getDeathCause().equals(p.getDeathCause())
+
+        if (filter != null) {
+            for (Person person : people.values()) {
+                if ((filter.getName() == null || filter.getName().equalsIgnoreCase(person.getName()))
+                        && (filter.getSurname() == null || filter.getSurname().equalsIgnoreCase(person.getSurname()))
+                        && (filter.getBirthDate() == null || filter.getBirthDate().equals(person.getBirthDate()))
+                        && (filter.getDeathDate() == null || filter.getDeathDate().equals(person.getDeathDate()))
+                        && (filter.getId() == null || filter.getId().equals(person.getId()))
+                        && (filter.getSex() == null || filter.getSex().equals(person.getSex()))
+                        && (filter.getSpouseId() == null || filter.getSpouseId().equals(person.getSpouseId()))
+                        && (filter.getFatherId() == null || filter.getFatherId().equals(person.getFatherId()))
+                        && (filter.getMotherId() == null || filter.getMotherId().equals(person.getMotherId()))
+                        && person.isDead()
+                        && (filter.getCemetery() == null || filter.getCemetery().equals(person.getCemetery()))
+                        && (filter.getDeathCause() == null || filter.getDeathCause().equals(person.getDeathCause()))
                 ) {
-                    result.add(p);
+                    result.add(person);
                 }
             }
         }
@@ -196,50 +200,145 @@ public class Cemetree {
         return result;
     }
 
-    public List<Person> searchRelativesRecursive(int generationInterval , Person person) {
+    public List<Person> searchRelativesRecursive(int generationInterval, Person person) {
         List<Person> result = new ArrayList<>();
         Stack<Person> childrenStack = new Stack<>();
         Stack<Person> ancestorsStack = new Stack<>();
-        searchRelativesAncestors(generationInterval , person , ancestorsStack , result , "" , person);
-        searchRelativesChildren(generationInterval , person , childrenStack , result , "" , person);
+        searchRelativesAncestors(generationInterval, person, ancestorsStack, result, "", person);
+        searchRelativesChildren(generationInterval, person, childrenStack, result, "", person);
         return result;
     }
 
-    public void searchRelativesAncestors(int generationInterval , Person person , Stack<Person> ancestorsStack , List<Person> result , String relationship , Person startPerson) {
+    public void searchRelativesAncestors(int generationInterval, Person person, Stack<Person> ancestorsStack, List<Person> result, String relationship, Person startPerson) {
         //TODO İnstert the results into the result list with correct order
         if (generationInterval == 0) {
             return;
-        }
-        else if (generationInterval > 0) {
+        } else if (generationInterval > 0) {
             if (person.getMother() != null) {
                 Person mother = person.getMother();
-                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " mother: " + mother.getName() + " " + mother.getSurname() + "(" + person.getName() + " " + person.getSurname() +  "'s mother)");
+                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " mother: " + mother.getName() + " " + mother.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s mother)");
                 ancestorsStack.push(mother);
-                searchRelativesAncestors(generationInterval - 1 , mother , ancestorsStack , result , relationship + " grand" , startPerson);
+                searchRelativesAncestors(generationInterval - 1, mother, ancestorsStack, result, relationship + " grand", startPerson);
                 ancestorsStack.pop();
             }
             if (person.getFather() != null) {
                 Person father = person.getFather();
                 System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " father: " + father.getName() + " " + father.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s father)");
                 ancestorsStack.push(father);
-                searchRelativesAncestors(generationInterval - 1 , father , ancestorsStack , result , relationship + " grand" , startPerson);
+                searchRelativesAncestors(generationInterval - 1, father, ancestorsStack, result, relationship + " grand", startPerson);
                 ancestorsStack.pop();
             }
         }
     }
 
-    public void searchRelativesChildren(int generationInterval , Person person , Stack<Person> childrenStack , List<Person> result , String relationship , Person startPerson) {
+    public void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<Person> result, String relationship, Person startPerson) {
         //TODO İnstert the results into the result list with correct order
         if (generationInterval == 0) {
             return;
-        }
-        else if (generationInterval > 0) {
+        } else if (generationInterval > 0) {
             for (Person child : person.getChildren()) {
                 System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " child: " + child.getName() + " " + child.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s child)");
                 childrenStack.push(child);
-                searchRelativesChildren(generationInterval - 1 , child , childrenStack , result , relationship + " grand" , startPerson);
+                searchRelativesChildren(generationInterval - 1, child, childrenStack, result, relationship + " grand", startPerson);
                 childrenStack.pop();
             }
+        }
+    }
+
+    public void consoleMode() {
+        Scanner scanner = new Scanner(System.in);
+        ConsoleReader reader = new ConsoleReader(scanner);
+
+        String command = "";
+        while (!command.matches("quit|exit")) {
+            try {
+                if (selectedPerson == null) {
+                    ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", Person.QUESTIONS.getFirst().regex(), Person.QUESTIONS.getFirst().errorMessage(), true);
+                    String id;
+                    for (id = reader.getAnswer(loginQuestion); !people.containsKey(id); id = reader.getAnswer(loginQuestion))
+                        System.out.println("Person with ID " + id + " not found.");
+                    selectedPerson = people.get(id);
+                    System.out.println("Successfully logged in as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
+                } else if (command.equalsIgnoreCase("help")) {
+                    //TODO: List commands
+                    System.out.println("Help ");
+                } else if (command.equalsIgnoreCase("logout")) {
+                    selectedPerson = null;
+                    System.out.println("Successfully logged out.");
+                    continue;
+                } else if (command.equalsIgnoreCase("add person")) {
+                    Person newPerson = new Person(scanner, people, cemeteries);
+                    people.put(newPerson.getId(), newPerson);
+                    System.out.println("Successfully added person with ID " + newPerson.getId() + ".");
+                } else if (command.matches("(?i)^remove\\sperson\\s(?!\\s).+$")) {
+                    String id = command.split(" ")[2];
+                    Person personToRemove = people.get(id);
+
+                    if (personToRemove != null) {
+                        personToRemove.remove();
+                        people.remove(id);
+                        System.out.println("Successfully removed person with ID " + id + ".");
+                    } else {
+                        System.out.println("Person with ID " + id + " not found.");
+                    }
+
+                    if (personToRemove == selectedPerson) {
+                        selectedPerson = null;
+                        System.out.println("Successfully logged out.");
+                        continue;
+                    }
+                } else if (command.matches("(?i)^search\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=\\w+)*")) {
+                    String[] args = command.split(" ");
+
+                    if (args.length == 2) {
+
+                    } else {
+                        Map<String, String> argsMap = ConsoleReader.parseArguments(command);
+                        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemeteries.get(argsMap.get("cemetery_id")));
+
+                        List<Person> result = searchPeopleByFilter(filter);
+                        System.out.println("Found " + result.size() + " people.");
+
+                        for (int i = 0; i < result.size(); i++) {
+                            Person person = result.get(i);
+                            System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname());
+                        }
+                    }
+                } else if (command.equalsIgnoreCase("add cemetery")) {
+                    Cemetery newCemetery = new Cemetery(scanner, cemeteries);
+                    cemeteries.put(newCemetery.getId(), newCemetery);
+                    System.out.println("Successfully added cemetery with ID " + newCemetery.getId() + ".");
+                } else if (command.matches("(?i)^remove\\scemetery\\s(?!\\s).+$")) {
+                    String id = command.split(" ")[2];
+                    Cemetery cemeteryToRemove = cemeteries.get(id);
+
+                    if (cemeteryToRemove != null) {
+                        String answer = reader.getAnswer(ConsoleReader.yesNo(
+                                "There are " + cemeteryToRemove.getCount() + " people in this cemetery. Confirm removal?"));
+
+                        if (answer.matches(ConsoleReader.YES_REGEX)) {
+                            cemeteries.remove(id);
+                            for (Person person : people.values()) {
+                                person.removeCemeteryIfId(id);
+                            }
+                            System.out.println("Successfully removed cemetery with ID " + id + ".");
+                        } else {
+                            throw new CancellationException();
+                        }
+                    } else {
+                        System.out.println("Cemetery with ID " + id + " not found.");
+                    }
+                } else if (!command.isBlank()) {
+                    System.out.println("Invalid command. Type \"help\" for a list of commands.");
+                }
+            } catch (CancellationException e) {
+                if (selectedPerson == null)
+                    break;
+                System.out.println("Cancelled operation.");
+            }
+            System.out.print("> ");
+
+            command = scanner.nextLine().trim();
         }
     }
 }
