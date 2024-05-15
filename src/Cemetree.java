@@ -266,14 +266,17 @@ public class Cemetree {
                     System.out.println("Successfully added person with ID " + newPerson.getId() + ".");
                 } else if (command.matches("(?i)^remove\\sperson\\s.+$")) {
                     String id = command.split(" ")[2];
-                    if (people.containsKey(id)) {
-                        people.get(id).remove();
+                    Person personToRemove = people.get(id);
+
+                    if (personToRemove != null) {
+                        personToRemove.remove();
                         people.remove(id);
                         System.out.println("Successfully removed person with ID " + id + ".");
                     } else {
                         System.out.println("Person with ID " + id + " not found.");
                     }
-                    if (id.equals(selectedPerson.getId())) {
+
+                    if (personToRemove == selectedPerson) {
                         selectedPerson = null;
                         System.out.println("Successfully logged out.");
                         continue;
