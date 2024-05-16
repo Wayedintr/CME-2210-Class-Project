@@ -287,7 +287,7 @@ public class Cemetree {
                         System.out.println("Successfully logged out.");
                         continue;
                     }
-                } else if (command.matches("(?i)^search\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\w-]+)*")) {
+                } else if (command.matches("(?i)^search\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\p{L}\\p{N}_-]+)*")) {
                     String[] args = command.split(" ");
 
                     if (args.length == 2) {
@@ -295,7 +295,11 @@ public class Cemetree {
                     } else {
                         Map<String, String> argsMap = ConsoleReader.parseArguments(command);
                         Cemetery cemetery = cemeteries.get(argsMap.get("cemetery_id"));
-                        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery == null ? new Cemetery() : cemetery);
+                        if (argsMap.containsKey("cemetery_id") && cemetery == null) {
+                            cemetery = new Cemetery();
+                        }
+
+                        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery);
 
                         List<Person> result = searchPeopleByFilter(filter);
                         System.out.println("Found " + result.size() + " people.");
