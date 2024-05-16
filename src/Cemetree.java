@@ -140,8 +140,8 @@ public class Cemetree {
         }
 
         // Test
-        Person person = people.get("46266354792");
-        System.out.println(person.getBirthDate());
+//        Person person = people.get("46266354792");
+//        System.out.println(person.getBirthDate());
 
 //        System.out.println(person);
 //        System.out.println("Spouse: " + person.getSpouse());
@@ -149,7 +149,7 @@ public class Cemetree {
 //        System.out.println("Mother: " + person.getMother());
 //        System.out.println("Children: " + person.getChildren());
 //        System.out.println("-------------------------------------------");
-        searchRelativesRecursive(2, person);
+//        searchRelativesRecursive(10, person);
     }
 
     public void setSelectedPerson(Person person) {
@@ -245,11 +245,49 @@ public class Cemetree {
         }
     }
 
+    private List<Person> searchPeopleByCommand(String command) {
+        Map<String, String> argsMap = ConsoleReader.parseArguments(command);
+        Cemetery cemetery = cemeteries.get(argsMap.get("cemetery_id"));
+        if (argsMap.containsKey("cemetery_id") && cemetery == null) {
+            cemetery = new Cemetery();
+        }
+
+        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery);
+
+        return searchPeopleByFilter(filter);
+    }
+
+    private Person selectPersonInList(ConsoleReader reader, List<Person> list) {
+        Person foundPerson = null;
+
+        if (list.size() > 1) {
+            System.out.println("Found " + list.size() + " people. Please select one:");
+            for (int i = 0; i < list.size(); i++) {
+                Person person = list.get(i);
+                System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname() + ", " + person.getBirthDate() + " - " + person.getDeathDate());
+            }
+            int answer;
+            for (answer = Integer.parseInt(reader.getAnswer(ConsoleReader.QUESTION_INT));
+                 answer < 1 || answer > list.size();
+                 answer = Integer.parseInt(reader.getAnswer(ConsoleReader.QUESTION_INT))) {
+                System.out.println("Invalid input. Please enter a number between 1 and " + list.size() + ".");
+            }
+            foundPerson = list.get(answer - 1);
+        } else if (list.size() == 1) {
+            foundPerson = list.get(0);
+        } else {
+            System.out.println("Person not found.");
+        }
+
+        return foundPerson;
+    }
+
     public void consoleMode() {
         Scanner scanner = new Scanner(System.in);
         ConsoleReader reader = new ConsoleReader(scanner);
 
         String command = "";
+        selectedPerson = people.get("20890067372");
         while (!command.matches("quit|exit")) {
             try {
                 if (selectedPerson == null) {
@@ -290,23 +328,41 @@ public class Cemetree {
                 } else if (command.matches("(?i)^search\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\p{L}\\p{N}_-]+)*")) {
                     String[] args = command.split(" ");
 
-                    if (args.length == 2) {
-
-                    } else {
-                        Map<String, String> argsMap = ConsoleReader.parseArguments(command);
-                        Cemetery cemetery = cemeteries.get(argsMap.get("cemetery_id"));
-                        if (argsMap.containsKey("cemetery_id") && cemetery == null) {
-                            cemetery = new Cemetery();
-                        }
-
-                        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery);
-
-                        List<Person> result = searchPeopleByFilter(filter);
+                    if (args.length > 2) {
+                        List<Person> result = searchPeopleByCommand(command);
                         System.out.println("Found " + result.size() + " people.");
 
                         for (int i = 0; i < result.size(); i++) {
                             Person person = result.get(i);
                             System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname());
+                        }
+                    }
+                } else if (command.matches("(?i)^visit\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\p{L}\\p{N}_-]+)*")) {
+                    String[] args = command.split(" ");
+
+                    if (args.length > 2) {
+                        List<Person> result = searchPeopleByCommand(command);
+                        Person foundPerson = selectPersonInList(reader, result);
+
+                        if (foundPerson != null) {
+                            foundPerson.getCemetery().addVisitor(foundPerson, selectedPerson, new Date());
+                            System.out.println("Successfully visited " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + " by " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
+                        }
+                    }
+                    //get visitor list by filter command
+                } else if (command.matches("(?i)^get\\s+visitor\\s+list(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\p{L}\\p{N}_-]+)*")) {
+                    String[] args = command.split(" ");
+
+                    if (args.length > 2) {
+                        List<Person> result = searchPeopleByCommand(command);
+                        Person foundPerson = selectPersonInList(reader, result);
+
+                        if (foundPerson != null) {
+                            SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
+
+                            for (Cemetery.Visit visit : visitorList) {
+                                System.out.println(visit.toString());
+                            }
                         }
                     }
                 } else if (command.equalsIgnoreCase("add cemetery")) {

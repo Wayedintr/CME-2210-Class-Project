@@ -23,6 +23,10 @@ public class Date extends GregorianCalendar {
         super(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day));
     }
 
+    Date() {
+        super();
+    }
+
     public String toString() {
         return FORMAT.format(this.getTime());
     }

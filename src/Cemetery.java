@@ -2,6 +2,28 @@ import java.util.*;
 import java.util.concurrent.CancellationException;
 
 public class Cemetery {
+
+    public class Visit implements Comparable<Visit> {
+
+        private final Person person;
+        private final Date date;
+
+        Visit(Person person, Date date) {
+            this.person = person;
+            this.date = date;
+        }
+
+        public String toString() {
+            return person.getName() + " " + person.getSurname() + ", " + date;
+        }
+
+        public int compareTo(Visit other) {
+            return other.date.compareTo(this.date);
+        }
+    }
+
+    Map<Person, SortedSet<Visit>> visitorList = new HashMap<>();
+
     private Address address;
 
     private String name, id;
@@ -9,6 +31,7 @@ public class Cemetery {
     private int count;
 
     private final int CAPACITY = 20000;
+
     public static final List<ConsoleReader.Question> QUESTIONS = List.of(
             new ConsoleReader.Question("ID", "[0-9]{2}-[0-9]{3}", "Invalid ID. Must be in the format 'XX-XXX", true),
             new ConsoleReader.Question("Name", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid name. Must contain only letters, 2-64 characters.", true)
@@ -34,7 +57,21 @@ public class Cemetery {
     }
 
     Cemetery() {
+    }
 
+    public void addVisitor(Person visitedPerson, Person visitorPerson, Date date) {
+        if (visitorList.containsKey(visitedPerson)) {
+            SortedSet<Visit> visits = visitorList.get(visitedPerson);
+            visits.add(new Visit(visitorPerson, date));
+        } else {
+            SortedSet<Visit> visits = new TreeSet<>();
+            visits.add(new Visit(visitorPerson, date));
+            visitorList.put(visitedPerson, visits);
+        }
+    }
+
+    public SortedSet<Visit> getVisitorsOfPerson(Person person) {
+        return visitorList.get(person);
     }
 
     public String toString() {

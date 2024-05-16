@@ -39,7 +39,7 @@ public class ConsoleReader {
         for (String arg : args) {
             String[] pair = arg.split("=");
             if (pair.length == 2) {
-                argsMap.put(pair[0], pair[1]);
+                argsMap.put(pair[0].toLowerCase(), pair[1]);
             }
         }
 
@@ -54,7 +54,13 @@ public class ConsoleReader {
 
     public static final String YES_REGEX = "(?i)^(yes|y)$";
 
+    public static final Question QUESTION_INT = new Question("Select", "[0-9]+", "Please enter a number.", true);
+
     public static Question yesNo(String label) {
         return new Question(label, YES_NO.regex, YES_NO.errorMessage, YES_NO.isRequired);
+    }
+
+    public static Question questionInt(String label) {
+        return new Question(label, QUESTION_INT.regex, QUESTION_INT.errorMessage, QUESTION_INT.isRequired);
     }
 }
