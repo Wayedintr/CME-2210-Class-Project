@@ -14,7 +14,7 @@ public class Cemetery {
         }
 
         public String toString() {
-            return person.getName() + " " + person.getSurname() + ", " + date;
+            return person.getName() + " " + person.getSurname() + ", " + date.toStringCLK();
         }
 
         public int compareTo(Visit other) {
