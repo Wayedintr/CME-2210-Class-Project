@@ -185,19 +185,15 @@ public class Cemetree {
         return result;
     }
 
-    public List<Person> searchPeopleByDate(Date startDate, Date endDate) {
+    public List<Person> searchPeopleByDate(List<Person> searchList, Date startDate, Date endDate) {
 
         List<Person> result = new ArrayList<>();
         if (startDate != null && endDate != null) {
-            for (Person person : people.values()) {
+            for (Person person : searchList) {
                 if (person.getDeathDate() != null && person.getDeathDate().after(startDate) && person.getDeathDate().before(endDate)) {
                     result.add(person);
                 }
             }
-        }
-        //Printing for test
-        for (Person person : result) {
-            System.out.println(person.getName() + " " + person.getSurname());
         }
         return result;
     }
@@ -252,9 +248,33 @@ public class Cemetree {
             cemetery = new Cemetery();
         }
 
-        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery);
+        String birthDateStr = argsMap.get("birth_date");
+        String deathDateStr = argsMap.get("death_date");
+        String startDateStr = argsMap.get("start_date");
+        String endDateStr = argsMap.get("end_date");
 
-        return searchPeopleByFilter(filter);
+        Date birthDate, deathDate, startDate, endDate;
+
+        try {
+            birthDate = birthDateStr == null ? null : new Date(birthDateStr);
+            deathDate = deathDateStr == null ? null : new Date(deathDateStr);
+            startDate = startDateStr == null ? null : new Date(startDateStr);
+            endDate = endDateStr == null ? null : new Date(endDateStr);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Incorrect date format");
+            throw new CancellationException();
+        }
+
+        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery, birthDate, deathDate);
+
+        List<Person> result = searchPeopleByFilter(filter);
+        if (startDate != null || endDate != null) {
+            startDate = startDate == null ? new Date("01/01/1500") : startDate;
+            endDate = endDate == null ? new Date() : endDate;
+            result = searchPeopleByDate(result, startDate, endDate);
+        }
+
+        return result;
     }
 
     private Person selectPersonInList(ConsoleReader reader, List<Person> list) {
@@ -325,7 +345,7 @@ public class Cemetree {
                         System.out.println("Successfully logged out.");
                         continue;
                     }
-                } else if (command.matches("(?i)^search\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\p{L}\\p{N}_-]+)*")) {
+                } else if (command.matches("(?i)^search person.*")) {
                     String[] args = command.split(" ");
 
                     if (args.length > 2) {
@@ -336,8 +356,10 @@ public class Cemetree {
                             Person person = result.get(i);
                             System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname());
                         }
+                    } else {
+                        System.out.println("Please enter at least one search criteria.");
                     }
-                } else if (command.matches("(?i)^visit\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\p{L}\\p{N}_-]+)*")) {
+                } else if (command.matches("(?i)^visit person.*")) {
                     String[] args = command.split(" ");
 
                     if (args.length > 2) {
@@ -350,7 +372,7 @@ public class Cemetree {
                         }
                     }
                     //get visitor list by filter command
-                } else if (command.matches("(?i)^get\\s+visitor\\s+list(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\p{L}\\p{N}_-]+)*")) {
+                } else if (command.matches("(?i)^get visitor list.*")) {
                     String[] args = command.split(" ");
 
                     if (args.length > 2) {
@@ -399,7 +421,7 @@ public class Cemetree {
             }
             System.out.print("> ");
 
-            command = scanner.nextLine().trim();
+            command = scanner.nextLine().trim().replaceAll("\\s+", " ");
         }
     }
 }

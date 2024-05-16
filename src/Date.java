@@ -15,6 +15,9 @@ public class Date extends GregorianCalendar {
     }
 
     Date(String date) {
+        if (!date.matches(REGEX)) {
+            throw new IllegalArgumentException();
+        }
         String[] data = date.split("[-/]");
         set(Calendar.YEAR, Integer.parseInt(data[2]));
         set(Calendar.MONTH, Integer.parseInt(data[1]) - 1);
@@ -27,6 +30,10 @@ public class Date extends GregorianCalendar {
 
     Date() {
         super();
+    }
+
+    public boolean equals(Date date) {
+        return this.get(Calendar.YEAR) == date.get(Calendar.YEAR) && this.get(Calendar.MONTH) == date.get(Calendar.MONTH) && this.get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH);
     }
 
     public String toString() {

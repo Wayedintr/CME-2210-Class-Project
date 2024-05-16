@@ -89,13 +89,15 @@ public class Person {
         this.deathCause = deathCause;
     }
 
-    Person(String id, String name, String surname, String sex, String deathCause, Cemetery cemetery) {
+    Person(String id, String name, String surname, String sex, String deathCause, Cemetery cemetery, Date birthDate, Date deathDate) {
         this.name = name;
         this.surname = surname;
         this.id = id;
         this.sex = sex;
         this.cemetery = cemetery;
         this.deathCause = deathCause;
+        this.birthDate = birthDate;
+        this.deathDate = deathDate;
     }
 
     Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, Date birthDate, Date deathDate) {
