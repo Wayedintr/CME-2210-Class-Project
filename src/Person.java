@@ -39,7 +39,7 @@ public class Person {
         ConsoleReader reader = new ConsoleReader(scanner);
 
         String id;
-        for (id = reader.getAnswer(QUESTIONS.getFirst()); people.containsKey(id); id = reader.getAnswer(QUESTIONS.getFirst())) {
+        for (id = reader.getAnswer(QUESTIONS.get(0)); people.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0))) {
             System.out.println("ID already exists. Please enter a different ID.");
         }
         this.id = id;

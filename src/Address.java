@@ -21,7 +21,7 @@ public class Address {
     Address(final Scanner scanner) throws CancellationException {
         ConsoleReader reader = new ConsoleReader(scanner);
 
-        this.country = reader.getAnswer(QUESTIONS.getFirst());
+        this.country = reader.getAnswer(QUESTIONS.get(0));
         this.city = reader.getAnswer(QUESTIONS.get(1));
         this.district = reader.getAnswer(QUESTIONS.get(2));
         this.neighbourhood = reader.getAnswer(QUESTIONS.get(3));
@@ -50,6 +50,10 @@ public class Address {
         this.street = street;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    Address() {
+
     }
 
     public String toString() {

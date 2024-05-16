@@ -8,7 +8,7 @@ public class Cemetery {
 
     private int count;
 
-    private int capacity = 20000;
+    private final int CAPACITY = 20000;
     public static final List<ConsoleReader.Question> QUESTIONS = List.of(
             new ConsoleReader.Question("ID", "[0-9]{2}-[0-9]{3}", "Invalid ID. Must be in the format 'XX-XXX", true),
             new ConsoleReader.Question("Name", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid name. Must contain only letters, 2-64 characters.", true)
@@ -18,7 +18,7 @@ public class Cemetery {
         ConsoleReader reader = new ConsoleReader(scanner);
 
         String id;
-        for (id = reader.getAnswer(QUESTIONS.getFirst()); cemeteries.containsKey(id); id = reader.getAnswer(QUESTIONS.getFirst())) {
+        for (id = reader.getAnswer(QUESTIONS.get(0)); cemeteries.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0))) {
             System.out.println("ID already exists. Please enter a different ID.");
         }
         this.id = id;
@@ -31,6 +31,10 @@ public class Cemetery {
         this.name = name;
         this.id = id;
         this.count = 0;
+    }
+
+    Cemetery() {
+
     }
 
     public String toString() {
@@ -85,14 +89,6 @@ public class Cemetery {
 
     public void setCount(int count) {
         this.count = count;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
     }
 
     public void incrementCount() {

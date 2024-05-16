@@ -210,7 +210,7 @@ public class Cemetree {
     }
 
     public void searchRelativesAncestors(int generationInterval, Person person, Stack<Person> ancestorsStack, List<Person> result, String relationship, Person startPerson) {
-        //TODO İnstert the results into the result list with correct order
+        //TODO Insert the results into the result list with correct order
         if (generationInterval == 0) {
             return;
         } else if (generationInterval > 0) {
@@ -232,7 +232,7 @@ public class Cemetree {
     }
 
     public void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<Person> result, String relationship, Person startPerson) {
-        //TODO İnstert the results into the result list with correct order
+        //TODO Insert the results into the result list with correct order
         if (generationInterval == 0) {
             return;
         } else if (generationInterval > 0) {
@@ -253,7 +253,7 @@ public class Cemetree {
         while (!command.matches("quit|exit")) {
             try {
                 if (selectedPerson == null) {
-                    ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", Person.QUESTIONS.getFirst().regex(), Person.QUESTIONS.getFirst().errorMessage(), true);
+                    ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", Person.QUESTIONS.get(0).regex(), Person.QUESTIONS.getFirst().errorMessage(), true);
                     String id;
                     for (id = reader.getAnswer(loginQuestion); !people.containsKey(id); id = reader.getAnswer(loginQuestion))
                         System.out.println("Person with ID " + id + " not found.");
@@ -287,14 +287,15 @@ public class Cemetree {
                         System.out.println("Successfully logged out.");
                         continue;
                     }
-                } else if (command.matches("(?i)^search\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=\\w+)*")) {
+                } else if (command.matches("(?i)^search\\s+person(?:\\s+(?:id|name|surname|sex|death_cause|cemetery_id)=[\\w-]+)*")) {
                     String[] args = command.split(" ");
 
                     if (args.length == 2) {
 
                     } else {
                         Map<String, String> argsMap = ConsoleReader.parseArguments(command);
-                        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemeteries.get(argsMap.get("cemetery_id")));
+                        Cemetery cemetery = cemeteries.get(argsMap.get("cemetery_id"));
+                        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery == null ? new Cemetery() : cemetery);
 
                         List<Person> result = searchPeopleByFilter(filter);
                         System.out.println("Found " + result.size() + " people.");
