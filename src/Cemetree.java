@@ -11,6 +11,9 @@ public class Cemetree {
     Map<String, Cemetery> cemeteries;
     private Person selectedPerson;
 
+    record PersonRelationship(Person person, String relationship) {
+    }
+
     public Cemetree() {
         people = new HashMap<>();
         cemeteries = new HashMap<>();
@@ -137,17 +140,16 @@ public class Cemetree {
         }
 
         // Test
-//        Person person = people.get("46266354792");
-//        System.out.println(person.getBirthDate());
-//
+        Person person = people.get("46266354792");
+        System.out.println(person.getBirthDate());
+
 //        System.out.println(person);
 //        System.out.println("Spouse: " + person.getSpouse());
 //        System.out.println("Father: " + person.getFather());
 //        System.out.println("Mother: " + person.getMother());
 //        System.out.println("Children: " + person.getChildren());
 //        System.out.println("-------------------------------------------");
-//        searchRelativesRecursive(4, person);
-
+        searchRelativesRecursive(2, person);
     }
 
     public void setSelectedPerson(Person person) {
@@ -211,19 +213,18 @@ public class Cemetree {
 
     public void searchRelativesAncestors(int generationInterval, Person person, Stack<Person> ancestorsStack, List<Person> result, String relationship, Person startPerson) {
         //TODO Insert the results into the result list with correct order
-        if (generationInterval == 0) {
-            return;
-        } else if (generationInterval > 0) {
+        if (generationInterval > 0) {
             if (person.getMother() != null) {
                 Person mother = person.getMother();
-                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " mother: " + mother.getName() + " " + mother.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s mother)");
+                PersonRelationship personRelationship = new PersonRelationship(person, "");
+                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s" + relationship + " mother: " + mother.getName() + " " + mother.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s mother)");
                 ancestorsStack.push(mother);
                 searchRelativesAncestors(generationInterval - 1, mother, ancestorsStack, result, relationship + " grand", startPerson);
                 ancestorsStack.pop();
             }
             if (person.getFather() != null) {
                 Person father = person.getFather();
-                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " father: " + father.getName() + " " + father.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s father)");
+                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s" + relationship + " father: " + father.getName() + " " + father.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s father)");
                 ancestorsStack.push(father);
                 searchRelativesAncestors(generationInterval - 1, father, ancestorsStack, result, relationship + " grand", startPerson);
                 ancestorsStack.pop();
@@ -231,13 +232,12 @@ public class Cemetree {
         }
     }
 
+
     public void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<Person> result, String relationship, Person startPerson) {
         //TODO Insert the results into the result list with correct order
-        if (generationInterval == 0) {
-            return;
-        } else if (generationInterval > 0) {
+        if (generationInterval > 0) {
             for (Person child : person.getChildren()) {
-                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s " + relationship + " child: " + child.getName() + " " + child.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s child)");
+                System.out.println(startPerson.getName() + " " + startPerson.getSurname() + "'s" + relationship + " child: " + child.getName() + " " + child.getSurname() + "(" + person.getName() + " " + person.getSurname() + "'s child)");
                 childrenStack.push(child);
                 searchRelativesChildren(generationInterval - 1, child, childrenStack, result, relationship + " grand", startPerson);
                 childrenStack.pop();
