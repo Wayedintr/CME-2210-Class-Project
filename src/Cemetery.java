@@ -28,9 +28,9 @@ public class Cemetery {
 
     private String name, id;
 
-    private int count;
+    public int count;
 
-    private final int CAPACITY = 20000;
+    public final int CAPACITY = 200;
 
     public static final List<ConsoleReader.Question> QUESTIONS = List.of(
             new ConsoleReader.Question("ID", "[0-9]{2}-[0-9]{3}", "Invalid ID. Must be in the format 'XX-XXX", true),
