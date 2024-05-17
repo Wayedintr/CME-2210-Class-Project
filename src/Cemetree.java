@@ -105,6 +105,7 @@ public class Cemetree {
             String[] data = line.split(",");
             Cemetery cemetery = cemeteries.get(data[7]);
 
+
             Person person = new Person(data[0], data[1], data[2], data[3], !data[4].equals("0"), !data[5].equals("0"), data[6],
                     cemetery,
                     !data[8].isBlank() ? new Date(data[8]) : null,
@@ -114,30 +115,34 @@ public class Cemetree {
                     data.length == 13 ? data[12] : null
             );
 
-            if (person.hasMotherId()) {
+            if (person.hasMotherId() && people.get(person.getMotherId()) != null) {
                 Person mother = people.get(person.getMotherId());
                 person.setMother(mother);
                 mother.addChild(person);
             }
-            if (person.hasFatherId()) {
+            if (person.hasFatherId() && people.get(person.getFatherId()) != null) {
                 Person father = people.get(person.getFatherId());
                 person.setFather(father);
                 father.addChild(person);
             }
-            if (person.hasSpouseId()) {
+            if (person.hasSpouseId() && people.get(person.getSpouseId()) != null) {
                 Person spouse = people.get(person.getSpouseId());
                 if (spouse != null) {
                     person.setSpouse(spouse);
                     spouse.setSpouse(person);
                 }
             }
-            if (cemetery.count > cemetery.CAPACITY) {
-                people.put(person.getId(), person);
+            if (person.getCemetery() != null && person.isDead()) {
+                if (cemetery.count >= cemetery.CAPACITY) {
+                    System.out.println("Cemetery " + cemetery.getId() + " is full. Person " + person.getName() + " " + person.getSurname() + " cannot be added.");
+                }
+                else {
+                    people.put(person.getId(), person);
+                }
                 cemetery.incrementCount();
             }
-            else{
-                System.out.println("Cemetery " + cemetery.getName() +  "with ID " + cemetery.getId() + " is full. Person " + person.getName() + " " + person.getSurname() + " was not added.");
-                //Burada bir error verdilirebilir.Duruma göre işlem yapılacak
+            else if (person.getCemetery() == null && !person.isDead()) {
+                people.put(person.getId(), person);
             }
             line = reader.readLine();
         }
