@@ -170,7 +170,7 @@ public class Cemetree {
                         && (filter.getBirthDate() == null || filter.getBirthDate().equals(person.getBirthDate()))
                         && (filter.getDeathDate() == null || filter.getDeathDate().equals(person.getDeathDate()))
                         && (filter.getId() == null || filter.getId().equals(person.getId()))
-                        && (filter.getSex() == null || filter.getSex().equals(person.getSex()))
+                        && (filter.getSex() == null || filter.getSex().equalsIgnoreCase(person.getSex()))
                         && (filter.getSpouseId() == null || filter.getSpouseId().equals(person.getSpouseId()))
                         && (filter.getFatherId() == null || filter.getFatherId().equals(person.getFatherId()))
                         && (filter.getMotherId() == null || filter.getMotherId().equals(person.getMotherId()))
@@ -307,6 +307,8 @@ public class Cemetree {
         ConsoleReader reader = new ConsoleReader(scanner);
 
         String command = "";
+        List<Person> selectedPeople;
+
         selectedPerson = people.get("20890067372");
         while (!command.matches("quit|exit")) {
             try {
@@ -349,11 +351,11 @@ public class Cemetree {
                     String[] args = command.split(" ");
 
                     if (args.length > 2) {
-                        List<Person> result = searchPeopleByCommand(command);
-                        System.out.println("Found " + result.size() + " people.");
+                        selectedPeople = searchPeopleByCommand(command);
+                        System.out.println("Found " + selectedPeople.size() + " people.");
 
-                        for (int i = 0; i < result.size(); i++) {
-                            Person person = result.get(i);
+                        for (int i = 0; i < selectedPeople.size(); i++) {
+                            Person person = selectedPeople.get(i);
                             System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname());
                         }
                     } else {
@@ -363,8 +365,8 @@ public class Cemetree {
                     String[] args = command.split(" ");
 
                     if (args.length > 2) {
-                        List<Person> result = searchPeopleByCommand(command);
-                        Person foundPerson = selectPersonInList(reader, result);
+                        selectedPeople = searchPeopleByCommand(command);
+                        Person foundPerson = selectPersonInList(reader, selectedPeople);
 
                         if (foundPerson != null) {
                             foundPerson.getCemetery().addVisitor(foundPerson, selectedPerson, new Date());
@@ -376,8 +378,8 @@ public class Cemetree {
                     String[] args = command.split(" ");
 
                     if (args.length > 2) {
-                        List<Person> result = searchPeopleByCommand(command);
-                        Person foundPerson = selectPersonInList(reader, result);
+                        selectedPeople = searchPeopleByCommand(command);
+                        Person foundPerson = selectPersonInList(reader, selectedPeople);
 
                         if (foundPerson != null) {
                             SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
