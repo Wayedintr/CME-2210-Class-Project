@@ -31,16 +31,16 @@ public class Date extends GregorianCalendar {
         }
     }
 
-    Date(String year, String month, String day) {
-        super(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day));
-    }
-
     Date() {
         super();
     }
 
     public boolean equals(Date date) {
-        return this.get(Calendar.YEAR) == date.get(Calendar.YEAR) && this.get(Calendar.MONTH) == date.get(Calendar.MONTH) && this.get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH);
+        if (date == null) return false;
+        if (this.get(Calendar.YEAR) != date.get(Calendar.YEAR)) return false;
+        if (this.get(Calendar.MONTH) != date.get(Calendar.MONTH)) return false;
+        if (this.get(Calendar.DAY_OF_MONTH) != date.get(Calendar.DAY_OF_MONTH)) return false;
+        return true;
     }
 
     public String toString() {

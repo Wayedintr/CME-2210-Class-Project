@@ -7,7 +7,6 @@ import java.util.concurrent.CancellationException;
 public class Person {
     private String name, surname, id, sex;
     private Date birthDate, deathDate;
-
     boolean dead, admin;
 
     private Cemetery cemetery;
@@ -101,47 +100,6 @@ public class Person {
         this.deathDate = deathDate;
     }
 
-    Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, Date birthDate, Date deathDate) {
-        this.name = name;
-        this.surname = surname;
-        this.id = id;
-        this.admin = admin;
-        this.sex = sex;
-        this.birthDate = birthDate;
-        this.dead = dead;
-        this.deathDate = deathDate;
-        this.cemetery = cemetery;
-        this.deathCause = deathCause;
-    }
-
-    public String details(boolean admin) {
-        return (admin ?
-                "ID          : " + id + "\n" : "") +
-                "Name        : " + name + " " + surname + "\n" +
-                "Sex         : " + sex + "\n" +
-                "Born        : " + birthDate + "\n" +
-                (deathDate != null ? "Died        : " + deathDate + "\n" : "") +
-                (deathCause != null && !deathCause.isBlank() ? "Death Cause : " + deathCause + "\n" : "") +
-                (cemetery != null ? "Cemetery    : " + cemetery.getName() + "\n" : "") +
-                (mother != null ? "Mother      : " + mother.getFullName() + "\n" : "") +
-                (father != null ? "Father      : " + father.getFullName() + "\n" : "") +
-                (spouse != null ? "Spouse      : " + spouse.getFullName() : "");
-    }
-
-    public void remove() {
-        if (this.cemetery != null) this.cemetery.decrementCount();
-        if (this.father != null) this.father.getChildren().remove(this);
-        if (this.mother != null) this.mother.getChildren().remove(this);
-        this.spouse = null;
-        for (Person child : this.getChildren()) {
-            if (this.sex.equals("Male")) {
-                child.setFather(null);
-            } else {
-                child.setMother(null);
-            }
-        }
-    }
-
     public void connect(Map<String, Person> people, Map<String, Cemetery> cemeteries) {
         if (this.hasMotherId() && people.get(this.getMotherId()) != null) {
             Person mother = people.get(this.getMotherId());
@@ -169,6 +127,20 @@ public class Person {
             cemetery.incrementCount();
         } else {
             people.put(this.getId(), this);
+        }
+    }
+
+    public void removeConnections() {
+        if (this.cemetery != null) this.cemetery.decrementCount();
+        if (this.father != null) this.father.getChildren().remove(this);
+        if (this.mother != null) this.mother.getChildren().remove(this);
+        this.spouse = null;
+        for (Person child : this.getChildren()) {
+            if (this.sex.equals("Male")) {
+                child.setFather(null);
+            } else {
+                child.setMother(null);
+            }
         }
     }
 
@@ -217,6 +189,34 @@ public class Person {
     public String toRowString(int index) {
         return String.format("%-3d %-12s %-12s %s", (index), name, surname, getDateString());
     }
+
+    public String toDetailString(boolean admin) {
+        return (admin ?
+                "ID          : " + id + "\n" : "") +
+                "Name        : " + name + " " + surname + "\n" +
+                "Sex         : " + sex + "\n" +
+                "Born        : " + birthDate + "\n" +
+                (deathDate != null ? "Died        : " + deathDate + "\n" : "") +
+                (deathCause != null && !deathCause.isBlank() ? "Death Cause : " + deathCause + "\n" : "") +
+                (cemetery != null ? "Cemetery    : " + cemetery.getName() + "\n" : "") +
+                (mother != null ? "Mother      : " + mother.getFullName() + "\n" : "") +
+                (father != null ? "Father      : " + father.getFullName() + "\n" : "") +
+                (spouse != null ? "Spouse      : " + spouse.getFullName() : "");
+    }
+
+    public boolean matches(Person filter) {
+        if (filter == null) return true;
+        if (filter.name != null && !filter.name.equalsIgnoreCase(this.name)) return false;
+        if (filter.surname != null && !filter.surname.equalsIgnoreCase(this.surname)) return false;
+        if (filter.id != null && !filter.id.equals(this.id)) return false;
+        if (filter.sex != null && !filter.sex.equalsIgnoreCase(this.sex)) return false;
+        if (filter.birthDate != null && !filter.birthDate.equals(this.birthDate)) return false;
+        if (filter.deathDate != null && !filter.deathDate.equals(this.deathDate)) return false;
+        if (filter.cemetery != null && !filter.cemetery.equals(this.cemetery)) return false;
+        if (filter.deathCause != null && !filter.deathCause.equalsIgnoreCase(this.deathCause)) return false;
+        return true;
+    }
+
 
     public int compareTo(Person person) {
         return birthDate.compareTo(person.getBirthDate());

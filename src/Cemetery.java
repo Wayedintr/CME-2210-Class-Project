@@ -69,17 +69,6 @@ public class Cemetery {
         this.name = name;
     }
 
-    Cemetery() {
-    }
-
-    public static String toRowHeader() {
-        return String.format("    %-12s %-30s %s", "ID", "Name", "Address");
-    }
-
-    public String toRowString(int index) {
-        return String.format("%-3d %-12s %-30s %s", (index), id, name, address);
-    }
-
     public void connect(Map<String, Person> people) {
         for (Person person : people.values()) {
             if (person.getCemetery() != null && person.getCemetery().getId().equals(this.getId())) {
@@ -127,6 +116,29 @@ public class Cemetery {
                 address.getLatitude() == 0 ? "" : address.getLatitude(),
                 address.getLongitude() == 0 ? "" : address.getLongitude()
         );
+    }
+
+    public static String toRowHeader() {
+        return String.format("    %-12s %-30s %s", "ID", "Name", "Address");
+    }
+
+    public String toRowString(int index) {
+        return String.format("%-3d %-12s %-30s %s", (index), id, name, address);
+    }
+
+    public String toDetailString(boolean admin) {
+        return (admin ? "" :
+                "ID      : " + id + "\n") +
+                "Name    : " + name + "\n" +
+                "Address : " + address.toString() + "\n" +
+                "Ratio   : " + String.format("%s/%s (%.0f%%)", count, CAPACITY, (double) count / (double) CAPACITY);
+    }
+
+    public boolean matches(Cemetery filter) {
+        if (filter == null) return true;
+        if (filter.id != null && !filter.id.equals(this.id)) return false;
+        if (filter.name != null && !filter.name.equalsIgnoreCase(this.name)) return false;
+        return true;
     }
 
     public Address getAddress() {

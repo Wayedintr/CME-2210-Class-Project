@@ -31,7 +31,7 @@ public class Cemetree {
         }
     }
 
-    private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id"};
+    private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name"};
 
     private final String[] cemeteryFilter = {"id", "name"};
 
@@ -110,28 +110,21 @@ public class Cemetree {
 
         // Load cemeteries
         BufferedReader cemeteryReader = new BufferedReader(new FileReader(fileName + "_cemeteries.csv"));
-
-        // skip header
         cemeteryReader.readLine();
 
-        line = cemeteryReader.readLine();
-        while (line != null) {
+        while ((line = cemeteryReader.readLine()) != null) {
             String[] data = line.split(",");
             Address address = new Address(data[2], data[3], data[4], data[5], data[6], Double.parseDouble(data[7]), Double.parseDouble(data[8]));
             Cemetery cemetery = new Cemetery(data[0], data[1], address);
             cemeteries.put(cemetery.getId(), cemetery);
-            line = cemeteryReader.readLine();
         }
         cemeteryReader.close();
 
         // Load people
         BufferedReader peopleReader = new BufferedReader(new FileReader(fileName + "_people.csv"));
-
-        // skip header
         peopleReader.readLine();
 
-        line = peopleReader.readLine();
-        while (line != null) {
+        while ((line = peopleReader.readLine()) != null) {
             String[] data = line.split(",");
             Cemetery cemetery = cemeteries.get(data[7]);
 
@@ -144,19 +137,16 @@ public class Cemetree {
                     data.length == 13 ? data[12] : null
             );
 
+            // Connect person to parents, spouse, children and cemetery
             person.connect(people, cemeteries);
-            line = peopleReader.readLine();
         }
         peopleReader.close();
 
         // Load visitors
         BufferedReader visitorReader = new BufferedReader(new FileReader(fileName + "_visitors.csv"));
-
-        // Skip header
         visitorReader.readLine();
 
-        line = visitorReader.readLine();
-        while (line != null) {
+        while ((line = visitorReader.readLine()) != null) {
             String[] data = line.split(",");
             Cemetery cemetery = cemeteries.get(data[0]);
             Person visitedPerson = people.get(data[1]);
@@ -166,22 +156,8 @@ public class Cemetree {
             if (cemetery != null && visitedPerson != null && visitorPerson != null) {
                 cemetery.addVisitor(visitedPerson, visitorPerson, time);
             }
-
-            line = visitorReader.readLine();
         }
         visitorReader.close();
-    }
-
-    public void setSelectedPerson(Person person) {
-        this.selectedPerson = person;
-    }
-
-    public Person getSelectedPerson() {
-        return selectedPerson;
-    }
-
-    public List<Person> searchPeopleByFilter(Person filter) {
-        return searchPeopleByFilter(filter, false);
     }
 
     public List<Person> searchPeopleByFilter(Person filter, boolean includeAlive) {
@@ -189,21 +165,8 @@ public class Cemetree {
 
         if (filter != null) {
             for (Person person : people.values()) {
-                if ((filter.getName() == null || filter.getName().equalsIgnoreCase(person.getName()))
-                        && (filter.getSurname() == null || filter.getSurname().equalsIgnoreCase(person.getSurname()))
-                        && (filter.getBirthDate() == null || filter.getBirthDate().equals(person.getBirthDate()))
-                        && (filter.getDeathDate() == null || filter.getDeathDate().equals(person.getDeathDate()))
-                        && (filter.getId() == null || filter.getId().equals(person.getId()))
-                        && (filter.getSex() == null || filter.getSex().equalsIgnoreCase(person.getSex()))
-                        && (filter.getSpouseId() == null || filter.getSpouseId().equals(person.getSpouseId()))
-                        && (filter.getFatherId() == null || filter.getFatherId().equals(person.getFatherId()))
-                        && (filter.getMotherId() == null || filter.getMotherId().equals(person.getMotherId()))
-                        && (includeAlive || person.isDead())
-                        && (filter.getCemetery() == null || filter.getCemetery().equals(person.getCemetery()))
-                        && (filter.getDeathCause() == null || filter.getDeathCause().equals(person.getDeathCause()))
-                ) {
+                if (person.matches(filter) && (includeAlive || person.isDead()))
                     result.add(person);
-                }
             }
         }
         return result;
@@ -213,19 +176,16 @@ public class Cemetree {
         List<Cemetery> result = new ArrayList<>();
         if (filter != null) {
             for (Cemetery cemetery : cemeteries.values()) {
-                if ((filter.getId() == null || filter.getId().equals(cemetery.getId()))
-                        && (filter.getName() == null || filter.getName().equals(cemetery.getName()))
-                ) {
+                if (cemetery.matches(filter))
                     result.add(cemetery);
-                }
             }
         }
         return result;
     }
 
     public List<Person> searchPeopleByDate(List<Person> searchList, Date startDate, Date endDate) {
-
         List<Person> result = new ArrayList<>();
+
         if (startDate != null && endDate != null) {
             for (Person person : searchList) {
                 if (person.getDeathDate() != null && person.getDeathDate().after(startDate) && person.getDeathDate().before(endDate)) {
@@ -233,6 +193,7 @@ public class Cemetree {
                 }
             }
         }
+
         return result;
     }
 
@@ -249,7 +210,6 @@ public class Cemetree {
         if (generationInterval > 0) {
             if (person.getMother() != null) {
                 Person mother = person.getMother();
-                PersonRelationship personRelationship = new PersonRelationship(person, "");
                 PersonRelationship p = new PersonRelationship(mother, relationship + " Mother (" + person.getName() + " " + person.getSurname() + "' s Mother)");
                 result.add(p);
                 ancestorsStack.push(mother);
@@ -267,7 +227,6 @@ public class Cemetree {
         }
     }
 
-
     public void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<PersonRelationship> result, String relationship, Person startPerson) {
         if (generationInterval > 0) {
             for (Person child : person.getChildren()) {
@@ -280,21 +239,18 @@ public class Cemetree {
         }
     }
 
-    private List<Person> searchPeopleByCommand(String command) {
-        return searchPeopleByCommand(command, false);
-    }
-
     private List<Person> searchPeopleByCommand(String command, boolean includeAlive) {
-        Map<String, String> argsMap = ConsoleReader.parseArguments(command);
-        Cemetery cemetery = cemeteries.get(argsMap.get("cemetery_id"));
-        if (argsMap.containsKey("cemetery_id") && cemetery == null) {
-            cemetery = new Cemetery();
+        Map<String, String> arguments = ConsoleReader.parseArguments(command);
+        Cemetery cemetery = null;
+        if (arguments.containsKey("cemetery_id") || arguments.containsKey("cemetery_name")) {
+            List<Cemetery> cemeteries = searchCemeteriesByFilter(new Cemetery(arguments.get("cemetery_id"), arguments.get("cemetery_name")));
+            cemetery = !cemeteries.isEmpty() ? cemeteries.get(0) : null;
         }
 
-        String birthDateStr = argsMap.get("birth_date");
-        String deathDateStr = argsMap.get("death_date");
-        String startDateStr = argsMap.get("start_date");
-        String endDateStr = argsMap.get("end_date");
+        String birthDateStr = arguments.get("birth_date");
+        String deathDateStr = arguments.get("death_date");
+        String startDateStr = arguments.get("start_date");
+        String endDateStr = arguments.get("end_date");
 
         Date birthDate, deathDate, startDate, endDate;
 
@@ -308,7 +264,7 @@ public class Cemetree {
             throw new CancellationException();
         }
 
-        Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery, birthDate, deathDate);
+        Person filter = new Person(arguments.get("id"), arguments.get("name"), arguments.get("surname"), arguments.get("sex"), arguments.get("death_cause"), cemetery, birthDate, deathDate);
 
         List<Person> result = searchPeopleByFilter(filter, includeAlive);
         if (startDate != null || endDate != null) {
@@ -320,7 +276,7 @@ public class Cemetree {
         return result;
     }
 
-    private Person selectPersonFromCommand(ConsoleReader reader, String command, int commandWordCount, List<Person> selectedPeople) {
+    private Person selectPersonFromCommand(ConsoleReader reader, String command, int commandWordCount, List<Person> selectedPeople, boolean includeAlive) {
         String[] args = command.split(" ");
 
         boolean contains = command.contains("=");
@@ -342,7 +298,7 @@ public class Cemetree {
         Person foundPerson = null;
 
         if (index == -1 && contains) {
-            List<Person> peopleToSearch = searchPeopleByCommand(command);
+            List<Person> peopleToSearch = searchPeopleByCommand(command, includeAlive);
             foundPerson = selectPersonInList(reader, peopleToSearch);
         } else if (selectedPeople != null && index != -1) {
             foundPerson = selectedPeople.get(index);
@@ -450,6 +406,12 @@ public class Cemetree {
         List<Person> selectedPeople = null;
         List<Cemetery> selectedCemeteries = null;
 
+        enum ViewMode {
+            PERSONS,
+            CEMETERIES
+        }
+        ViewMode viewMode = ViewMode.PERSONS;
+
         selectedPerson = people.get("12312342353");
 
         System.out.println("Welcome to Cemetree. Type \"help\" for a list of commands.");
@@ -534,10 +496,10 @@ public class Cemetree {
                         continue;
                     }
 
-                    Person personToRemove = selectPersonFromCommand(reader, command, 2, selectedPeople);
+                    Person personToRemove = selectPersonFromCommand(reader, command, 2, selectedPeople, true);
 
                     if (personToRemove != null) {
-                        personToRemove.remove();
+                        personToRemove.removeConnections();
                         people.remove(personToRemove.getId());
                         System.out.println("Successfully removed " + personToRemove.getFullName() + ".");
                     } else {
@@ -557,13 +519,14 @@ public class Cemetree {
                         continue;
                     }
 
-                    selectedPeople = searchPeopleByCommand(command);
+                    selectedPeople = searchPeopleByCommand(command, command.contains("include alive"));
                     System.out.println("Found " + selectedPeople.size() + " people. Use view <number> to view details.");
 
                     System.out.println(Person.toRowHeader());
                     for (int i = 0; i < selectedPeople.size(); i++) {
                         System.out.println(selectedPeople.get(i).toRowString(i + 1));
                     }
+                    viewMode = ViewMode.PERSONS;
                 }
 
                 // Search Relatives
@@ -598,20 +561,7 @@ public class Cemetree {
                             System.out.printf("%-3d %-12s %-12s %s\n", i + 1, personRelationship.person.getName(), personRelationship.person.getSurname(), personRelationship.relationship);
                         }
                     }
-                }
-
-                // View Person
-                else if (command.matches("(?i)^view.*$")) {
-                    if (command.split(" ").length < 2) {
-                        System.out.println("Please enter a number.");
-                        continue;
-                    }
-
-                    Person personToView = selectPersonFromCommand(reader, command, 1, selectedPeople);
-
-                    if (personToView != null) {
-                        System.out.println(personToView.details(selectedPerson.isAdmin()));
-                    }
+                    viewMode = ViewMode.PERSONS;
                 }
 
                 // Visit Person
@@ -621,7 +571,7 @@ public class Cemetree {
                         continue;
                     }
 
-                    Person foundPerson = selectPersonFromCommand(reader, command, 2, selectedPeople);
+                    Person foundPerson = selectPersonFromCommand(reader, command, 2, selectedPeople, false);
 
                     if (foundPerson != null && foundPerson.isDead()) {
                         if (foundPerson.getCemetery() == null) {
@@ -645,7 +595,7 @@ public class Cemetree {
                         continue;
                     }
 
-                    Person foundPerson = selectPersonFromCommand(reader, command, 3, selectedPeople);
+                    Person foundPerson = selectPersonFromCommand(reader, command, 3, selectedPeople, false);
 
                     if (foundPerson != null) {
                         SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
@@ -704,7 +654,7 @@ public class Cemetree {
                     }
                 }
 
-                // Search Cemeteries
+                // Search Cemetery
                 else if (command.matches("(?i)^search cemetery .*$")) {
                     if (command.split(" ").length < 3) {
                         System.out.println("Please enter at least one search criteria.");
@@ -721,7 +671,40 @@ public class Cemetree {
                             System.out.println(selectedCemeteries.get(i).toRowString(i + 1));
                         }
                     }
-                } else if (!command.isBlank() && !command.matches("(?i)^quit|exit$")) {
+
+                    viewMode = ViewMode.CEMETERIES;
+                }
+
+                // View Person or Cemetery
+                else if (command.matches("(?i)^view.*$")) {
+                    if (command.split(" ").length < 2) {
+                        System.out.println("Please enter a number.");
+                        continue;
+                    }
+
+                    if (command.contains("person")) {
+                        viewMode = ViewMode.PERSONS;
+                    } else if (command.contains("cemetery")) {
+                        viewMode = ViewMode.CEMETERIES;
+                    }
+
+                    if (viewMode == ViewMode.PERSONS) {
+                        Person personToView = selectPersonFromCommand(reader, command, 1, selectedPeople, true);
+
+                        if (personToView != null) {
+                            System.out.println(personToView.toDetailString(selectedPerson.isAdmin()));
+                        }
+                    } else {
+                        Cemetery cemeteryToView = selectCemeteryFromCommand(reader, command, 1, selectedCemeteries);
+
+                        if (cemeteryToView != null) {
+                            System.out.println(cemeteries.get(cemeteryToView.getId()).toDetailString(selectedPerson.isAdmin()));
+                        }
+                    }
+                }
+
+                // Incorrect Command
+                else if (!command.isBlank() && !command.matches("(?i)^quit|exit$")) {
                     System.out.println("Invalid command. Type \"help\" for a list of commands.");
                 }
             } catch (CancellationException e) {

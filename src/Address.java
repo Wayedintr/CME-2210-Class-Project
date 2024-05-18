@@ -52,10 +52,6 @@ public class Address {
         this.longitude = longitude;
     }
 
-    Address() {
-
-    }
-
     public String toString() {
         return neighbourhood + ", " + street + ", " + district + "/" + city + ", " + country;
     }
