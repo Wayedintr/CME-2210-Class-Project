@@ -113,6 +113,20 @@ public class Person {
         this.deathCause = deathCause;
     }
 
+    public String details(boolean admin) {
+        return (admin ?
+                "ID          : " + id + "\n" : "") +
+                "Name        : " + name + " " + surname + "\n" +
+                "Sex         : " + sex + "\n" +
+                "Born        : " + birthDate + "\n" +
+                (deathDate != null ? "Died        : " + deathDate + "\n" : "") +
+                (deathCause != null && !deathCause.isBlank() ? "Death Cause : " + deathCause + "\n" : "") +
+                (cemetery != null ? "Cemetery    : " + cemetery.getName() + "\n" : "") +
+                (mother != null ? "Mother      : " + mother.getFullName() + "\n" : "") +
+                (father != null ? "Father      : " + father.getFullName() + "\n" : "") +
+                (spouse != null ? "Spouse      : " + spouse.getFullName() : "");
+    }
+
     public void remove() {
         if (this.cemetery != null) this.cemetery.decrementCount();
         if (this.father != null) this.father.getChildren().remove(this);
@@ -179,6 +193,10 @@ public class Person {
 
     public String getSurname() {
         return surname;
+    }
+
+    public String getFullName() {
+        return name + " " + surname;
     }
 
     public void setSurname(String surname) {

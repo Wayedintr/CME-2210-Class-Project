@@ -194,6 +194,10 @@ public class Cemetree {
     }
 
     public List<Person> searchPeopleByFilter(Person filter) {
+        return searchPeopleByFilter(filter, false);
+    }
+
+    public List<Person> searchPeopleByFilter(Person filter, boolean includeAlive) {
         List<Person> result = new ArrayList<>();
 
         if (filter != null) {
@@ -207,7 +211,7 @@ public class Cemetree {
                         && (filter.getSpouseId() == null || filter.getSpouseId().equals(person.getSpouseId()))
                         && (filter.getFatherId() == null || filter.getFatherId().equals(person.getFatherId()))
                         && (filter.getMotherId() == null || filter.getMotherId().equals(person.getMotherId()))
-                        && person.isDead()
+                        && (includeAlive || person.isDead())
                         && (filter.getCemetery() == null || filter.getCemetery().equals(person.getCemetery()))
                         && (filter.getDeathCause() == null || filter.getDeathCause().equals(person.getDeathCause()))
                 ) {
@@ -233,7 +237,6 @@ public class Cemetree {
 
     public List<PersonRelationship> searchRelativesRecursive(int generationInterval, Person person) {
         List<PersonRelationship> result = new ArrayList<>();
-        result.add(new PersonRelationship(person, " Searching Relatives..."));
         Stack<Person> childrenStack = new Stack<>();
         Stack<Person> ancestorsStack = new Stack<>();
         searchRelativesAncestors(generationInterval, person, ancestorsStack, result, "", person);
@@ -277,6 +280,10 @@ public class Cemetree {
     }
 
     private List<Person> searchPeopleByCommand(String command) {
+        return searchPeopleByCommand(command, false);
+    }
+
+    private List<Person> searchPeopleByCommand(String command, boolean includeAlive) {
         Map<String, String> argsMap = ConsoleReader.parseArguments(command);
         Cemetery cemetery = cemeteries.get(argsMap.get("cemetery_id"));
         if (argsMap.containsKey("cemetery_id") && cemetery == null) {
@@ -302,7 +309,7 @@ public class Cemetree {
 
         Person filter = new Person(argsMap.get("id"), argsMap.get("name"), argsMap.get("surname"), argsMap.get("sex"), argsMap.get("death_cause"), cemetery, birthDate, deathDate);
 
-        List<Person> result = searchPeopleByFilter(filter);
+        List<Person> result = searchPeopleByFilter(filter, includeAlive);
         if (startDate != null || endDate != null) {
             startDate = startDate == null ? new Date("01/01/1500") : startDate;
             endDate = endDate == null ? new Date() : endDate;
@@ -319,7 +326,7 @@ public class Cemetree {
             System.out.println("Found " + list.size() + " people. Please select one:");
             for (int i = 0; i < list.size(); i++) {
                 Person person = list.get(i);
-                System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname() + ", " + person.getBirthDate() + " - " + person.getDeathDate());
+                System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname() + ", " + person.getBirthDate() + " - " + (person.getDeathDate() == null ? "Present" : person.getDeathDate()));
             }
             int answer;
             for (answer = Integer.parseInt(reader.getAnswer(ConsoleReader.QUESTION_INT));
@@ -348,7 +355,7 @@ public class Cemetree {
         ConsoleReader reader = new ConsoleReader(scanner);
 
         String command = "";
-        List<Person> selectedPeople;
+        List<Person> selectedPeople = null;
 
         selectedPerson = people.get("12312342353");
         while (!command.matches("(?i)^quit|exit$")) {
@@ -398,19 +405,19 @@ public class Cemetree {
                     String[] args = command.split(" ");
 
                     if (args.length < 3) {
-                        System.out.println("Please enter person ID.");
+                        System.out.println("Please enter at least one search criteria.");
                         continue;
                     }
 
-                    String id = args[2];
-                    Person personToRemove = people.get(id);
+                    selectedPeople = searchPeopleByCommand(command, true);
+                    Person personToRemove = selectPersonInList(reader, selectedPeople);
 
                     if (personToRemove != null) {
                         personToRemove.remove();
-                        people.remove(id);
-                        System.out.println("Successfully removed person with ID " + id + ".");
+                        people.remove(personToRemove.getId());
+                        System.out.println("Successfully removed person with ID " + personToRemove.getId() + ".");
                     } else {
-                        System.out.println("Person with ID " + id + " not found.");
+                        System.out.println("Person not found.");
                     }
 
                     if (personToRemove == selectedPerson) {
@@ -432,6 +439,35 @@ public class Cemetree {
                         Person person = selectedPeople.get(i);
                         System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname());
                     }
+                } else if (command.matches("(?i)^view.*$")) {
+                    String[] args = command.split(" ");
+
+                    if (args.length < 2) {
+                        System.out.println("Please enter a number.");
+                        continue;
+                    }
+
+                    if (selectedPeople == null) {
+                        System.out.println("Can not pick a person.");
+                        continue;
+                    }
+
+                    int index;
+
+                    try {
+                        index = Integer.parseInt(args[1]) - 1;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Please enter a number.");
+                        continue;
+                    }
+
+                    if (index >= 0 && index < selectedPeople.size()) {
+                        Person person = selectedPeople.get(index);
+                        System.out.println(person.details(selectedPerson.isAdmin()));
+                    } else {
+                        System.out.println("Please enter a number between 1 and " + selectedPeople.size() + ".");
+                    }
+
                 } else if (command.matches("(?i)^visit person.*$")) {
                     String[] args = command.split(" ");
 
@@ -524,6 +560,35 @@ public class Cemetree {
                         }
                     } else {
                         System.out.println("Cemetery with ID " + id + " not found.");
+                    }
+                } else if (command.matches("(?i)^search relatives.*$")) {
+                    String[] args = command.split(" ");
+
+                    if (args.length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
+
+                    int generationInterval;
+                    try {
+                        generationInterval = Integer.parseInt(args[2]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid generation interval. Please enter a number.");
+                        continue;
+                    }
+
+                    List<PersonRelationship> result = searchRelativesRecursive(generationInterval, selectedPerson);
+
+                    if (result.isEmpty()) {
+                        System.out.println("No relatives found.");
+                    } else {
+                        System.out.println("Found " + result.size() + " relatives.");
+                        selectedPeople = new ArrayList<>(result.size());
+                        for (int i = 0; i < result.size(); i++) {
+                            PersonRelationship personRelationship = result.get(i);
+                            selectedPeople.add(personRelationship.person);
+                            System.out.printf("%-3d: %-75s %s\n", i + 1, personRelationship.relationship, personRelationship.person.getName() + " " + personRelationship.person.getSurname());
+                        }
                     }
                 } else if (!command.isBlank() && !command.matches("(?i)^quit|exit$")) {
                     System.out.println("Invalid command. Type \"help\" for a list of commands.");
