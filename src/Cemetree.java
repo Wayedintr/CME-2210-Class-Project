@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.CancellationException;
 
@@ -51,56 +48,76 @@ public class Cemetree {
         cemeteries.remove(id);
     }
 
-    public void saveToFile(String peopleFileName, String cemeteriesFileName) throws IOException {
-        FileWriter writer;
-
+    public void saveToFile(String fileName) throws IOException {
         // Save cemeteries
-        writer = new FileWriter(cemeteriesFileName);
+        BufferedWriter cemeteryWriter = new BufferedWriter(new FileWriter(fileName + "_cemeteries.csv"));
 
-        writer.write(Cemetery.toCsvHeader() + "\n");
+        cemeteryWriter.write(Cemetery.toCsvHeader() + "\n");
         for (Cemetery cemetery : cemeteries.values())
-            writer.write(cemetery.toCsvString() + "\n");
-        writer.close();
+            cemeteryWriter.write(cemetery.toCsvString() + "\n");
+        cemeteryWriter.close();
 
         // Save people
-        writer = new FileWriter(peopleFileName);
+        BufferedWriter peopleWriter = new BufferedWriter(new FileWriter(fileName + "_people.csv"));
 
         // Sort people by birthdate
         List<Person> peopleList = new ArrayList<>(people.values());
         peopleList.sort(Person::compareTo);
 
-        writer.write(Person.toCsvHeader() + "\n");
-        for (Person person : peopleList)
-            writer.write(person.toCsvString() + "\n");
-        writer.close();
+        peopleWriter.write(Person.toCsvHeader() + "\n");
+        for (Person person : peopleList) {
+            peopleWriter.write(person.toCsvString() + "\n");
+        }
+        peopleWriter.close();
+
+        // Save visitors
+        BufferedWriter visitorWriter = new BufferedWriter(new FileWriter(fileName + "_visitors.csv"));
+
+        visitorWriter.write("cemeteryId,visitedId,visitorId,time\n");
+        for (Cemetery cemetery : cemeteries.values()) {
+            Map<Person, SortedSet<Cemetery.Visit>> visitorList = cemetery.getVisitorList();
+
+            for (Map.Entry<Person, SortedSet<Cemetery.Visit>> entry : visitorList.entrySet()) {
+                for (Cemetery.Visit visit : entry.getValue()) {
+                    visitorWriter.write(String.format("%s,%s,%s,%s",
+                            cemetery.getId(),
+                            entry.getKey().getId(),
+                            visit.getPerson().getId(),
+                            visit.getDate().toStringCLK()
+                    ));
+                    visitorWriter.write("\n");
+                }
+            }
+        }
+        visitorWriter.close();
     }
 
-    public void loadFromFile(String peopleFileName, String cemeteriesFileName) throws IOException {
-        BufferedReader reader;
+    public void loadFromFile(String fileName) throws IOException {
         String line;
 
         // Load cemeteries
-        reader = new BufferedReader(new FileReader(cemeteriesFileName));
+        BufferedReader cemeteryReader = new BufferedReader(new FileReader(fileName + "_cemeteries.csv"));
 
         // skip header
-        reader.readLine();
+        cemeteryReader.readLine();
 
-        line = reader.readLine();
+        line = cemeteryReader.readLine();
         while (line != null) {
             String[] data = line.split(",");
             Address address = new Address(data[2], data[3], data[4], data[5], data[6], Double.parseDouble(data[7]), Double.parseDouble(data[8]));
             Cemetery cemetery = new Cemetery(data[0], data[1], address);
             cemeteries.put(cemetery.getId(), cemetery);
-            line = reader.readLine();
+            line = cemeteryReader.readLine();
         }
+        cemeteryReader.close();
 
         // Load people
-        reader = new BufferedReader(new FileReader(peopleFileName));
+        BufferedReader peopleReader = new BufferedReader(new FileReader(fileName + "_people.csv"));
 
         // skip header
-        reader.readLine();
+        peopleReader.readLine();
 
-        line = reader.readLine();
+        line = peopleReader.readLine();
         while (line != null) {
             String[] data = line.split(",");
             Cemetery cemetery = cemeteries.get(data[7]);
@@ -135,33 +152,38 @@ public class Cemetree {
             if (person.getCemetery() != null && person.isDead()) {
                 if (cemetery.count >= cemetery.CAPACITY) {
                     System.out.println("Cemetery " + cemetery.getId() + " is full. Person " + person.getName() + " " + person.getSurname() + " cannot be added.");
-                }
-                else {
+                } else {
                     people.put(person.getId(), person);
                 }
                 cemetery.incrementCount();
-            }
-            else if (person.getCemetery() == null && !person.isDead()) {
+            } else if (person.getCemetery() == null && !person.isDead()) {
                 people.put(person.getId(), person);
             }
-            line = reader.readLine();
+            line = peopleReader.readLine();
         }
+        peopleReader.close();
 
-        // Test
-//        Person person = people.get("46266354792");
-////        System.out.println(person.getBirthDate());
-//
-////        System.out.println(person);
-////        System.out.println("Spouse: " + person.getSpouse());
-////        System.out.println("Father: " + person.getFather());
-////        System.out.println("Mother: " + person.getMother());
-////        System.out.println("Children: " + person.getChildren());
-////        System.out.println("-------------------------------------------");
-//        List<PersonRelationship> list = searchRelativesRecursive(10, person);
-//        //Show list for loop
-//        for (PersonRelationship personRelationship : list) {
-//            System.out.println(personRelationship.person.getName() + " " + personRelationship.person.getSurname() + " -" + personRelationship.relationship);
-//        }
+        // Load visitors
+        BufferedReader visitorReader = new BufferedReader(new FileReader(fileName + "_visitors.csv"));
+
+        // Skip header
+        visitorReader.readLine();
+
+        line = visitorReader.readLine();
+        while (line != null) {
+            String[] data = line.split(",");
+            Cemetery cemetery = cemeteries.get(data[0]);
+            Person visitedPerson = people.get(data[1]);
+            Person visitorPerson = people.get(data[2]);
+            Date time = new Date(data[3], true);
+
+            if (cemetery != null && visitedPerson != null && visitorPerson != null) {
+                cemetery.addVisitor(visitedPerson, visitorPerson, time);
+            }
+
+            line = visitorReader.readLine();
+        }
+        visitorReader.close();
     }
 
     public void setSelectedPerson(Person person) {
@@ -317,14 +339,20 @@ public class Cemetree {
     }
 
     public void consoleMode() {
+        Map<String, String> help = new LinkedHashMap<>();
+        help.put("help", "List commands");
+        help.put("logout", "Log out");
+        help.put("cancel", "Cancel current operation");
+        help.put("exit", "Exit the program");
+
         Scanner scanner = new Scanner(System.in);
         ConsoleReader reader = new ConsoleReader(scanner);
 
         String command = "";
         List<Person> selectedPeople;
 
-        selectedPerson = people.get("20890067372");
-        while (!command.matches("quit|exit")) {
+        selectedPerson = people.get("84282308566");
+        while (!command.matches("(?i)^quit|exit$")) {
             try {
                 if (selectedPerson == null) {
                     ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", Person.QUESTIONS.get(0).regex(), Person.QUESTIONS.get(0).errorMessage(), true);
@@ -334,8 +362,10 @@ public class Cemetree {
                     selectedPerson = people.get(id);
                     System.out.println("Successfully logged in as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
                 } else if (command.equalsIgnoreCase("help")) {
-                    //TODO: List commands
-                    System.out.println("Help ");
+                    System.out.println("Use -h for help with a command.");
+                    for (Map.Entry<String, String> entry : help.entrySet()) {
+                        System.out.printf("%-20s %s%n", entry.getKey().toUpperCase(Locale.ENGLISH), entry.getValue());
+                    }
                 } else if (command.equalsIgnoreCase("logout")) {
                     selectedPerson = null;
                     System.out.println("Successfully logged out.");
@@ -344,8 +374,15 @@ public class Cemetree {
                     Person newPerson = new Person(scanner, people, cemeteries);
                     people.put(newPerson.getId(), newPerson);
                     System.out.println("Successfully added person with ID " + newPerson.getId() + ".");
-                } else if (command.matches("(?i)^remove\\sperson\\s(?!\\s).+$")) {
-                    String id = command.split(" ")[2];
+                } else if (command.matches("(?i)^remove person.*$")) {
+                    String[] args = command.split(" ");
+
+                    if (args.length < 3) {
+                        System.out.println("Please enter person ID.");
+                        continue;
+                    }
+
+                    String id = args[2];
                     Person personToRemove = people.get(id);
 
                     if (personToRemove != null) {
@@ -361,54 +398,72 @@ public class Cemetree {
                         System.out.println("Successfully logged out.");
                         continue;
                     }
-                } else if (command.matches("(?i)^search person.*")) {
+                } else if (command.matches("(?i)^search person.*$")) {
                     String[] args = command.split(" ");
 
-                    if (args.length > 2) {
-                        selectedPeople = searchPeopleByCommand(command);
-                        System.out.println("Found " + selectedPeople.size() + " people.");
-
-                        for (int i = 0; i < selectedPeople.size(); i++) {
-                            Person person = selectedPeople.get(i);
-                            System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname());
-                        }
-                    } else {
+                    if (args.length < 3) {
                         System.out.println("Please enter at least one search criteria.");
+                        continue;
                     }
-                } else if (command.matches("(?i)^visit person.*")) {
+
+                    selectedPeople = searchPeopleByCommand(command);
+                    System.out.println("Found " + selectedPeople.size() + " people.");
+
+                    for (int i = 0; i < selectedPeople.size(); i++) {
+                        Person person = selectedPeople.get(i);
+                        System.out.println((i + 1) + "- " + person.getName() + " " + person.getSurname());
+                    }
+                } else if (command.matches("(?i)^visit person.*$")) {
                     String[] args = command.split(" ");
 
-                    if (args.length > 2) {
-                        selectedPeople = searchPeopleByCommand(command);
-                        Person foundPerson = selectPersonInList(reader, selectedPeople);
+                    if (args.length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
 
-                        if (foundPerson != null) {
-                            foundPerson.getCemetery().addVisitor(foundPerson, selectedPerson, new Date());
-                            System.out.println("Successfully visited " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + " by " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
-                        }
+                    selectedPeople = searchPeopleByCommand(command);
+                    Person foundPerson = selectPersonInList(reader, selectedPeople);
+
+                    if (foundPerson != null && foundPerson.isDead()) {
+                        foundPerson.getCemetery().addVisitor(foundPerson, selectedPerson, new Date());
+                        System.out.println("Successfully visited " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + " by " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
+                    } else {
+                        System.out.println("Can not find person to visit.");
                     }
                     //get visitor list by filter command
-                } else if (command.matches("(?i)^get visitor list.*")) {
+                } else if (command.matches("(?i)^get visitor list.*$")) {
                     String[] args = command.split(" ");
 
-                    if (args.length > 2) {
-                        selectedPeople = searchPeopleByCommand(command);
-                        Person foundPerson = selectPersonInList(reader, selectedPeople);
+                    if (args.length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
 
-                        if (foundPerson != null) {
-                            SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
+                    selectedPeople = searchPeopleByCommand(command);
+                    Person foundPerson = selectPersonInList(reader, selectedPeople);
 
-                            for (Cemetery.Visit visit : visitorList) {
-                                System.out.println(visit.toString());
-                            }
+                    if (foundPerson != null) {
+                        SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
+
+                        System.out.println("Visitor list of " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + ":");
+
+                        for (Cemetery.Visit visit : visitorList) {
+                            System.out.println(visit.toString());
                         }
                     }
                 } else if (command.equalsIgnoreCase("add cemetery")) {
                     Cemetery newCemetery = new Cemetery(scanner, cemeteries);
                     cemeteries.put(newCemetery.getId(), newCemetery);
                     System.out.println("Successfully added cemetery with ID " + newCemetery.getId() + ".");
-                } else if (command.matches("(?i)^remove\\scemetery\\s(?!\\s).+$")) {
-                    String id = command.split(" ")[2];
+                } else if (command.matches("(?i)^remove cemetery .*$")) {
+                    String[] args = command.split(" ");
+
+                    if (args.length < 3) {
+                        System.out.println("Please enter cemetery ID.");
+                        continue;
+                    }
+
+                    String id = args[2];
                     Cemetery cemeteryToRemove = cemeteries.get(id);
 
                     if (cemeteryToRemove != null) {

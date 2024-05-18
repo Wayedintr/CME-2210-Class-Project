@@ -20,6 +20,14 @@ public class Cemetery {
         public int compareTo(Visit other) {
             return other.date.compareTo(this.date);
         }
+
+        public Person getPerson() {
+            return person;
+        }
+
+        public Date getDate() {
+            return date;
+        }
     }
 
     Map<Person, SortedSet<Visit>> visitorList = new HashMap<>();
@@ -72,6 +80,10 @@ public class Cemetery {
 
     public SortedSet<Visit> getVisitorsOfPerson(Person person) {
         return visitorList.get(person);
+    }
+
+    public Map<Person, SortedSet<Visit>> getVisitorList() {
+        return visitorList;
     }
 
     public String toString() {
