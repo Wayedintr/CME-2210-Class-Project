@@ -22,7 +22,7 @@ public class ConsoleReader {
                     System.out.print("This field is required.\n");
                 else
                     break;
-            } else if (answer.matches("cancel|quit|exit")) {
+            } else if (answer.matches("(?i)^cancel|quit|exit$")) {
                 throw new CancellationException();
             } else if (!answer.matches(question.regex)) {
                 System.out.print(question.errorMessage + "\n");
@@ -36,9 +36,17 @@ public class ConsoleReader {
         Map<String, String> argsMap = new HashMap<>();
         String[] args = command.split(" ");
 
-        for (String arg : args) {
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
             String[] pair = arg.split("=");
             if (pair.length == 2) {
+                if (pair[1].contains("\"")) {
+                    while (!pair[1].endsWith("\"") && i < args.length - 1) {
+                        i++;
+                        pair[1] += " " + args[i];
+                    }
+                    pair[1] = pair[1].substring(1, pair[1].length() - 1);
+                }
                 argsMap.put(pair[0].toLowerCase(), pair[1]);
             }
         }

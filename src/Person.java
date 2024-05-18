@@ -55,8 +55,9 @@ public class Person {
 
         this.dead = reader.getAnswer(QUESTIONS.get(8)).matches("(?i)^(true|t)$");
         if (this.dead) {
-            Date deathDate = new Date(reader.getAnswer(QUESTIONS.get(9)));
-            while (deathDate.before(this.birthDate)) {
+            String deathDateStr = reader.getAnswer(QUESTIONS.get(9));
+            Date deathDate = deathDateStr.isBlank() ? null : new Date(deathDateStr);
+            while (deathDate != null && deathDate.before(this.birthDate)) {
                 System.out.println("Death date cannot be before birth date. Please enter a valid death date.");
                 deathDate = new Date(reader.getAnswer(QUESTIONS.get(9)));
             }
@@ -141,6 +142,36 @@ public class Person {
         }
     }
 
+    public void connect(Map<String, Person> people, Map<String, Cemetery> cemeteries) {
+        if (this.hasMotherId() && people.get(this.getMotherId()) != null) {
+            Person mother = people.get(this.getMotherId());
+            this.setMother(mother);
+            mother.addChild(this);
+        }
+        if (this.hasFatherId() && people.get(this.getFatherId()) != null) {
+            Person father = people.get(this.getFatherId());
+            this.setFather(father);
+            father.addChild(this);
+        }
+        if (this.hasSpouseId() && people.get(this.getSpouseId()) != null) {
+            Person spouse = people.get(this.getSpouseId());
+            if (spouse != null) {
+                this.setSpouse(spouse);
+                spouse.setSpouse(this);
+            }
+        }
+        if (this.getCemetery() != null && this.isDead()) {
+            if (cemetery.count >= cemetery.CAPACITY) {
+                System.out.println("Cemetery " + cemetery.getId() + " is full. Person " + this.getName() + " " + this.getSurname() + " cannot be added.");
+            } else {
+                people.put(this.getId(), this);
+            }
+            cemetery.incrementCount();
+        } else {
+            people.put(this.getId(), this);
+        }
+    }
+
     public String toString() {
         return "ID: " + id + "\n" +
                 "Name: " + name + "\n" +
@@ -177,6 +208,14 @@ public class Person {
                 fatherId == null ? "" : fatherId,
                 spouseId == null ? "" : spouseId
         );
+    }
+
+    public static String toRowHeader() {
+        return String.format("    %-12s %-12s %s", "Name", "Surname", "Birth date - Death date");
+    }
+
+    public String toRowString(int index) {
+        return String.format("%-3d %-12s %-12s %s", (index), name, surname, getDateString());
     }
 
     public int compareTo(Person person) {
@@ -241,6 +280,10 @@ public class Person {
 
     public void setDeathDate(Date deathDate) {
         this.deathDate = deathDate;
+    }
+
+    public String getDateString() {
+        return (birthDate == null ? "unknown" : birthDate.toString()) + " - " + (deathDate == null ? "present" : deathDate.toString());
     }
 
     public boolean isDead() {
@@ -308,10 +351,10 @@ public class Person {
     }
 
     public void removeCemeteryIfId(String id) {
-        if (cemetery != null && cemetery.getId().equals(id)) {
-            this.cemetery.decrementCount();
-            this.cemetery = null;
-        }
+//        if (cemetery != null && cemetery.getId().equals(id)) {
+//            this.cemetery.decrementCount();
+//            this.cemetery = null;
+//        }
     }
 
     public Person getMother() {

@@ -42,7 +42,7 @@ public class Cemetery {
 
     public static final List<ConsoleReader.Question> QUESTIONS = List.of(
             new ConsoleReader.Question("ID", "[0-9]{2}-[0-9]{3}", "Invalid ID. Must be in the format 'XX-XXX", true),
-            new ConsoleReader.Question("Name", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid name. Must contain only letters, 2-64 characters.", true)
+            new ConsoleReader.Question("Name", "^[\\p{L}\\p{M}'\\s-]{2,64}$", "Invalid name. Must contain only letters, 2-64 characters.", true)
     );
 
     public Cemetery(final Scanner scanner, final Map<String, Cemetery> cemeteries) throws CancellationException {
@@ -57,14 +57,27 @@ public class Cemetery {
         this.address = new Address(scanner);
     }
 
-    public Cemetery(String id, String name, Address address) {
+    Cemetery(String id, String name, Address address) {
         this.address = address;
         this.name = name;
         this.id = id;
         this.count = 0;
     }
 
+    Cemetery(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     Cemetery() {
+    }
+
+    public void connect(Map<String, Person> people) {
+        for (Person person : people.values()) {
+            if (person.getCemetery() != null && person.getCemetery().getId().equals(this.getId())) {
+                person.setCemetery(this);
+            }
+        }
     }
 
     public void addVisitor(Person visitedPerson, Person visitorPerson, Date date) {

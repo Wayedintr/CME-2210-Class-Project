@@ -20,6 +20,7 @@ public class Date extends GregorianCalendar {
     }
 
     Date(String date, boolean isCLK) {
+        date = date.replaceAll("-", "/");
         try {
             if (isCLK)
                 this.setTime(FORMAT_CLK.parse(date));
