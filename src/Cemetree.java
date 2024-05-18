@@ -8,7 +8,7 @@ public class Cemetree {
     Map<String, Cemetery> cemeteries;
     private Person selectedPerson;
 
-    record PersonRelationship(Person person, String relationship) {
+    private record PersonRelationship(Person person, String relationship) {
     }
 
     public Cemetree() {
@@ -122,7 +122,6 @@ public class Cemetree {
             String[] data = line.split(",");
             Cemetery cemetery = cemeteries.get(data[7]);
 
-
             Person person = new Person(data[0], data[1], data[2], data[3], !data[4].equals("0"), !data[5].equals("0"), data[6],
                     cemetery,
                     !data[8].isBlank() ? new Date(data[8]) : null,
@@ -156,7 +155,7 @@ public class Cemetree {
                     people.put(person.getId(), person);
                 }
                 cemetery.incrementCount();
-            } else if (person.getCemetery() == null && !person.isDead()) {
+            } else {
                 people.put(person.getId(), person);
             }
             line = peopleReader.readLine();
@@ -351,15 +350,27 @@ public class Cemetree {
         String command = "";
         List<Person> selectedPeople;
 
-        selectedPerson = people.get("84282308566");
+        selectedPerson = people.get("12312342353");
         while (!command.matches("(?i)^quit|exit$")) {
             try {
+                if (selectedPerson != null) {
+                    System.out.print("> ");
+                    command = scanner.nextLine().trim().replaceAll("\\s+", " ");
+                }
+
+
                 if (selectedPerson == null) {
                     ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", Person.QUESTIONS.get(0).regex(), Person.QUESTIONS.get(0).errorMessage(), true);
                     String id;
-                    for (id = reader.getAnswer(loginQuestion); !people.containsKey(id); id = reader.getAnswer(loginQuestion))
+                    for (id = reader.getAnswer(loginQuestion); !people.containsKey(id); id = reader.getAnswer(loginQuestion)) {
                         System.out.println("Person with ID " + id + " not found.");
+                    }
                     selectedPerson = people.get(id);
+                    if (selectedPerson.isDead()) {
+                        System.out.println("Person with ID " + id + " is dead.");
+                        selectedPerson = null;
+                        continue;
+                    }
                     System.out.println("Successfully logged in as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
                 } else if (command.equalsIgnoreCase("help")) {
                     System.out.println("Use -h for help with a command.");
@@ -369,12 +380,21 @@ public class Cemetree {
                 } else if (command.equalsIgnoreCase("logout")) {
                     selectedPerson = null;
                     System.out.println("Successfully logged out.");
-                    continue;
                 } else if (command.equalsIgnoreCase("add person")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to add people.");
+                        continue;
+                    }
+
                     Person newPerson = new Person(scanner, people, cemeteries);
                     people.put(newPerson.getId(), newPerson);
                     System.out.println("Successfully added person with ID " + newPerson.getId() + ".");
                 } else if (command.matches("(?i)^remove person.*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to remove people.");
+                        continue;
+                    }
+
                     String[] args = command.split(" ");
 
                     if (args.length < 3) {
@@ -396,7 +416,6 @@ public class Cemetree {
                     if (personToRemove == selectedPerson) {
                         selectedPerson = null;
                         System.out.println("Successfully logged out.");
-                        continue;
                     }
                 } else if (command.matches("(?i)^search person.*$")) {
                     String[] args = command.split(" ");
@@ -425,6 +444,10 @@ public class Cemetree {
                     Person foundPerson = selectPersonInList(reader, selectedPeople);
 
                     if (foundPerson != null && foundPerson.isDead()) {
+                        if (foundPerson.getCemetery() == null) {
+                            System.out.println("Can not find the cemetery of " + foundPerson.getName() + " " + foundPerson.getSurname() + ".");
+                            continue;
+                        }
                         foundPerson.getCemetery().addVisitor(foundPerson, selectedPerson, new Date());
                         System.out.println("Successfully visited " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + " by " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
                     } else {
@@ -432,6 +455,11 @@ public class Cemetree {
                     }
                     //get visitor list by filter command
                 } else if (command.matches("(?i)^get visitor list.*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to get visitor list.");
+                        continue;
+                    }
+
                     String[] args = command.split(" ");
 
                     if (args.length < 3) {
@@ -445,6 +473,11 @@ public class Cemetree {
                     if (foundPerson != null) {
                         SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
 
+                        if (visitorList == null) {
+                            System.out.println("Can not find the visitor list of " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + ".");
+                            continue;
+                        }
+
                         System.out.println("Visitor list of " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + ":");
 
                         for (Cemetery.Visit visit : visitorList) {
@@ -452,10 +485,20 @@ public class Cemetree {
                         }
                     }
                 } else if (command.equalsIgnoreCase("add cemetery")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to add cemeteries.");
+                        continue;
+                    }
+
                     Cemetery newCemetery = new Cemetery(scanner, cemeteries);
                     cemeteries.put(newCemetery.getId(), newCemetery);
                     System.out.println("Successfully added cemetery with ID " + newCemetery.getId() + ".");
                 } else if (command.matches("(?i)^remove cemetery .*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to remove cemeteries.");
+                        continue;
+                    }
+
                     String[] args = command.split(" ");
 
                     if (args.length < 3) {
@@ -482,7 +525,7 @@ public class Cemetree {
                     } else {
                         System.out.println("Cemetery with ID " + id + " not found.");
                     }
-                } else if (!command.isBlank()) {
+                } else if (!command.isBlank() && !command.matches("(?i)^quit|exit$")) {
                     System.out.println("Invalid command. Type \"help\" for a list of commands.");
                 }
             } catch (CancellationException e) {
@@ -490,9 +533,6 @@ public class Cemetree {
                     break;
                 System.out.println("Cancelled operation.");
             }
-            System.out.print("> ");
-
-            command = scanner.nextLine().trim().replaceAll("\\s+", " ");
         }
     }
 }
