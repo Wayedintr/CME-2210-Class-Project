@@ -72,6 +72,14 @@ public class Cemetery {
     Cemetery() {
     }
 
+    public static String toRowHeader() {
+        return String.format("    %-12s %-30s %s", "ID", "Name", "Address");
+    }
+
+    public String toRowString(int index) {
+        return String.format("%-3d %-12s %-30s %s", (index), id, name, address);
+    }
+
     public void connect(Map<String, Person> people) {
         for (Person person : people.values()) {
             if (person.getCemetery() != null && person.getCemetery().getId().equals(this.getId())) {

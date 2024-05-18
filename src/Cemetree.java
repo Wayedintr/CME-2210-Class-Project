@@ -61,38 +61,6 @@ public class Cemetree {
         cemeteries = new HashMap<>();
     }
 
-    public void addPerson(Person person) {
-        people.put(person.getId(), person);
-    }
-
-    public Person getPerson(String id) {
-        return people.get(id);
-    }
-
-    public void updatePerson(Person person) {
-        people.put(person.getId(), person);
-    }
-
-    public void removePerson(String id) {
-        people.remove(id);
-    }
-
-    public void addCemetery(Cemetery cemetery) {
-        cemeteries.put(cemetery.getId(), cemetery);
-    }
-
-    public Cemetery getCemetery(String id) {
-        return cemeteries.get(id);
-    }
-
-    public void updateCemetery(Cemetery cemetery) {
-        cemeteries.put(cemetery.getId(), cemetery);
-    }
-
-    public void removeCemetery(String id) {
-        cemeteries.remove(id);
-    }
-
     public void saveToFile(String fileName) throws IOException {
         // Save cemeteries
         BufferedWriter cemeteryWriter = new BufferedWriter(new FileWriter(fileName + "_cemeteries.csv"));
@@ -363,6 +331,7 @@ public class Cemetree {
                 index = Integer.parseInt(args[commandWordCount]) - 1;
                 if (index < 0 || index >= selectedPeople.size()) {
                     System.out.println("Please enter a number between 1 and " + selectedPeople.size() + ".");
+                    return null;
                 }
             } catch (NumberFormatException ignored) {
             }
@@ -442,14 +411,50 @@ public class Cemetree {
         return foundCemetery;
     }
 
+    private Cemetery selectCemeteryFromCommand(ConsoleReader reader, String command, int commandWordCount, List<Cemetery> selectedCemeteries) {
+        String[] args = command.split(" ");
+
+        boolean contains = command.contains("=");
+
+        int index = -1;
+        if (selectedCemeteries != null && !contains) {
+            try {
+                index = Integer.parseInt(args[commandWordCount]) - 1;
+                if (index < 0 || index >= selectedCemeteries.size()) {
+                    System.out.println("Please enter a number between 1 and " + selectedCemeteries.size() + ".");
+                    return null;
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        } else if ((selectedCemeteries == null || selectedCemeteries.isEmpty()) && !contains) {
+            System.out.println("Can not pick a cemetery.");
+        }
+
+        Cemetery foundCemetery = null;
+
+        if (index == -1 && contains) {
+            List<Cemetery> cemeteriesToSearch = searchCemeteriesByCommand(command);
+            foundCemetery = selectCemeteryInList(reader, cemeteriesToSearch);
+        } else if (selectedCemeteries != null && index != -1) {
+            foundCemetery = selectedCemeteries.get(index);
+        }
+
+        return foundCemetery;
+    }
+
     public void consoleMode() {
         Scanner scanner = new Scanner(System.in);
         ConsoleReader reader = new ConsoleReader(scanner);
 
         String command = "";
         List<Person> selectedPeople = null;
+        List<Cemetery> selectedCemeteries = null;
 
         selectedPerson = people.get("12312342353");
+
+        System.out.println("Welcome to Cemetree. Type \"help\" for a list of commands.");
+        System.out.println("Type \"exit\" to exit.");
+
         while (!command.matches("(?i)^quit|exit$")) {
             try {
                 if (selectedPerson != null) {
@@ -457,6 +462,7 @@ public class Cemetree {
                     command = scanner.nextLine().trim().replaceAll("\\s+", " ");
                 }
 
+                // Login
                 if (selectedPerson == null) {
                     ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", Person.QUESTIONS.get(0).regex(), Person.QUESTIONS.get(0).errorMessage(), true);
                     String id;
@@ -470,7 +476,10 @@ public class Cemetree {
                         continue;
                     }
                     System.out.println("Successfully logged in as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
-                } else if (command.matches("(?i)^help .*$")) {
+                }
+
+                // Help with specific command
+                else if (command.matches("(?i)^help .*$")) {
                     String[] args = command.split(" ");
 
                     if (args.length < 2) {
@@ -485,15 +494,24 @@ public class Cemetree {
                         System.out.println("Command not found.");
                     }
 
-                } else if (command.equalsIgnoreCase("help")) {
+                }
+
+                // Help
+                else if (command.equalsIgnoreCase("help")) {
                     System.out.println("Use help <command> for more information on a specific command.");
                     for (Map.Entry<String, ConsoleCommand> commandToHelp : HELP.entrySet()) {
                         System.out.println(commandToHelp.getValue());
                     }
-                } else if (command.equalsIgnoreCase("logout")) {
+                }
+
+                // Logout
+                else if (command.equalsIgnoreCase("logout")) {
                     selectedPerson = null;
                     System.out.println("Successfully logged out.");
-                } else if (command.equalsIgnoreCase("add person")) {
+                }
+
+                // Add Person
+                else if (command.equalsIgnoreCase("add person")) {
                     if (!selectedPerson.isAdmin()) {
                         System.out.println("You do not have permission to add people.");
                         continue;
@@ -504,7 +522,10 @@ public class Cemetree {
                     newPerson.connect(people, cemeteries);
 
                     System.out.println("Successfully added " + newPerson.getFullName() + ".");
-                } else if (command.matches("(?i)^remove person.*$")) {
+                }
+
+                // Remove Person
+                else if (command.matches("(?i)^remove person.*$")) {
                     if (!selectedPerson.isAdmin()) {
                         System.out.println("You do not have permission to remove people.");
                         continue;
@@ -527,7 +548,10 @@ public class Cemetree {
                         selectedPerson = null;
                         System.out.println("Successfully logged out.");
                     }
-                } else if (command.matches("(?i)^search person.*$")) {
+                }
+
+                // Search Person
+                else if (command.matches("(?i)^search person.*$")) {
                     if (command.split(" ").length < 3) {
                         System.out.println("Please enter at least one search criteria.");
                         continue;
@@ -540,97 +564,10 @@ public class Cemetree {
                     for (int i = 0; i < selectedPeople.size(); i++) {
                         System.out.println(selectedPeople.get(i).toRowString(i + 1));
                     }
-                } else if (command.matches("(?i)^view.*$")) {
-                    if (command.split(" ").length < 2) {
-                        System.out.println("Please enter a number.");
-                        continue;
-                    }
+                }
 
-                    Person personToView = selectPersonFromCommand(reader, command, 1, selectedPeople);
-
-                    if (personToView != null) {
-                        System.out.println(personToView.details(selectedPerson.isAdmin()));
-                    }
-                } else if (command.matches("(?i)^visit person.*$")) {
-                    if (command.split(" ").length < 3) {
-                        System.out.println("Please enter at least one search criteria.");
-                        continue;
-                    }
-
-                    Person foundPerson = selectPersonFromCommand(reader, command, 2, selectedPeople);
-
-                    if (foundPerson != null && foundPerson.isDead()) {
-                        if (foundPerson.getCemetery() == null) {
-                            System.out.println("Can not find the cemetery of " + foundPerson.getName() + " " + foundPerson.getSurname() + ".");
-                            continue;
-                        }
-                        foundPerson.getCemetery().addVisitor(foundPerson, selectedPerson, new Date());
-                        System.out.println("Successfully visited " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + " by " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
-                    } else {
-                        System.out.println("Can not find person to visit.");
-                    }
-                } else if (command.matches("(?i)^get visitor list.*$")) {
-                    if (!selectedPerson.isAdmin()) {
-                        System.out.println("You do not have permission to get visitor list.");
-                        continue;
-                    } else if (command.split(" ").length < 3) {
-                        System.out.println("Please enter at least one search criteria.");
-                        continue;
-                    }
-
-                    Person foundPerson = selectPersonFromCommand(reader, command, 3, selectedPeople);
-
-                    if (foundPerson != null) {
-                        SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
-
-                        if (visitorList == null) {
-                            System.out.println("There are no records of visitors of " + foundPerson.getFullName() + " in " + foundPerson.getCemetery().getName() + ".");
-                            continue;
-                        }
-
-                        System.out.println("Visitor list of " + foundPerson.getFullName() + " in " + foundPerson.getCemetery().getName() + ":");
-
-                        for (Cemetery.Visit visit : visitorList) {
-                            System.out.println(visit.toString());
-                        }
-                    }
-                } else if (command.equalsIgnoreCase("add cemetery")) {
-                    if (!selectedPerson.isAdmin()) {
-                        System.out.println("You do not have permission to add cemeteries.");
-                        continue;
-                    }
-
-                    Cemetery newCemetery = new Cemetery(scanner, cemeteries);
-                    cemeteries.put(newCemetery.getId(), newCemetery);
-                    newCemetery.connect(people);
-                    System.out.println("Successfully added cemetery \"" + newCemetery.getName() + "\".");
-                } else if (command.matches("(?i)^remove cemetery .*$")) {
-                    if (!selectedPerson.isAdmin()) {
-                        System.out.println("You do not have permission to remove cemeteries.");
-                        continue;
-                    } else if (command.split(" ").length < 3) {
-                        System.out.println("Please enter cemetery ID.");
-                        continue;
-                    }
-
-                    List<Cemetery> cemeteriesToRemove = searchCemeteriesByCommand(command);
-                    Cemetery cemeteryToRemove = selectCemeteryInList(reader, cemeteriesToRemove);
-
-                    if (cemeteryToRemove != null) {
-                        String answer = reader.getAnswer(ConsoleReader.yesNo(
-                                "There are " + cemeteryToRemove.getCount() + " people in this cemetery. Confirm removal?"));
-
-                        if (answer.matches(ConsoleReader.YES_REGEX)) {
-                            cemeteries.remove(cemeteryToRemove.getId());
-                            for (Person person : people.values()) {
-                                person.removeCemeteryIfId(cemeteryToRemove.getId());
-                            }
-                            System.out.println("Successfully removed cemetery with ID " + cemeteryToRemove.getId() + ".");
-                        } else {
-                            throw new CancellationException();
-                        }
-                    }
-                } else if (command.matches("(?i)^search relatives.*$")) {
+                // Search Relatives
+                else if (command.matches("(?i)^search relatives.*$")) {
                     String[] args = command.split(" ");
 
                     int generationInterval = 2;
@@ -659,6 +596,129 @@ public class Cemetree {
                             PersonRelationship personRelationship = result.get(i);
                             selectedPeople.add(personRelationship.person);
                             System.out.printf("%-3d %-12s %-12s %s\n", i + 1, personRelationship.person.getName(), personRelationship.person.getSurname(), personRelationship.relationship);
+                        }
+                    }
+                }
+
+                // View Person
+                else if (command.matches("(?i)^view.*$")) {
+                    if (command.split(" ").length < 2) {
+                        System.out.println("Please enter a number.");
+                        continue;
+                    }
+
+                    Person personToView = selectPersonFromCommand(reader, command, 1, selectedPeople);
+
+                    if (personToView != null) {
+                        System.out.println(personToView.details(selectedPerson.isAdmin()));
+                    }
+                }
+
+                // Visit Person
+                else if (command.matches("(?i)^visit person.*$")) {
+                    if (command.split(" ").length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
+
+                    Person foundPerson = selectPersonFromCommand(reader, command, 2, selectedPeople);
+
+                    if (foundPerson != null && foundPerson.isDead()) {
+                        if (foundPerson.getCemetery() == null) {
+                            System.out.println("Can not find the cemetery of " + foundPerson.getName() + " " + foundPerson.getSurname() + ".");
+                            continue;
+                        }
+                        foundPerson.getCemetery().addVisitor(foundPerson, selectedPerson, new Date());
+                        System.out.println("Successfully visited " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + " by " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
+                    } else {
+                        System.out.println("Can not find person to visit.");
+                    }
+                }
+
+                // Get Visitor List
+                else if (command.matches("(?i)^get visitor list.*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to get visitor list.");
+                        continue;
+                    } else if (command.split(" ").length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
+
+                    Person foundPerson = selectPersonFromCommand(reader, command, 3, selectedPeople);
+
+                    if (foundPerson != null) {
+                        SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
+
+                        if (visitorList == null) {
+                            System.out.println("There are no records of visitors of " + foundPerson.getFullName() + " in " + foundPerson.getCemetery().getName() + ".");
+                            continue;
+                        }
+
+                        System.out.println("Visitor list of " + foundPerson.getFullName() + " in " + foundPerson.getCemetery().getName() + ":");
+
+                        for (Cemetery.Visit visit : visitorList) {
+                            System.out.println(visit.toString());
+                        }
+                    }
+                }
+
+                // Add Cemetery
+                else if (command.equalsIgnoreCase("add cemetery")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to add cemeteries.");
+                        continue;
+                    }
+
+                    Cemetery newCemetery = new Cemetery(scanner, cemeteries);
+                    cemeteries.put(newCemetery.getId(), newCemetery);
+                    newCemetery.connect(people);
+                    System.out.println("Successfully added cemetery \"" + newCemetery.getName() + "\".");
+                }
+
+                // Remove Cemetery
+                else if (command.matches("(?i)^remove cemetery .*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to remove cemeteries.");
+                        continue;
+                    } else if (command.split(" ").length < 3) {
+                        System.out.println("Please enter cemetery ID.");
+                        continue;
+                    }
+
+                    Cemetery cemeteryToRemove = selectCemeteryFromCommand(reader, command, 2, selectedCemeteries);
+
+                    if (cemeteryToRemove != null) {
+                        String answer = reader.getAnswer(ConsoleReader.yesNo(
+                                "There are " + cemeteryToRemove.getCount() + " people in this cemetery. Confirm removal?"));
+
+                        if (answer.matches(ConsoleReader.YES_REGEX)) {
+                            cemeteries.remove(cemeteryToRemove.getId());
+                            for (Person person : people.values()) {
+                                person.removeCemeteryIfId(cemeteryToRemove.getId());
+                            }
+                            System.out.println("Successfully removed cemetery with ID " + cemeteryToRemove.getId() + ".");
+                        } else {
+                            throw new CancellationException();
+                        }
+                    }
+                }
+
+                // Search Cemeteries
+                else if (command.matches("(?i)^search cemetery .*$")) {
+                    if (command.split(" ").length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
+
+                    selectedCemeteries = searchCemeteriesByCommand(command);
+                    if (selectedCemeteries.isEmpty()) {
+                        System.out.println("No cemeteries found.");
+                    } else {
+                        System.out.println("Found " + selectedCemeteries.size() + " cemeteries:");
+                        System.out.println(Cemetery.toRowHeader());
+                        for (int i = 0; i < selectedCemeteries.size(); i++) {
+                            System.out.println(selectedCemeteries.get(i).toRowString(i + 1));
                         }
                     }
                 } else if (!command.isBlank() && !command.matches("(?i)^quit|exit$")) {
