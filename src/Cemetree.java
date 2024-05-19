@@ -113,7 +113,7 @@ public class Cemetree {
         cemeteryReader.readLine();
 
         while ((line = cemeteryReader.readLine()) != null) {
-            String[] data = line.split(",");
+            String[] data = line.split(",", -1);
             Address address = new Address(data[2], data[3], data[4], data[5], data[6], Double.parseDouble(data[7]), Double.parseDouble(data[8]));
             Cemetery cemetery = new Cemetery(data[0], data[1], address);
             cemeteries.put(cemetery.getId(), cemetery);
@@ -125,7 +125,7 @@ public class Cemetree {
         peopleReader.readLine();
 
         while ((line = peopleReader.readLine()) != null) {
-            String[] data = line.split(",");
+            String[] data = line.split(",", -1);
             Cemetery cemetery = cemeteries.get(data[7]);
 
             Person person = new Person(data[0], data[1], data[2], data[3], !data[4].equals("0"), !data[5].equals("0"), data[6],
@@ -147,7 +147,7 @@ public class Cemetree {
         visitorReader.readLine();
 
         while ((line = visitorReader.readLine()) != null) {
-            String[] data = line.split(",");
+            String[] data = line.split(",", -1);
             Cemetery cemetery = cemeteries.get(data[0]);
             Person visitedPerson = people.get(data[1]);
             Person visitorPerson = people.get(data[2]);
@@ -412,7 +412,7 @@ public class Cemetree {
         }
         ViewMode viewMode = ViewMode.PERSONS;
 
-        selectedPerson = people.get("12312342353");
+        selectedPerson = people.get("12345678901");
 
         System.out.println("Welcome to Cemetree. Type \"help\" for a list of commands.");
         System.out.println("Type \"exit\" to exit.");

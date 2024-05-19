@@ -145,19 +145,7 @@ public class Person {
     }
 
     public String toString() {
-        return "ID: " + id + "\n" +
-                "Name: " + name + "\n" +
-                "Surname: " + surname + "\n" +
-                "Sex: " + sex + "\n" +
-                "Admin: " + admin + "\n" +
-                "Dead: " + dead + "\n" +
-                "Death Cause: " + deathCause + "\n" +
-                "Cemetery ID: " + (cemetery == null ? "" : cemetery.getId()) + "\n" +
-                "Birth Date: " + birthDate + "\n" +
-                "Death Date: " + deathDate + "\n" +
-                "Mother ID: " + motherId + "\n" +
-                "Father ID: " + fatherId + "\n" +
-                "Spouse ID: " + spouseId + "\n";
+        return String.format("Person(%s,%s %s)", id, name, surname);
     }
 
     public static String toCsvHeader() {
@@ -192,16 +180,16 @@ public class Person {
 
     public String toDetailString(boolean admin) {
         return (admin ?
-                "ID          : " + id + "\n" : "") +
-                "Name        : " + name + " " + surname + "\n" +
-                "Sex         : " + sex + "\n" +
-                "Born        : " + birthDate + "\n" +
-                (deathDate != null ? "Died        : " + deathDate + "\n" : "") +
-                (deathCause != null && !deathCause.isBlank() ? "Death Cause : " + deathCause + "\n" : "") +
-                (cemetery != null ? "Cemetery    : " + cemetery.getName() + "\n" : "") +
-                (mother != null ? "Mother      : " + mother.getFullName() + "\n" : "") +
-                (father != null ? "Father      : " + father.getFullName() + "\n" : "") +
-                (spouse != null ? "Spouse      : " + spouse.getFullName() : "");
+                "ID          : " + id : "") +
+                "\nName        : " + name + " " + surname +
+                "\nSex         : " + sex +
+                "\nBorn        : " + birthDate +
+                (deathDate != null ? "\nDied        : " + deathDate : "") +
+                (deathCause != null && !deathCause.isBlank() ? "\nDeath Cause : " + deathCause : "") +
+                (cemetery != null ? "\nCemetery    : " + cemetery.getName() : "") +
+                (mother != null ? "\nMother      : " + mother.getFullName() : "") +
+                (father != null ? "\nFather      : " + father.getFullName() : "") +
+                (spouse != null ? "\nSpouse      : " + spouse.getFullName() : "");
     }
 
     public boolean matches(Person filter) {
