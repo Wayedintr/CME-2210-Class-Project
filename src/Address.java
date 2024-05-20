@@ -28,6 +28,14 @@ public class Address {
         this.longitude = longitude;
     }
 
+    Address(String country, String city, String district, String neighbourhood, String street) {
+        this.country = country;
+        this.city = city;
+        this.district = district;
+        this.neighbourhood = neighbourhood;
+        this.street = street;
+    }
+
     Address(ConsoleReader reader) throws CancellationException {
         this.country = reader.getAnswer(QUESTIONS.get(0));
         this.city = reader.getAnswer(QUESTIONS.get(1));
@@ -85,6 +93,16 @@ public class Address {
 
     public String toStringReverse() {
         return country + ", " + city + ", " + district + "/" + neighbourhood + ", " + street;
+    }
+
+    public boolean matches(Address filter) {
+        if (filter == null) return true;
+        if (filter.country != null && !filter.country.equalsIgnoreCase(this.country)) return false;
+        if (filter.city != null && !filter.city.equalsIgnoreCase(this.city)) return false;
+        if (filter.district != null && !filter.district.equalsIgnoreCase(this.district)) return false;
+        if (filter.neighbourhood != null && !filter.neighbourhood.equalsIgnoreCase(this.neighbourhood)) return false;
+        if (filter.street != null && !filter.street.equalsIgnoreCase(this.street)) return false;
+        return true;
     }
 
     public String getStreet() {

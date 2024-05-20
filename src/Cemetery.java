@@ -52,11 +52,6 @@ public class Cemetery {
         this.count = 0;
     }
 
-    Cemetery(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public Cemetery(ConsoleReader reader, Map<String, Cemetery> cemeteries) throws CancellationException {
         String id;
         for (id = reader.getAnswer(QUESTIONS.get(0)); cemeteries.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0))) {
@@ -193,7 +188,7 @@ public class Cemetery {
     }
 
     public String toDetailString(boolean admin) {
-        return (admin ? "" :
+        return (!admin ? "" :
                 "ID      : " + id + "\n") +
                 "Name    : " + name + "\n" +
                 "Address : " + address.toString() + "\n" +
@@ -205,14 +200,15 @@ public class Cemetery {
         if (filter == null) return true;
         if (filter.id != null && !filter.id.equals(this.id)) return false;
         if (filter.name != null && !filter.name.equalsIgnoreCase(this.name)) return false;
+        if (filter.address != null && !this.address.matches(filter.address)) return false;
         return true;
     }
 
     public static Comparator<? super Cemetery> getComparator(String sortBy) {
-        if (sortBy.equals("id")) return Comparator.comparing(Cemetery::getId);
-        if (sortBy.equals("name")) return Comparator.comparing(Cemetery::getName);
-        if (sortBy.equals("address")) return Comparator.comparing(Cemetery::getAddressStringReverse);
-        if (sortBy.equals("ratio")) return Comparator.comparing(Cemetery::getRatio);
+        if (sortBy.equalsIgnoreCase("id")) return Comparator.comparing(Cemetery::getId);
+        if (sortBy.equalsIgnoreCase("name")) return Comparator.comparing(Cemetery::getName);
+        if (sortBy.equalsIgnoreCase("address")) return Comparator.comparing(Cemetery::getAddressStringReverse);
+        if (sortBy.equalsIgnoreCase("ratio")) return Comparator.comparing(Cemetery::getRatio);
         return Comparator.comparing(Cemetery::getId);
     }
 

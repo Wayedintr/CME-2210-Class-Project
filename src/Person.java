@@ -307,14 +307,15 @@ public class Person {
     }
 
     public static Comparator<? super Person> getComparator(String sortBy) {
-        if (sortBy.equals("id")) return Comparator.comparing(Person::getId);
-        if (sortBy.equals("name")) return Comparator.comparing(Person::getName);
-        if (sortBy.equals("surname")) return Comparator.comparing(Person::getSurname);
-        if (sortBy.equals("sex")) return Comparator.comparing(Person::getSex);
-        if (sortBy.equals("birth_date")) return Comparator.comparing(Person::getBirthDate);
-        if (sortBy.equals("death_date")) return Comparator.comparing(Person::getDeathDate);
-        if (sortBy.equals("death_cause")) return Comparator.comparing(Person::getDeathCause);
-        if (sortBy.equals("cemetery_id")) return Comparator.comparing((Person::getCemeteryId));
+        if (sortBy.equalsIgnoreCase("id")) return Comparator.comparing(Person::getId);
+        if (sortBy.equalsIgnoreCase("name")) return Comparator.comparing(Person::getName);
+        if (sortBy.equalsIgnoreCase("surname")) return Comparator.comparing(Person::getSurname);
+        if (sortBy.equalsIgnoreCase("sex")) return Comparator.comparing(Person::getSex);
+        if (sortBy.equalsIgnoreCase("birth_date")) return Comparator.comparing(Person::getBirthDate);
+        if (sortBy.equalsIgnoreCase("death_date")) return Comparator.comparing(Person::getDeathDate);
+        if (sortBy.equalsIgnoreCase("age")) return Comparator.comparing(Person::getAge);
+        if (sortBy.equalsIgnoreCase("death_cause")) return Comparator.comparing(Person::getDeathCause);
+        if (sortBy.equalsIgnoreCase("cemetery_id")) return Comparator.comparing((Person::getCemeteryId));
         return Comparator.comparing(Person::getId);
     }
 

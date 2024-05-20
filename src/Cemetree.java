@@ -34,7 +34,7 @@ public class Cemetree {
 
     private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name", "sort_by"};
 
-    private final String[] cemeteryFilter = {"id", "name", "sort_by"};
+    private final String[] cemeteryFilter = {"id", "name", "country", "city", "district", "neighbourhood", "street", "latitude", "longitude", "sort_by"};
 
     private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>() {{
         put("add person", new ConsoleCommand("add person", "Adds a new person", personFilter));
@@ -327,8 +327,8 @@ public class Cemetree {
     private List<Person> searchPeopleByCommand(String command, boolean includeAlive) {
         Map<String, String> arguments = ConsoleReader.parseArguments(command);
         Cemetery cemetery = null;
-        if (arguments.containsKey("cemetery_id") || arguments.containsKey("cemetery_name")) {
-            List<Cemetery> cemeteries = searchCemeteriesByFilter(new Cemetery(arguments.get("cemetery_id"), arguments.get("cemetery_name")));
+        if (arguments.containsKey("cemetery_id")) {
+            List<Cemetery> cemeteries = searchCemeteriesByFilter(new Cemetery(arguments.get("cemetery_id"), null, null));
             cemetery = !cemeteries.isEmpty() ? cemeteries.get(0) : null;
         }
 
@@ -428,7 +428,7 @@ public class Cemetree {
         String id = argsMap.get("id");
         String name = argsMap.get("name");
 
-        Cemetery filter = new Cemetery(id, name);
+        Cemetery filter = new Cemetery(id, name, new Address(argsMap.get("country"), argsMap.get("city"), argsMap.get("district"), argsMap.get("neighbourhood"), argsMap.get("street")));
 
         List<Cemetery> result = searchCemeteriesByFilter(filter);
 
