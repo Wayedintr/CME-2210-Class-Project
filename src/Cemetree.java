@@ -54,6 +54,8 @@ public class Cemetree {
         put("edit cemetery", new ConsoleCommand("edit cemetery", "Edits a cemetery", cemeteryFilter));
         put("search cemetery", new ConsoleCommand("search cemetery", "Searches for a cemetery", cemeteryFilter));
 
+        put("show statistics", new ConsoleCommand("show statistics", "Shows statistics", cemeteryFilter));
+
         put("help", new ConsoleCommand("help", "Shows help for <command>", new String[]{"command"}));
         put("logout", new ConsoleCommand("logout", "Logs out", new String[]{}));
 
@@ -242,6 +244,72 @@ public class Cemetree {
                 childrenStack.pop();
             }
         }
+    }
+
+    public String showStatistics() {
+        String result = "Statistics\n";
+
+        Map<String, Integer> deathCauses = new LinkedHashMap<>();
+        Map<Cemetery, Integer> deathCemeteries = new LinkedHashMap<>();
+
+        double sumOfAges = 0;
+        double maleCount = 0;
+        double femaleCount = 0;
+        double deathCount = 0;
+        double deadCount = 0;
+
+        for (Person person : people.values()) {
+            if (person.dead && person.getCemetery() != null) {
+                sumOfAges += person.getAge();
+                deadCount++;
+
+                if (person.getSex().equals("Male"))
+                    maleCount++;
+                else if (person.getSex().equals("Female"))
+                    femaleCount++;
+
+                if (!person.getDeathCause().isBlank()) {
+                    if (deathCauses.containsKey(person.getDeathCause())) {
+                        deathCauses.put(person.getDeathCause(), deathCauses.get(person.getDeathCause()) + 1);
+                        deathCount++;
+                    } else {
+                        deathCauses.put(person.getDeathCause(), 1);
+                        deathCount++;
+                    }
+                }
+
+                if (deathCemeteries.containsKey(person.getCemetery()))
+                    deathCemeteries.put(person.getCemetery(), deathCemeteries.get(person.getCemetery()) + 1);
+                else
+                    deathCemeteries.put(person.getCemetery(), 1);
+            }
+        }
+
+        deathCauses = Cemetery.sortByValue(deathCauses);
+        deathCemeteries = Cemetery.sortByValue(deathCemeteries);
+
+        result += String.format("%-28s : %.2f\n", "Average age", sumOfAges / deadCount);
+        result += String.format("%-28s : %.2f%%/%.2f%%\n", "Male/Female", maleCount / deadCount * 100.0, femaleCount / deadCount * 100.0);
+
+        result += "─".repeat(56) + "\n";
+
+        result += String.format("%-28s : %.0f", "Total deaths", deathCount);
+        for (Map.Entry<String, Integer> entry : deathCauses.entrySet()) {
+            double percentage = entry.getValue() / deathCount * 100.0;
+            if (percentage >= 1)
+                result += String.format("\n%-28s : %2.0f%% %s", entry.getKey(), percentage, "▉".repeat((int) percentage));
+        }
+
+        result += "\n" + "─".repeat(56) + "\n";
+
+        result += String.format("%-28s : %d", "Total cemetery count", deathCemeteries.size());
+        for (Map.Entry<Cemetery, Integer> entry : deathCemeteries.entrySet()) {
+            double percentage = entry.getValue() / deathCount * 100.0;
+            if (percentage >= 1)
+                result += String.format("\n%-28s : %2.0f%% %s", entry.getKey().getName(), percentage, "▉".repeat((int) percentage));
+        }
+
+        return result;
     }
 
     private List<Person> searchPeopleByCommand(String command, boolean includeAlive) {
@@ -622,7 +690,6 @@ public class Cemetree {
                         }
                     }
 
-
                     List<PersonRelationship> result = searchRelativesRecursive(generationInterval, selectedPerson);
 
                     if (result.isEmpty()) {
@@ -794,6 +861,21 @@ public class Cemetree {
 
                         if (cemeteryToView != null) {
                             System.out.println(cemeteries.get(cemeteryToView.getId()).toDetailString(selectedPerson.isAdmin()));
+                        }
+                    }
+                }
+
+                // Show statistics
+                else if (command.matches("(?i)^show statistics.*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to view statistics.");
+                    } else if (command.split(" ").length < 3) {
+                        System.out.println(showStatistics());
+                    } else {
+                        Cemetery cemeteryToView = selectCemeteryFromCommand(reader, command, 2, selectedCemeteries);
+
+                        if (cemeteryToView != null) {
+                            System.out.println(cemeteryToView.getStatistics(people));
                         }
                     }
                 }

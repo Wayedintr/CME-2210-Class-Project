@@ -365,6 +365,14 @@ public class Person {
         this.deathDate = deathDate;
     }
 
+    public double getAge() {
+        if (deathDate == null) {
+            return (new Date().getTimeInMillis() - birthDate.getTimeInMillis()) / 1000.0 / 60.0 / 60.0 / 24.0 / 365.25;
+        } else {
+            return (deathDate.getTimeInMillis() - birthDate.getTimeInMillis()) / 1000.0 / 60.0 / 60.0 / 24.0 / 365.25;
+        }
+    }
+
     public String getDateString() {
         return (birthDate == null ? "unknown" : birthDate.toString()) + " - " + (deathDate == null ? "present" : deathDate.toString());
     }

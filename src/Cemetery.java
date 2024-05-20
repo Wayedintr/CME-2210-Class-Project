@@ -102,6 +102,66 @@ public class Cemetery {
         return visitorList;
     }
 
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            Map.Entry<K, V> entry = list.get(i);
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+    }
+
+    public String getStatistics(Map<String, Person> people) {
+        String result = "Statistics of " + this.name + "\n";
+
+        Map<String, Integer> deathCauses = new LinkedHashMap<>();
+
+        double sumOfAges = 0;
+        double maleCount = 0;
+        double femaleCount = 0;
+
+        double deathCount = 0;
+
+        for (Person person : people.values()) {
+            if (person.dead && person.getCemetery() != null && person.getCemetery().getId().equals(this.getId())) {
+                sumOfAges += person.getAge();
+                if (person.getSex().equals("Male"))
+                    maleCount++;
+                else if (person.getSex().equals("Female"))
+                    femaleCount++;
+                if (!person.getDeathCause().isBlank()) {
+                    if (deathCauses.containsKey(person.getDeathCause())) {
+                        deathCauses.put(person.getDeathCause(), deathCauses.get(person.getDeathCause()) + 1);
+                        deathCount++;
+                    } else {
+                        deathCauses.put(person.getDeathCause(), 1);
+                        deathCount++;
+                    }
+                }
+            }
+        }
+
+        deathCauses = sortByValue(deathCauses);
+
+        result += String.format("%-28s : %.2f\n", "Average age", sumOfAges / count);
+        result += String.format("%-28s : %.2f%%/%.2f%%\n", "Male/Female", maleCount / count * 100.0, femaleCount / count * 100.0);
+
+        result += "─".repeat(56) + "\n";
+
+        result += String.format("%-28s : %.0f", "Total deaths", deathCount);
+        for (Map.Entry<String, Integer> entry : deathCauses.entrySet()) {
+            double percentage = entry.getValue() / deathCount * 100.0;
+            if (percentage >= 1)
+                result += String.format("\n%-28s : %2.0f%% %s", entry.getKey(), percentage, "▉".repeat((int) percentage));
+        }
+
+        return result;
+    }
+
     public String toString() {
         return "ID: " + id + ", Name: " + name + ", Address: " + address;
     }
@@ -138,7 +198,7 @@ public class Cemetery {
                 "Name    : " + name + "\n" +
                 "Address : " + address.toString() + "\n" +
                 "Coords  : " + address.getLatitude() + ", " + address.getLongitude() + "\n" +
-                "Ratio   : " + String.format("%s/%s (%.0f%%)", count, CAPACITY, (double) count / (double) CAPACITY);
+                "Ratio   : " + String.format("%s/%s (%.0f%%)", count, CAPACITY, ((double) count / (double) CAPACITY * 100.0));
     }
 
     public boolean matches(Cemetery filter) {
