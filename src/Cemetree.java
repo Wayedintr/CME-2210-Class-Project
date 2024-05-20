@@ -36,12 +36,14 @@ public class Cemetree {
 
     private final String[] CEMETERY_FILTER = {"id", "name", "country", "city", "district", "neighbourhood", "street", "latitude", "longitude", "sort_by"};
 
-    private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>(19) {{
+    private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>(21) {{
         put("add person", new ConsoleCommand("add person", "Adds a new person", PERSON_FILTER));
         put("remove person", new ConsoleCommand("remove person", "Removes a person", PERSON_FILTER));
         put("edit person", new ConsoleCommand("edit person", "Edits a person", PERSON_FILTER));
         put("set dead", new ConsoleCommand("set dead", "Changes a person's status to dead", PERSON_FILTER));
         put("set alive", new ConsoleCommand("set alive", "Changes a person's status to alive", PERSON_FILTER));
+        put("set admin", new ConsoleCommand("set admin", "Changes a person's admin status", PERSON_FILTER));
+        put("set user", new ConsoleCommand("set user", "Changes a person's admin status", PERSON_FILTER));
         put("search person", new ConsoleCommand("search person", "Searches for a person (Use \"include alive\" flag to include alive people at search)", PERSON_FILTER));
         put("search relatives", new ConsoleCommand("search relatives", "Searches for relatives", RELATIVE_FILTER));
 
@@ -608,8 +610,6 @@ public class Cemetree {
                         personToRemove.removeConnections();
                         people.remove(personToRemove.getId());
                         System.out.println("Successfully removed " + personToRemove.getFullName() + ".");
-                    } else {
-                        System.out.println("Person not found.");
                     }
 
                     if (personToRemove == selectedPerson) {
@@ -633,8 +633,6 @@ public class Cemetree {
                     if (personToEdit != null) {
                         personToEdit.edit(reader, people, cemeteries);
                         System.out.println("Successfully updated " + personToEdit.getFullName() + ".");
-                    } else {
-                        System.out.println("Person not found.");
                     }
                 }
 
@@ -659,8 +657,6 @@ public class Cemetree {
                             personToSetDead.setDead(reader, cemeteries);
                             System.out.println("Successfully set " + personToSetDead.getFullName() + " to dead.");
                         }
-                    } else {
-                        System.out.println("Person not found.");
                     }
                 }
 
@@ -683,8 +679,34 @@ public class Cemetree {
                         } else {
                             System.out.println("Person is not dead.");
                         }
-                    } else {
-                        System.out.println("Person not found.");
+                    }
+                }
+
+                // Set admin or user
+                else if (command.matches("(?i)^set (admin|user).*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to edit people.");
+                        continue;
+                    } else if (command.split(" ").length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
+
+                    Person personToSet = selectPersonFromCommand(reader, command, 2, selectedPeople, true);
+
+                    if (personToSet != null) {
+                        if (personToSet.isDead()) {
+                            System.out.println("You cannot set a dead person to admin or user.");
+                            continue;
+                        }
+
+                        if (command.matches("(?i)^set admin.*$")) {
+                            personToSet.setAdmin(true);
+                            System.out.println("Successfully set " + personToSet.getFullName() + " to admin.");
+                        } else if (command.matches("(?i)^set user.*$")) {
+                            personToSet.setAdmin(false);
+                            System.out.println("Successfully set " + personToSet.getFullName() + " to user.");
+                        }
                     }
                 }
 
@@ -714,7 +736,6 @@ public class Cemetree {
 
                 // Search Relatives
                 else if (command.matches("(?i)^search relatives.*$")) {
-                    String[] args = command.split(" ");
                     Map<String, String> argsMap = ConsoleReader.parseArguments(command);
 
                     int generationInterval = 2;
