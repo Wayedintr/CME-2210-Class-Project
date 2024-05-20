@@ -18,9 +18,17 @@ public class Address {
             new ConsoleReader.Question("Longitude", "-?((1?[0-7]?|[0-9]?)[0-9]|180)(\\.[0-9]{1,6})?", "Invalid longitude. Must be a number between -180.0 and 180.0.", false)
     );
 
-    Address(final Scanner scanner) throws CancellationException {
-        ConsoleReader reader = new ConsoleReader(scanner);
+    Address(String country, String city, String district, String neighbourhood, String street, double latitude, double longitude) {
+        this.country = country;
+        this.city = city;
+        this.district = district;
+        this.neighbourhood = neighbourhood;
+        this.street = street;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
+    Address(ConsoleReader reader) throws CancellationException {
         this.country = reader.getAnswer(QUESTIONS.get(0));
         this.city = reader.getAnswer(QUESTIONS.get(1));
         this.district = reader.getAnswer(QUESTIONS.get(2));
@@ -42,14 +50,33 @@ public class Address {
         }
     }
 
-    Address(String country, String city, String district, String neighbourhood, String street, double latitude, double longitude) {
-        this.country = country;
-        this.city = city;
-        this.district = district;
-        this.neighbourhood = neighbourhood;
-        this.street = street;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public void edit(ConsoleReader reader) throws CancellationException {
+        String country, city, district, neighbourhood, street, latitudeS, longitudeS;
+        double latitude = -1, longitude = -1;
+
+        country = reader.getAnswer(QUESTIONS.get(0).withLabel("Country (" + this.country + ")").withRequired(false), 30);
+        city = reader.getAnswer(QUESTIONS.get(1).withLabel("City (" + this.city + ")").withRequired(false), 30);
+        district = reader.getAnswer(QUESTIONS.get(2).withLabel("District (" + this.district + ")").withRequired(false), 30);
+        neighbourhood = reader.getAnswer(QUESTIONS.get(3).withLabel("Neighbourhood (" + this.neighbourhood + ")").withRequired(false), 30);
+        street = reader.getAnswer(QUESTIONS.get(4).withLabel("Street (" + this.street + ")").withRequired(false), 30);
+
+        try {
+            latitudeS = reader.getAnswer(QUESTIONS.get(5).withLabel("Latitude (" + this.latitude + ")").withRequired(false), 30);
+            longitudeS = reader.getAnswer(QUESTIONS.get(6).withLabel("Longitude (" + this.longitude + ")").withRequired(false), 30);
+
+            latitude = latitudeS.isBlank() ? this.latitude : Double.parseDouble(latitudeS);
+            longitude = longitudeS.isBlank() ? this.longitude : Double.parseDouble(longitudeS);
+        } catch (NumberFormatException e) {
+            System.out.println("Can not parse latitude and longitude.");
+        }
+
+        this.country = country.isBlank() ? this.country : country;
+        this.city = city.isBlank() ? this.city : city;
+        this.district = district.isBlank() ? this.district : district;
+        this.neighbourhood = neighbourhood.isBlank() ? this.neighbourhood : neighbourhood;
+        this.street = street.isBlank() ? this.street : street;
+        this.latitude = latitude == -1 ? this.latitude : latitude;
+        this.longitude = longitude == -1 ? this.longitude : longitude;
     }
 
     public String toString() {

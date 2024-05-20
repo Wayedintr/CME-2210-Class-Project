@@ -82,11 +82,7 @@ public class Person {
         }
     }
 
-    public void getDeathQuestions(ConsoleReader reader, Map<String, Cemetery> cemeteries) {
-        getDeathQuestions(reader, cemeteries, 0);
-    }
-
-    public void getDeathQuestions(ConsoleReader reader, Map<String, Cemetery> cemeteries, int labelSize) {
+    public void getDeathQuestions(ConsoleReader reader, Map<String, Cemetery> cemeteries, int labelSize) throws CancellationException {
         String deathDateStr = reader.getAnswer(QUESTIONS.get(9), labelSize);
         Date deathDate = deathDateStr.isBlank() ? null : new Date(deathDateStr);
         while (deathDate != null && (deathDate.before(this.birthDate) || deathDate.after(new Date()))) {
@@ -106,6 +102,9 @@ public class Person {
             System.out.println("Cemetery ID does not exist. Please enter a different ID.");
         }
         this.cemetery = cemeteries.get(cemeteryId);
+        this.cemetery.incrementCount();
+
+        this.dead = true;
     }
 
     public void setDead(ConsoleReader reader, Map<String, Cemetery> cemeteries) throws CancellationException {
@@ -113,8 +112,16 @@ public class Person {
     }
 
     private void setDead(ConsoleReader reader, Map<String, Cemetery> cemeteries, int labelSize) throws CancellationException {
-        this.dead = true;
         getDeathQuestions(reader, cemeteries, labelSize);
+    }
+
+    public void setAlive() {
+        this.dead = false;
+        this.deathDate = null;
+        this.deathCause = null;
+        if (this.cemetery != null)
+            this.cemetery.decrementCount();
+        this.cemetery = null;
     }
 
     public void edit(ConsoleReader reader, Map<String, Person> people, Map<String, Cemetery> cemeteries) throws CancellationException {
@@ -184,10 +191,7 @@ public class Person {
             this.deathCause = deathCause.isBlank() ? this.deathCause : deathCause;
             this.cemetery = cemeteryId.isBlank() ? this.cemetery : cemeteries.get(cemeteryId);
         } else if (removeDeathInfo) {
-            this.dead = false;
-            this.deathDate = null;
-            this.deathCause = null;
-            this.cemetery = null;
+            setAlive();
         }
     }
 

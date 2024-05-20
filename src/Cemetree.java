@@ -38,7 +38,9 @@ public class Cemetree {
     private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>() {{
         put("add person", new ConsoleCommand("add person", "Adds a new person", personFilter));
         put("remove person", new ConsoleCommand("remove person", "Removes a person", personFilter));
+        put("edit person", new ConsoleCommand("edit person", "Edits a person", personFilter));
         put("set dead", new ConsoleCommand("set dead", "Changes a person's status to dead", personFilter));
+        put("set alive", new ConsoleCommand("set alive", "Changes a person's status to alive", personFilter));
         put("search person", new ConsoleCommand("search person", "Searches for a person (Use \"include alive\" flag to include alive people at search)", personFilter));
         put("search relatives", new ConsoleCommand("search relatives", "Searches for relatives", new String[]{"generation_interval"}));
 
@@ -49,6 +51,8 @@ public class Cemetree {
 
         put("add cemetery", new ConsoleCommand("add cemetery", "Adds a new cemetery", new String[]{}));
         put("remove cemetery", new ConsoleCommand("remove cemetery", "Removes a cemetery", cemeteryFilter));
+        put("edit cemetery", new ConsoleCommand("edit cemetery", "Edits a cemetery", cemeteryFilter));
+        put("search cemetery", new ConsoleCommand("search cemetery", "Searches for a cemetery", cemeteryFilter));
 
         put("help", new ConsoleCommand("help", "Shows help for <command>", new String[]{"command"}));
         put("logout", new ConsoleCommand("logout", "Logs out", new String[]{}));
@@ -559,6 +563,30 @@ public class Cemetree {
                     }
                 }
 
+                // Set person to alive
+                else if (command.matches("(?i)^set alive.*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to edit people.");
+                        continue;
+                    } else if (command.split(" ").length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
+
+                    Person personToSetAlive = selectPersonFromCommand(reader, command, 2, selectedPeople, true);
+
+                    if (personToSetAlive != null) {
+                        if (personToSetAlive.isDead()) {
+                            personToSetAlive.setAlive();
+                            System.out.println("Successfully set " + personToSetAlive.getFullName() + " to alive.");
+                        } else {
+                            System.out.println("Person is not dead.");
+                        }
+                    } else {
+                        System.out.println("Person not found.");
+                    }
+                }
+
                 // Search Person
                 else if (command.matches("(?i)^search person.*$")) {
                     if (command.split(" ").length < 3) {
@@ -667,7 +695,7 @@ public class Cemetree {
                         continue;
                     }
 
-                    Cemetery newCemetery = new Cemetery(scanner, cemeteries);
+                    Cemetery newCemetery = new Cemetery(reader, cemeteries);
                     cemeteries.put(newCemetery.getId(), newCemetery);
                     newCemetery.connect(people);
                     System.out.println("Successfully added cemetery \"" + newCemetery.getName() + "\".");
@@ -698,6 +726,26 @@ public class Cemetree {
                         } else {
                             throw new CancellationException();
                         }
+                    }
+                }
+
+                // Edit Cemetery
+                else if (command.matches("(?i)^edit cemetery .*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to edit cemeteries.");
+                        continue;
+                    } else if (command.split(" ").length < 3) {
+                        System.out.println("Please enter cemetery ID.");
+                        continue;
+                    }
+
+                    Cemetery editedCemetery = selectCemeteryFromCommand(reader, command, 2, selectedCemeteries);
+
+                    if (editedCemetery != null) {
+                        editedCemetery.edit(reader);
+                        System.out.println("Successfully updated cemetery.");
+                    } else {
+                        System.out.println("Cemetery not found.");
                     }
                 }
 

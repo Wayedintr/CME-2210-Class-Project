@@ -45,18 +45,6 @@ public class Cemetery {
             new ConsoleReader.Question("Name", "^[\\p{L}\\p{M}'\\s-]{2,64}$", "Invalid name. Must contain only letters, 2-64 characters.", true)
     );
 
-    public Cemetery(final Scanner scanner, final Map<String, Cemetery> cemeteries) throws CancellationException {
-        ConsoleReader reader = new ConsoleReader(scanner);
-
-        String id;
-        for (id = reader.getAnswer(QUESTIONS.get(0)); cemeteries.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0))) {
-            System.out.println("ID already exists. Please enter a different ID.");
-        }
-        this.id = id;
-        this.name = reader.getAnswer(QUESTIONS.get(1));
-        this.address = new Address(scanner);
-    }
-
     Cemetery(String id, String name, Address address) {
         this.address = address;
         this.name = name;
@@ -67,6 +55,24 @@ public class Cemetery {
     Cemetery(String id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Cemetery(ConsoleReader reader, Map<String, Cemetery> cemeteries) throws CancellationException {
+        String id;
+        for (id = reader.getAnswer(QUESTIONS.get(0)); cemeteries.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0))) {
+            System.out.println("ID already exists. Please enter a different ID.");
+        }
+        this.id = id;
+        this.name = reader.getAnswer(QUESTIONS.get(1));
+        this.address = new Address(reader);
+    }
+
+    public void edit(ConsoleReader reader) throws CancellationException {
+        String name = reader.getAnswer(QUESTIONS.get(1).withLabel("Name (" + this.name + ")").withRequired(false), 30);
+
+        address.edit(reader);
+
+        this.name = name.isBlank() ? this.name : name;
     }
 
     public void connect(Map<String, Person> people) {
@@ -131,6 +137,7 @@ public class Cemetery {
                 "ID      : " + id + "\n") +
                 "Name    : " + name + "\n" +
                 "Address : " + address.toString() + "\n" +
+                "Coords  : " + address.getLatitude() + ", " + address.getLongitude() + "\n" +
                 "Ratio   : " + String.format("%s/%s (%.0f%%)", count, CAPACITY, (double) count / (double) CAPACITY);
     }
 
