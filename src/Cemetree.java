@@ -513,6 +513,26 @@ public class Cemetree {
                     }
                 }
 
+                // Edit person
+                else if (command.matches("(?i)^edit person.*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to edit people.");
+                        continue;
+                    } else if (command.split(" ").length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
+
+                    Person personToEdit = selectPersonFromCommand(reader, command, 2, selectedPeople, true);
+
+                    if (personToEdit != null) {
+                        personToEdit.edit(reader, people, cemeteries);
+                        System.out.println("Successfully updated " + personToEdit.getFullName() + ".");
+                    } else {
+                        System.out.println("Person not found.");
+                    }
+                }
+
                 // Set person to dead
                 else if (command.matches("(?i)^set dead.*$")) {
                     if (!selectedPerson.isAdmin()) {

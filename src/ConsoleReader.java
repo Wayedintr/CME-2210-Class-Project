@@ -12,9 +12,13 @@ public class ConsoleReader {
     }
 
     public String getAnswer(Question question) throws CancellationException {
+        return getAnswer(question, question.label.length());
+    }
+
+    public String getAnswer(Question question, int labelLength) throws CancellationException {
         String answer;
         do {
-            System.out.print(question.label + ": ");
+            System.out.printf("%-" + labelLength + "s %s: ", question.label, question.isRequired ? "*" : " ");
             answer = scanner.nextLine();
 
             if (answer.isBlank()) {
@@ -55,7 +59,13 @@ public class ConsoleReader {
     }
 
     public record Question(String label, String regex, String errorMessage, boolean isRequired) {
+        public Question withLabel(String label) {
+            return new Question(label, regex, errorMessage, isRequired);
+        }
 
+        public Question withRequired(boolean isRequired) {
+            return new Question(label, regex, errorMessage, isRequired);
+        }
     }
 
     public static final Question YES_NO = new Question("Yes or No", "(?i)^(yes|no|y|n)$", "Please enter 'yes' or 'no'.", true);

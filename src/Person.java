@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.concurrent.CancellationException;
 
 public class Person {
@@ -29,8 +28,8 @@ public class Person {
             new ConsoleReader.Question("Father ID", "[0-9]{11}", "Invalid father ID.", false),
             new ConsoleReader.Question("Spouse ID", "[0-9]{11}", "Invalid spouse ID.", false),
             new ConsoleReader.Question("Dead", "(?i)^(true|false|t|f)$", "Invalid dead. Must be 'true' or 'false'.", true),
-            new ConsoleReader.Question("Death Date", Date.REGEX, "Invalid death date. Must be in the format DD/MM/YYYY or DD-MM-YYYY", false),
-            new ConsoleReader.Question("Death Cause", "^[\\p{L}\\p{M}'-]{2,64}$", "Invalid death cause. Must contain only letters, 2-64 characters.", false),
+            new ConsoleReader.Question("Death Date", Date.REGEX, "Invalid death date. Must be in the format DD/MM/YYYY or DD-MM-YYYY", true),
+            new ConsoleReader.Question("Death Cause", "^[\\p{L}\\p{M}'\\s-]{2,64}$", "Invalid death cause. Must contain only letters, 2-64 characters.", false),
             new ConsoleReader.Question("Cemetery ID", "[0-9]{2}-[0-9]{3}", "Invalid cemetery ID. Must be in the format 'XX-XXX", true)
     );
 
@@ -63,28 +62,32 @@ public class Person {
 
     Person(ConsoleReader reader, Map<String, Person> people, Map<String, Cemetery> cemeteries) throws CancellationException {
         String id;
-        for (id = reader.getAnswer(QUESTIONS.get(0)); people.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0))) {
+        for (id = reader.getAnswer(QUESTIONS.get(0), 12); people.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0), 12)) {
             System.out.println("ID already exists. Please enter a different ID.");
         }
         this.id = id;
 
-        this.name = reader.getAnswer(QUESTIONS.get(1)).toUpperCase();
-        this.surname = reader.getAnswer(QUESTIONS.get(2)).toUpperCase();
-        this.sex = reader.getAnswer(QUESTIONS.get(3)).matches("(?i)^(male|m)$") ? "Male" : "Female";
-        this.birthDate = new Date(reader.getAnswer(QUESTIONS.get(4)));
+        this.name = reader.getAnswer(QUESTIONS.get(1), 12).toUpperCase();
+        this.surname = reader.getAnswer(QUESTIONS.get(2), 12).toUpperCase();
+        this.sex = reader.getAnswer(QUESTIONS.get(3), 12).matches("(?i)^(male|m)$") ? "Male" : "Female";
+        this.birthDate = new Date(reader.getAnswer(QUESTIONS.get(4), 12));
 
-        this.motherId = reader.getAnswer(QUESTIONS.get(5));
-        this.fatherId = reader.getAnswer(QUESTIONS.get(6));
-        this.spouseId = reader.getAnswer(QUESTIONS.get(7));
+        this.motherId = reader.getAnswer(QUESTIONS.get(5), 12);
+        this.fatherId = reader.getAnswer(QUESTIONS.get(6), 12);
+        this.spouseId = reader.getAnswer(QUESTIONS.get(7), 12);
 
-        this.dead = reader.getAnswer(QUESTIONS.get(8)).matches("(?i)^(true|t)$");
+        this.dead = reader.getAnswer(QUESTIONS.get(8), 12).matches("(?i)^(true|t)$");
         if (this.dead) {
-            getDeathQuestions(reader, cemeteries);
+            getDeathQuestions(reader, cemeteries, 12);
         }
     }
 
     public void getDeathQuestions(ConsoleReader reader, Map<String, Cemetery> cemeteries) {
-        String deathDateStr = reader.getAnswer(QUESTIONS.get(9));
+        getDeathQuestions(reader, cemeteries, 0);
+    }
+
+    public void getDeathQuestions(ConsoleReader reader, Map<String, Cemetery> cemeteries, int labelSize) {
+        String deathDateStr = reader.getAnswer(QUESTIONS.get(9), labelSize);
         Date deathDate = deathDateStr.isBlank() ? null : new Date(deathDateStr);
         while (deathDate != null && (deathDate.before(this.birthDate) || deathDate.after(new Date()))) {
             if (deathDate.before(this.birthDate))
@@ -92,22 +95,100 @@ public class Person {
             else if (deathDate.after(new Date()))
                 System.out.println("Death date cannot be in the future. Please enter a valid death date.");
 
-            deathDate = new Date(reader.getAnswer(QUESTIONS.get(9)));
+            deathDate = new Date(reader.getAnswer(QUESTIONS.get(9), labelSize));
         }
         this.deathDate = deathDate;
 
-        this.deathCause = reader.getAnswer(QUESTIONS.get(10));
+        this.deathCause = reader.getAnswer(QUESTIONS.get(10), labelSize);
 
         String cemeteryId;
-        for (cemeteryId = reader.getAnswer(QUESTIONS.get(11)); !cemeteries.containsKey(cemeteryId); cemeteryId = reader.getAnswer(QUESTIONS.get(11))) {
+        for (cemeteryId = reader.getAnswer(QUESTIONS.get(11), labelSize); !cemeteries.containsKey(cemeteryId); cemeteryId = reader.getAnswer(QUESTIONS.get(11), labelSize)) {
             System.out.println("Cemetery ID does not exist. Please enter a different ID.");
         }
         this.cemetery = cemeteries.get(cemeteryId);
     }
 
     public void setDead(ConsoleReader reader, Map<String, Cemetery> cemeteries) throws CancellationException {
+        setDead(reader, cemeteries, 0);
+    }
+
+    private void setDead(ConsoleReader reader, Map<String, Cemetery> cemeteries, int labelSize) throws CancellationException {
         this.dead = true;
-        getDeathQuestions(reader, cemeteries);
+        getDeathQuestions(reader, cemeteries, labelSize);
+    }
+
+    public void edit(ConsoleReader reader, Map<String, Person> people, Map<String, Cemetery> cemeteries) throws CancellationException {
+        boolean editDeath = false;
+        boolean removeDeathInfo = false;
+
+        String name, surname, sex, birthDateStr, motherId, fatherId, spouseId, dead, deathDateStr, deathCause, cemeteryId;
+        Date birthDate, deathDate;
+
+        name = reader.getAnswer(QUESTIONS.get(1).withLabel("Name (" + this.name + ")").withRequired(false), 24);
+        surname = reader.getAnswer(QUESTIONS.get(2).withLabel("Surname (" + this.surname + ")").withRequired(false), 24);
+        sex = reader.getAnswer(QUESTIONS.get(3).withLabel("Sex (" + this.sex + ")").withRequired(false), 24);
+        birthDateStr = reader.getAnswer(QUESTIONS.get(4).withLabel("Birth Date (" + this.birthDate + ")").withRequired(false), 24);
+        birthDate = birthDateStr.isBlank() ? this.birthDate : new Date(birthDateStr);
+        while (birthDate != null && !birthDate.equals(this.birthDate) && birthDate.after(new Date())) {
+            System.out.println("Birth date cannot be in the future. Please enter a valid birth date.");
+            birthDateStr = reader.getAnswer(QUESTIONS.get(4).withLabel("Birth Date (" + this.birthDate + ")").withRequired(false), 24);
+            birthDate = birthDateStr.isBlank() ? this.birthDate : new Date(birthDateStr);
+        }
+
+        motherId = reader.getAnswer(QUESTIONS.get(5).withLabel("Mother ID (" + this.motherId + ")").withRequired(false), 24);
+        fatherId = reader.getAnswer(QUESTIONS.get(6).withLabel("Father ID (" + this.fatherId + ")").withRequired(false), 24);
+        spouseId = reader.getAnswer(QUESTIONS.get(7).withLabel("Spouse ID (" + this.spouseId + ")").withRequired(false), 24);
+        dead = reader.getAnswer(QUESTIONS.get(8).withLabel("Dead (" + this.dead + ")").withRequired(false), 24);
+
+        if (dead.matches("(?i)^(true|t)$")) {
+            if (this.dead)
+                editDeath = true;
+            else
+                this.setDead(reader, cemeteries, 24);
+        } else if (dead.matches("(?i)^(false|f)$")) {
+            removeDeathInfo = true;
+        } else if (dead.isBlank()) {
+            if (this.dead)
+                editDeath = true;
+            else
+                removeDeathInfo = true;
+        }
+
+        this.name = name.isBlank() ? this.name : name;
+        this.surname = surname.isBlank() ? this.surname : surname;
+        this.sex = sex.isBlank() ? this.sex : sex;
+        this.birthDate = birthDate;
+        this.motherId = motherId.isBlank() ? this.motherId : motherId;
+        this.fatherId = fatherId.isBlank() ? this.fatherId : fatherId;
+        this.spouseId = spouseId.isBlank() ? this.spouseId : spouseId;
+
+        removeConnections();
+        connect(people, cemeteries);
+
+        if (editDeath) {
+            deathDateStr = reader.getAnswer(QUESTIONS.get(9).withLabel("Death Date (" + this.deathDate + ")").withRequired(false), 24);
+            deathDate = deathDateStr.isBlank() ? this.deathDate : new Date(deathDateStr);
+            while (deathDate != null && (deathDate.before(this.birthDate) || deathDate.after(new Date()))) {
+                if (deathDate.before(this.birthDate))
+                    System.out.println("Death date cannot be before birth date. Please enter a valid death date.");
+                else if (deathDate.after(new Date()))
+                    System.out.println("Death date cannot be in the future. Please enter a valid death date.");
+
+                deathDate = new Date(reader.getAnswer(QUESTIONS.get(9).withLabel("Death Date (" + this.deathDate + ")").withRequired(false), 24));
+            }
+
+            deathCause = reader.getAnswer(QUESTIONS.get(10).withLabel("Death Cause (" + this.deathCause + ")").withRequired(false), 24);
+            cemeteryId = reader.getAnswer(QUESTIONS.get(11).withLabel("Cemetery ID (" + this.cemetery.getId() + ")").withRequired(false), 24);
+
+            this.deathDate = deathDate;
+            this.deathCause = deathCause.isBlank() ? this.deathCause : deathCause;
+            this.cemetery = cemeteryId.isBlank() ? this.cemetery : cemeteries.get(cemeteryId);
+        } else if (removeDeathInfo) {
+            this.dead = false;
+            this.deathDate = null;
+            this.deathCause = null;
+            this.cemetery = null;
+        }
     }
 
     public void connect(Map<String, Person> people, Map<String, Cemetery> cemeteries) {
