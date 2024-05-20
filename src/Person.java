@@ -34,45 +34,6 @@ public class Person {
             new ConsoleReader.Question("Cemetery ID", "[0-9]{2}-[0-9]{3}", "Invalid cemetery ID. Must be in the format 'XX-XXX", true)
     );
 
-    Person(final Scanner scanner, final Map<String, Person> people, final Map<String, Cemetery> cemeteries) throws CancellationException {
-        ConsoleReader reader = new ConsoleReader(scanner);
-
-        String id;
-        for (id = reader.getAnswer(QUESTIONS.get(0)); people.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0))) {
-            System.out.println("ID already exists. Please enter a different ID.");
-        }
-        this.id = id;
-
-        this.name = reader.getAnswer(QUESTIONS.get(1)).toUpperCase();
-        this.surname = reader.getAnswer(QUESTIONS.get(2)).toUpperCase();
-        this.sex = reader.getAnswer(QUESTIONS.get(3)).matches("(?i)^(male|m)$") ? "Male" : "Female";
-        this.birthDate = new Date(reader.getAnswer(QUESTIONS.get(4)));
-
-        this.motherId = reader.getAnswer(QUESTIONS.get(5));
-        this.fatherId = reader.getAnswer(QUESTIONS.get(6));
-        this.spouseId = reader.getAnswer(QUESTIONS.get(7));
-
-        this.dead = reader.getAnswer(QUESTIONS.get(8)).matches("(?i)^(true|t)$");
-        if (this.dead) {
-            String deathDateStr = reader.getAnswer(QUESTIONS.get(9));
-            Date deathDate = deathDateStr.isBlank() ? null : new Date(deathDateStr);
-            while (deathDate != null && deathDate.before(this.birthDate)) {
-                System.out.println("Death date cannot be before birth date. Please enter a valid death date.");
-                deathDate = new Date(reader.getAnswer(QUESTIONS.get(9)));
-            }
-            this.deathDate = deathDate;
-
-            this.deathCause = reader.getAnswer(QUESTIONS.get(10));
-
-            String cemeteryId;
-            for (cemeteryId = reader.getAnswer(QUESTIONS.get(11)); !cemeteries.containsKey(cemeteryId); cemeteryId = reader.getAnswer(QUESTIONS.get(11))) {
-                System.out.println("Cemetery ID does not exist. Please enter a different ID.");
-            }
-            this.cemetery = cemeteries.get(cemeteryId);
-        }
-
-    }
-
     Person(String id, String name, String surname, String sex, boolean admin, boolean dead, String deathCause, Cemetery cemetery, Date birthDate, Date deathDate, String motherId, String fatherId, String spouseId) {
         this.name = name;
         this.surname = surname;
@@ -98,6 +59,55 @@ public class Person {
         this.deathCause = deathCause;
         this.birthDate = birthDate;
         this.deathDate = deathDate;
+    }
+
+    Person(ConsoleReader reader, Map<String, Person> people, Map<String, Cemetery> cemeteries) throws CancellationException {
+        String id;
+        for (id = reader.getAnswer(QUESTIONS.get(0)); people.containsKey(id); id = reader.getAnswer(QUESTIONS.get(0))) {
+            System.out.println("ID already exists. Please enter a different ID.");
+        }
+        this.id = id;
+
+        this.name = reader.getAnswer(QUESTIONS.get(1)).toUpperCase();
+        this.surname = reader.getAnswer(QUESTIONS.get(2)).toUpperCase();
+        this.sex = reader.getAnswer(QUESTIONS.get(3)).matches("(?i)^(male|m)$") ? "Male" : "Female";
+        this.birthDate = new Date(reader.getAnswer(QUESTIONS.get(4)));
+
+        this.motherId = reader.getAnswer(QUESTIONS.get(5));
+        this.fatherId = reader.getAnswer(QUESTIONS.get(6));
+        this.spouseId = reader.getAnswer(QUESTIONS.get(7));
+
+        this.dead = reader.getAnswer(QUESTIONS.get(8)).matches("(?i)^(true|t)$");
+        if (this.dead) {
+            getDeathQuestions(reader, cemeteries);
+        }
+    }
+
+    public void getDeathQuestions(ConsoleReader reader, Map<String, Cemetery> cemeteries) {
+        String deathDateStr = reader.getAnswer(QUESTIONS.get(9));
+        Date deathDate = deathDateStr.isBlank() ? null : new Date(deathDateStr);
+        while (deathDate != null && (deathDate.before(this.birthDate) || deathDate.after(new Date()))) {
+            if (deathDate.before(this.birthDate))
+                System.out.println("Death date cannot be before birth date. Please enter a valid death date.");
+            else if (deathDate.after(new Date()))
+                System.out.println("Death date cannot be in the future. Please enter a valid death date.");
+
+            deathDate = new Date(reader.getAnswer(QUESTIONS.get(9)));
+        }
+        this.deathDate = deathDate;
+
+        this.deathCause = reader.getAnswer(QUESTIONS.get(10));
+
+        String cemeteryId;
+        for (cemeteryId = reader.getAnswer(QUESTIONS.get(11)); !cemeteries.containsKey(cemeteryId); cemeteryId = reader.getAnswer(QUESTIONS.get(11))) {
+            System.out.println("Cemetery ID does not exist. Please enter a different ID.");
+        }
+        this.cemetery = cemeteries.get(cemeteryId);
+    }
+
+    public void setDead(ConsoleReader reader, Map<String, Cemetery> cemeteries) throws CancellationException {
+        this.dead = true;
+        getDeathQuestions(reader, cemeteries);
     }
 
     public void connect(Map<String, Person> people, Map<String, Cemetery> cemeteries) {

@@ -479,7 +479,7 @@ public class Cemetree {
                         continue;
                     }
 
-                    Person newPerson = new Person(scanner, people, cemeteries);
+                    Person newPerson = new Person(reader, people, cemeteries);
                     people.put(newPerson.getId(), newPerson);
                     newPerson.connect(people, cemeteries);
 
@@ -509,6 +509,32 @@ public class Cemetree {
                     if (personToRemove == selectedPerson) {
                         selectedPerson = null;
                         System.out.println("Successfully logged out.");
+                    }
+                }
+
+                // Set person to dead
+                else if (command.matches("(?i)^set dead.*$")) {
+                    if (!selectedPerson.isAdmin()) {
+                        System.out.println("You do not have permission to edit people.");
+                        continue;
+                    } else if (command.split(" ").length < 3) {
+                        System.out.println("Please enter at least one search criteria.");
+                        continue;
+                    }
+
+                    Person personToSetDead = selectPersonFromCommand(reader, command, 2, selectedPeople, true);
+
+                    if (personToSetDead != null) {
+                        if (personToSetDead == selectedPerson) {
+                            System.out.println("You cannot set yourself to dead.");
+                        } else if (personToSetDead.isDead()) {
+                            System.out.println("Person is already dead.");
+                        } else {
+                            personToSetDead.setDead(reader, cemeteries);
+                            System.out.println("Successfully set " + personToSetDead.getFullName() + " to dead.");
+                        }
+                    } else {
+                        System.out.println("Person not found.");
                     }
                 }
 
