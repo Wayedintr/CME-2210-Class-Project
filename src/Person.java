@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -82,7 +83,7 @@ public class Person {
         }
     }
 
-    public void getDeathQuestions(ConsoleReader reader, Map<String, Cemetery> cemeteries, int labelSize) throws CancellationException {
+    private void getDeathQuestions(ConsoleReader reader, Map<String, Cemetery> cemeteries, int labelSize) throws CancellationException {
         String deathDateStr = reader.getAnswer(QUESTIONS.get(9), labelSize);
         Date deathDate = deathDateStr.isBlank() ? null : new Date(deathDateStr);
         while (deathDate != null && (deathDate.before(this.birthDate) || deathDate.after(new Date()))) {
@@ -170,7 +171,7 @@ public class Person {
         this.spouseId = spouseId.isBlank() ? this.spouseId : spouseId;
 
         removeConnections();
-        connect(people, cemeteries);
+        connect(people);
 
         if (editDeath) {
             deathDateStr = reader.getAnswer(QUESTIONS.get(9).withLabel("Death Date (" + this.deathDate + ")").withRequired(false), 24);
@@ -195,7 +196,7 @@ public class Person {
         }
     }
 
-    public void connect(Map<String, Person> people, Map<String, Cemetery> cemeteries) {
+    public void connect(Map<String, Person> people) {
         if (this.hasMotherId() && people.get(this.getMotherId()) != null) {
             Person mother = people.get(this.getMotherId());
             this.setMother(mother);
@@ -218,8 +219,8 @@ public class Person {
                 System.out.println("Cemetery " + cemetery.getId() + " is full. Person " + this.getName() + " " + this.getSurname() + " cannot be added.");
             } else {
                 people.put(this.getId(), this);
+                cemetery.incrementCount();
             }
-            cemetery.incrementCount();
         } else {
             people.put(this.getId(), this);
         }
@@ -303,6 +304,18 @@ public class Person {
 
     public int compareTo(Person person) {
         return birthDate.compareTo(person.getBirthDate());
+    }
+
+    public static Comparator<? super Person> getComparator(String sortBy) {
+        if (sortBy.equals("id")) return Comparator.comparing(Person::getId);
+        if (sortBy.equals("name")) return Comparator.comparing(Person::getName);
+        if (sortBy.equals("surname")) return Comparator.comparing(Person::getSurname);
+        if (sortBy.equals("sex")) return Comparator.comparing(Person::getSex);
+        if (sortBy.equals("birth_date")) return Comparator.comparing(Person::getBirthDate);
+        if (sortBy.equals("death_date")) return Comparator.comparing(Person::getDeathDate);
+        if (sortBy.equals("death_cause")) return Comparator.comparing(Person::getDeathCause);
+        if (sortBy.equals("cemetery_id")) return Comparator.comparing((Person::getCemeteryId));
+        return Comparator.comparing(Person::getId);
     }
 
     public String getName() {
@@ -441,11 +454,8 @@ public class Person {
         this.cemetery = cemetery;
     }
 
-    public void removeCemeteryIfId(String id) {
-//        if (cemetery != null && cemetery.getId().equals(id)) {
-//            this.cemetery.decrementCount();
-//            this.cemetery = null;
-//        }
+    public String getCemeteryId() {
+        return cemetery == null ? "" : cemetery.getId();
     }
 
     public Person getMother() {

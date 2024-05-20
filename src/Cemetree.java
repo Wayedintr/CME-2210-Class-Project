@@ -6,9 +6,10 @@ public class Cemetree {
     Map<String, Person> people;
 
     Map<String, Cemetery> cemeteries;
-    private Person selectedPerson;
 
     private record PersonRelationship(Person person, String relationship) {
+
+
     }
 
     private record ConsoleCommand(String command, String description, String[] args) {
@@ -31,7 +32,7 @@ public class Cemetree {
         }
     }
 
-    private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name"};
+    private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name", "sort_by"};
 
     private final String[] cemeteryFilter = {"id", "name"};
 
@@ -44,17 +45,16 @@ public class Cemetree {
         put("search person", new ConsoleCommand("search person", "Searches for a person (Use \"include alive\" flag to include alive people at search)", personFilter));
         put("search relatives", new ConsoleCommand("search relatives", "Searches for relatives", new String[]{"generation_interval"}));
 
-        put("view", new ConsoleCommand("view", "View", new String[]{"number"}));
-
-        put("visit person", new ConsoleCommand("visit person", "Visits a person", personFilter));
-        put("get visitor list", new ConsoleCommand("get visitor list", "Gets the visitor list of a person", personFilter));
-
         put("add cemetery", new ConsoleCommand("add cemetery", "Adds a new cemetery", new String[]{}));
         put("remove cemetery", new ConsoleCommand("remove cemetery", "Removes a cemetery", cemeteryFilter));
         put("edit cemetery", new ConsoleCommand("edit cemetery", "Edits a cemetery", cemeteryFilter));
         put("search cemetery", new ConsoleCommand("search cemetery", "Searches for a cemetery", cemeteryFilter));
-
         put("show statistics", new ConsoleCommand("show statistics", "Shows statistics", cemeteryFilter));
+
+        put("view", new ConsoleCommand("view", "Views details of a person or cemetery", new String[]{"number"}));
+
+        put("visit person", new ConsoleCommand("visit person", "Visits a person", personFilter));
+        put("get visitor list", new ConsoleCommand("get visitor list", "Gets the visitor list of a person", personFilter));
 
         put("help", new ConsoleCommand("help", "Shows help for <command>", new String[]{"command"}));
         put("logout", new ConsoleCommand("logout", "Logs out", new String[]{}));
@@ -145,7 +145,7 @@ public class Cemetree {
             );
 
             // Connect person to parents, spouse, children and cemetery
-            person.connect(people, cemeteries);
+            person.connect(people);
         }
         peopleReader.close();
 
@@ -208,19 +208,19 @@ public class Cemetree {
         List<PersonRelationship> result = new ArrayList<>();
         Stack<Person> childrenStack = new Stack<>();
         Stack<Person> ancestorsStack = new Stack<>();
-        searchRelativesAncestors(generationInterval, person, ancestorsStack, result, "", person);
-        searchRelativesChildren(generationInterval, person, childrenStack, result, "", person);
+        searchRelativesAncestors(generationInterval, person, ancestorsStack, result, "");
+        searchRelativesChildren(generationInterval, person, childrenStack, result, "");
         return result;
     }
 
-    public void searchRelativesAncestors(int generationInterval, Person person, Stack<Person> ancestorsStack, List<PersonRelationship> result, String relationship, Person startPerson) {
+    public void searchRelativesAncestors(int generationInterval, Person person, Stack<Person> ancestorsStack, List<PersonRelationship> result, String relationship) {
         if (generationInterval > 0) {
             if (person.getMother() != null) {
                 Person mother = person.getMother();
                 PersonRelationship p = new PersonRelationship(mother, relationship + " Mother (" + person.getName() + " " + person.getSurname() + "' s Mother)");
                 result.add(p);
                 ancestorsStack.push(mother);
-                searchRelativesAncestors(generationInterval - 1, mother, ancestorsStack, result, relationship + " Grand", startPerson);
+                searchRelativesAncestors(generationInterval - 1, mother, ancestorsStack, result, relationship + " Grand");
                 ancestorsStack.pop();
             }
             if (person.getFather() != null) {
@@ -228,19 +228,19 @@ public class Cemetree {
                 PersonRelationship p = new PersonRelationship(father, relationship + " Father (" + person.getName() + " " + person.getSurname() + "' s Father)");
                 result.add(p);
                 ancestorsStack.push(father);
-                searchRelativesAncestors(generationInterval - 1, father, ancestorsStack, result, relationship + " Grand", startPerson);
+                searchRelativesAncestors(generationInterval - 1, father, ancestorsStack, result, relationship + " Grand");
                 ancestorsStack.pop();
             }
         }
     }
 
-    public void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<PersonRelationship> result, String relationship, Person startPerson) {
+    public void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<PersonRelationship> result, String relationship) {
         if (generationInterval > 0) {
             for (Person child : person.getChildren()) {
                 childrenStack.push(child);
                 PersonRelationship p = new PersonRelationship(child, relationship + " Child (" + person.getName() + " " + person.getSurname() + "' s Child)");
                 result.add(p);
-                searchRelativesChildren(generationInterval - 1, child, childrenStack, result, relationship + " Grand", startPerson);
+                searchRelativesChildren(generationInterval - 1, child, childrenStack, result, relationship + " Grand");
                 childrenStack.pop();
             }
         }
@@ -372,6 +372,12 @@ public class Cemetree {
 
         if (index == -1 && contains) {
             List<Person> peopleToSearch = searchPeopleByCommand(command, includeAlive);
+
+            Map<String, String> argsMap = ConsoleReader.parseArguments(command);
+
+            if (argsMap.containsKey("sort_by"))
+                peopleToSearch.sort(Person.getComparator(argsMap.get("sort_by")));
+
             foundPerson = selectPersonInList(reader, peopleToSearch);
         } else if (selectedPeople != null && index != -1) {
             foundPerson = selectedPeople.get(index);
@@ -472,6 +478,8 @@ public class Cemetree {
     }
 
     public void consoleMode() {
+        Person selectedPerson = null;
+
         Scanner scanner = new Scanner(System.in);
         ConsoleReader reader = new ConsoleReader(scanner);
 
@@ -484,8 +492,6 @@ public class Cemetree {
             CEMETERIES
         }
         ViewMode viewMode = ViewMode.PERSONS;
-
-        selectedPerson = people.get("12345678901");
 
         System.out.println("Welcome to Cemetree. Type \"help\" for a list of commands.");
         System.out.println("Type \"exit\" to exit.");
@@ -510,7 +516,7 @@ public class Cemetree {
                         selectedPerson = null;
                         continue;
                     }
-                    System.out.println("Successfully logged in as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
+                    System.out.println("Successfully logged in as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + (selectedPerson.isAdmin() ? " as admin." : "."));
                 }
 
                 // Help with specific command
@@ -554,7 +560,7 @@ public class Cemetree {
 
                     Person newPerson = new Person(reader, people, cemeteries);
                     people.put(newPerson.getId(), newPerson);
-                    newPerson.connect(people, cemeteries);
+                    newPerson.connect(people);
 
                     System.out.println("Successfully added " + newPerson.getFullName() + ".");
                 }
@@ -662,7 +668,14 @@ public class Cemetree {
                         continue;
                     }
 
+                    Map<String, String> args = ConsoleReader.parseArguments(command);
+
                     selectedPeople = searchPeopleByCommand(command, command.contains("include alive"));
+
+                    if (args.containsKey("sort_by")) {
+                        selectedPeople.sort(Person.getComparator(args.get("sort_by")));
+                    }
+
                     System.out.println("Found " + selectedPeople.size() + " people. Use view <number> to view details.");
 
                     System.out.println(Person.toRowHeader());
@@ -675,6 +688,7 @@ public class Cemetree {
                 // Search Relatives
                 else if (command.matches("(?i)^search relatives.*$")) {
                     String[] args = command.split(" ");
+                    Map<String, String> argsMap = ConsoleReader.parseArguments(command);
 
                     int generationInterval = 2;
                     if (args.length < 3) {
@@ -786,9 +800,6 @@ public class Cemetree {
 
                         if (answer.matches(ConsoleReader.YES_REGEX)) {
                             cemeteries.remove(cemeteryToRemove.getId());
-                            for (Person person : people.values()) {
-                                person.removeCemeteryIfId(cemeteryToRemove.getId());
-                            }
                             System.out.println("Successfully removed cemetery with ID " + cemeteryToRemove.getId() + ".");
                         } else {
                             throw new CancellationException();
