@@ -83,6 +83,10 @@ public class Address {
         return neighbourhood + ", " + street + ", " + district + "/" + city + ", " + country;
     }
 
+    public String toStringReverse() {
+        return country + ", " + city + ", " + district + "/" + neighbourhood + ", " + street;
+    }
+
     public String getStreet() {
         return street;
     }

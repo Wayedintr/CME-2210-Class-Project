@@ -34,7 +34,7 @@ public class Cemetree {
 
     private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name", "sort_by"};
 
-    private final String[] cemeteryFilter = {"id", "name"};
+    private final String[] cemeteryFilter = {"id", "name", "sort_by"};
 
     private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>() {{
         put("add person", new ConsoleCommand("add person", "Adds a new person", personFilter));
@@ -430,7 +430,12 @@ public class Cemetree {
 
         Cemetery filter = new Cemetery(id, name);
 
-        return searchCemeteriesByFilter(filter);
+        List<Cemetery> result = searchCemeteriesByFilter(filter);
+
+        if (argsMap.containsKey("sort_by"))
+            result.sort(Cemetery.getComparator(argsMap.get("sort_by")));
+
+        return result;
     }
 
     private Cemetery selectCemeteryInList(ConsoleReader reader, List<Cemetery> list) {
@@ -840,13 +845,14 @@ public class Cemetree {
                 }
 
                 // Search Cemetery
-                else if (command.matches("(?i)^search cemetery .*$")) {
+                else if (command.matches("(?i)^search cemetery.*$")) {
                     if (command.split(" ").length < 3) {
                         System.out.println("Please enter at least one search criteria.");
                         continue;
                     }
 
                     selectedCemeteries = searchCemeteriesByCommand(command);
+
                     if (selectedCemeteries.isEmpty()) {
                         System.out.println("No cemeteries found.");
                     } else {

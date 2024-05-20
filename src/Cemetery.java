@@ -208,12 +208,28 @@ public class Cemetery {
         return true;
     }
 
+    public static Comparator<? super Cemetery> getComparator(String sortBy) {
+        if (sortBy.equals("id")) return Comparator.comparing(Cemetery::getId);
+        if (sortBy.equals("name")) return Comparator.comparing(Cemetery::getName);
+        if (sortBy.equals("address")) return Comparator.comparing(Cemetery::getAddressStringReverse);
+        if (sortBy.equals("ratio")) return Comparator.comparing(Cemetery::getRatio);
+        return Comparator.comparing(Cemetery::getId);
+    }
+
+    public double getRatio() {
+        return 1 - (double) count / (double) CAPACITY;
+    }
+
     public Address getAddress() {
         return address;
     }
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    private String getAddressStringReverse() {
+        return address.toStringReverse();
     }
 
     public String getName() {
