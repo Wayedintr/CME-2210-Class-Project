@@ -752,12 +752,17 @@ public class Cemetree {
 
                     Person personToSearch;
 
-                    if (argsMap.size() > 1) {
-                        personToSearch = selectPersonFromCommand(reader, command, 2, selectedPeople, true);
+                    if (!argsMap.isEmpty()) {
+                        if (!selectedPerson.isAdmin()) {
+                            System.out.println("You do not have permission to search other people's relatives.");
+                            personToSearch = selectedPerson;
+                        } else {
+                            personToSearch = selectPersonFromCommand(reader, command, 2, selectedPeople, true);
 
-                        if (personToSearch == null) {
-                            System.out.println("Person not found.");
-                            continue;
+                            if (personToSearch == null) {
+                                System.out.println("Person not found.");
+                                continue;
+                            }
                         }
                     } else {
                         personToSearch = selectedPerson;
