@@ -768,7 +768,10 @@ public class Cemetree {
                         foundPerson.getCemetery().addVisitor(foundPerson, selectedPerson, new Date());
                         System.out.println("Successfully visited " + foundPerson.getName() + " " + foundPerson.getSurname() + " in " + foundPerson.getCemetery().getName() + " by " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
                     } else {
-                        System.out.println("Can not find person to visit.");
+                        if (foundPerson != null && !foundPerson.isDead())
+                            System.out.println("Person is not dead.");
+                        else
+                            System.out.println("Can not find person to visit.");
                     }
                 }
 
@@ -785,6 +788,10 @@ public class Cemetree {
                     Person foundPerson = selectPersonFromCommand(reader, command, 3, selectedPeople, false);
 
                     if (foundPerson != null) {
+                        if (foundPerson.getCemetery() == null) {
+                            System.out.println("Can not find the cemetery of " + foundPerson.getFullName() + ".");
+                            continue;
+                        }
                         SortedSet<Cemetery.Visit> visitorList = foundPerson.getCemetery().getVisitorsOfPerson(foundPerson);
 
                         if (visitorList == null) {
