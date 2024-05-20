@@ -3,13 +3,7 @@ import java.util.*;
 import java.util.concurrent.CancellationException;
 
 public class Cemetree {
-    Map<String, Person> people;
-
-    Map<String, Cemetery> cemeteries;
-
     private record PersonRelationship(Person person, String relationship) {
-
-
     }
 
     private record ConsoleCommand(String command, String description, String[] args) {
@@ -32,31 +26,35 @@ public class Cemetree {
         }
     }
 
-    private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "sort_by"};
+    private final Map<String, Person> people = new HashMap<>();
 
-    private final String[] relativeFilter = {"interval", "id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "sort_by"};
+    private final Map<String, Cemetery> cemeteries = new HashMap<>();
 
-    private final String[] cemeteryFilter = {"id", "name", "country", "city", "district", "neighbourhood", "street", "latitude", "longitude", "sort_by"};
+    private final String[] PERSON_FILTER = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "sort_by"};
+
+    private final String[] RELATIVE_FILTER = {"interval", "id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "sort_by"};
+
+    private final String[] CEMETERY_FILTER = {"id", "name", "country", "city", "district", "neighbourhood", "street", "latitude", "longitude", "sort_by"};
 
     private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>(19) {{
-        put("add person", new ConsoleCommand("add person", "Adds a new person", personFilter));
-        put("remove person", new ConsoleCommand("remove person", "Removes a person", personFilter));
-        put("edit person", new ConsoleCommand("edit person", "Edits a person", personFilter));
-        put("set dead", new ConsoleCommand("set dead", "Changes a person's status to dead", personFilter));
-        put("set alive", new ConsoleCommand("set alive", "Changes a person's status to alive", personFilter));
-        put("search person", new ConsoleCommand("search person", "Searches for a person (Use \"include alive\" flag to include alive people at search)", personFilter));
-        put("search relatives", new ConsoleCommand("search relatives", "Searches for relatives", relativeFilter));
+        put("add person", new ConsoleCommand("add person", "Adds a new person", PERSON_FILTER));
+        put("remove person", new ConsoleCommand("remove person", "Removes a person", PERSON_FILTER));
+        put("edit person", new ConsoleCommand("edit person", "Edits a person", PERSON_FILTER));
+        put("set dead", new ConsoleCommand("set dead", "Changes a person's status to dead", PERSON_FILTER));
+        put("set alive", new ConsoleCommand("set alive", "Changes a person's status to alive", PERSON_FILTER));
+        put("search person", new ConsoleCommand("search person", "Searches for a person (Use \"include alive\" flag to include alive people at search)", PERSON_FILTER));
+        put("search relatives", new ConsoleCommand("search relatives", "Searches for relatives", RELATIVE_FILTER));
 
         put("add cemetery", new ConsoleCommand("add cemetery", "Adds a new cemetery", new String[]{}));
-        put("remove cemetery", new ConsoleCommand("remove cemetery", "Removes a cemetery", cemeteryFilter));
-        put("edit cemetery", new ConsoleCommand("edit cemetery", "Edits a cemetery", cemeteryFilter));
-        put("search cemetery", new ConsoleCommand("search cemetery", "Searches for a cemetery", cemeteryFilter));
-        put("show statistics", new ConsoleCommand("show statistics", "Shows statistics (Use \"group\" flag to show statistics of all selected cemeteries)", cemeteryFilter));
+        put("remove cemetery", new ConsoleCommand("remove cemetery", "Removes a cemetery", CEMETERY_FILTER));
+        put("edit cemetery", new ConsoleCommand("edit cemetery", "Edits a cemetery", CEMETERY_FILTER));
+        put("search cemetery", new ConsoleCommand("search cemetery", "Searches for a cemetery", CEMETERY_FILTER));
+        put("show statistics", new ConsoleCommand("show statistics", "Shows statistics (Use \"group\" flag to show statistics of all selected cemeteries)", CEMETERY_FILTER));
 
         put("view", new ConsoleCommand("view", "Views details of a person or cemetery (Use \"view person\" or \"view cemetery\" to view corresponding details)", new String[]{"number"}));
 
-        put("visit person", new ConsoleCommand("visit person", "Visits a person", personFilter));
-        put("get visitor list", new ConsoleCommand("get visitor list", "Gets the visitor list of a person", personFilter));
+        put("visit person", new ConsoleCommand("visit person", "Visits a person", PERSON_FILTER));
+        put("get visitor list", new ConsoleCommand("get visitor list", "Gets the visitor list of a person", PERSON_FILTER));
 
         put("help", new ConsoleCommand("help", "Shows help for <command>", new String[]{"command"}));
         put("logout", new ConsoleCommand("logout", "Logs out", new String[]{}));
@@ -64,11 +62,6 @@ public class Cemetree {
         put("cancel", new ConsoleCommand("cancel", "Cancels current operation", new String[]{}));
         put("exit", new ConsoleCommand("exit", "Exits the program", new String[]{}));
     }};
-
-    public Cemetree() {
-        people = new HashMap<>();
-        cemeteries = new HashMap<>();
-    }
 
     public void saveToFile(String fileName) throws IOException {
         // Save cemeteries
@@ -513,6 +506,7 @@ public class Cemetree {
         ViewMode viewMode = ViewMode.PERSONS;
 
         System.out.println("Welcome to Cemetree. Type \"help\" for a list of commands.");
+        System.out.println("Type \"register\" to register as a new person.");
         System.out.println("Type \"exit\" to exit.");
 
         while (!command.matches("(?i)^quit|exit$")) {
@@ -524,11 +518,25 @@ public class Cemetree {
 
                 // Login
                 if (selectedPerson == null) {
-                    ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", Person.QUESTIONS.get(0).regex(), Person.QUESTIONS.get(0).errorMessage(), true);
+                    ConsoleReader.Question loginQuestion = new ConsoleReader.Question("Login with ID", "^[\\p{L}\\p{M}'-(0-9)]{2,64}$", Person.QUESTIONS.get(0).errorMessage(), true);
                     String id;
-                    for (id = reader.getAnswer(loginQuestion); !people.containsKey(id); id = reader.getAnswer(loginQuestion)) {
+                    for (id = reader.getAnswer(loginQuestion); !people.containsKey(id) && !id.equalsIgnoreCase("register"); id = reader.getAnswer(loginQuestion)) {
                         System.out.println("Person with ID " + id + " not found.");
                     }
+
+                    if (id.equalsIgnoreCase("register")) {
+                        selectedPerson = new Person(reader, people, cemeteries);
+                        if (selectedPerson.isDead()) {
+                            selectedPerson.setAlive();
+                            System.out.println("You can not register as a dead person.\nSetting person as alive.");
+                        }
+                        people.put(selectedPerson.getId(), selectedPerson);
+                        selectedPerson.connect(people);
+                        System.out.println("Successfully registered as " + selectedPerson.getName() + " " + selectedPerson.getSurname() + ".");
+
+                        continue;
+                    }
+
                     selectedPerson = people.get(id);
                     if (selectedPerson.isDead()) {
                         System.out.println("Person with ID " + id + " is dead.");
