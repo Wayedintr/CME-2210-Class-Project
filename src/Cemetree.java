@@ -34,6 +34,8 @@ public class Cemetree {
 
     private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name", "sort_by"};
 
+    private final String[] relativeFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name", "sort_by", "interval"};
+
     private final String[] cemeteryFilter = {"id", "name", "country", "city", "district", "neighbourhood", "street", "latitude", "longitude", "sort_by"};
 
     private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>() {{
@@ -43,7 +45,7 @@ public class Cemetree {
         put("set dead", new ConsoleCommand("set dead", "Changes a person's status to dead", personFilter));
         put("set alive", new ConsoleCommand("set alive", "Changes a person's status to alive", personFilter));
         put("search person", new ConsoleCommand("search person", "Searches for a person (Use \"include alive\" flag to include alive people at search)", personFilter));
-        put("search relatives", new ConsoleCommand("search relatives", "Searches for relatives", new String[]{"generation_interval"}));
+        put("search relatives", new ConsoleCommand("search relatives", "Searches for relatives", relativeFilter));
 
         put("add cemetery", new ConsoleCommand("add cemetery", "Adds a new cemetery", new String[]{}));
         put("remove cemetery", new ConsoleCommand("remove cemetery", "Removes a cemetery", cemeteryFilter));
@@ -708,25 +710,37 @@ public class Cemetree {
                     Map<String, String> argsMap = ConsoleReader.parseArguments(command);
 
                     int generationInterval = 2;
-                    if (args.length < 3) {
+                    if (!argsMap.containsKey("interval")) {
                         System.out.println("Using default generation interval of " + generationInterval + ".");
-                    }
-
-                    if (args.length >= 3) {
+                    } else {
                         try {
-                            generationInterval = Integer.parseInt(args[2]);
+                            generationInterval = Integer.parseInt(argsMap.get("interval"));
                         } catch (NumberFormatException e) {
                             System.out.println("Invalid generation interval. Please enter a number.");
                             continue;
                         }
                     }
 
-                    List<PersonRelationship> result = searchRelativesRecursive(generationInterval, selectedPerson);
+                    Person personToSearch;
+
+                    if (argsMap.size() > 1) {
+                        personToSearch = selectPersonFromCommand(reader, command, 2, selectedPeople, true);
+
+                        if (personToSearch == null) {
+                            System.out.println("Person not found.");
+                            continue;
+                        }
+                    } else {
+                        personToSearch = selectedPerson;
+                    }
+
+                    List<PersonRelationship> result = searchRelativesRecursive(generationInterval, personToSearch);
 
                     if (result.isEmpty()) {
                         System.out.println("No relatives found.");
                     } else {
-                        System.out.println("Found " + result.size() + " relatives. Use view <number> to view details.");
+                        System.out.println("Found " + result.size() + " relatives of " + personToSearch.getFullName() + ". Use view <number> to view details.");
+                        System.out.printf("    %-12s %-12s  %s\n", "Name", "Surname", "Relationship");
                         selectedPeople = new ArrayList<>(result.size());
                         for (int i = 0; i < result.size(); i++) {
                             PersonRelationship personRelationship = result.get(i);
