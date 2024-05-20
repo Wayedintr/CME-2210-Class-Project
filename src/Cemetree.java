@@ -38,7 +38,8 @@ public class Cemetree {
     private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>() {{
         put("add person", new ConsoleCommand("add person", "Adds a new person", personFilter));
         put("remove person", new ConsoleCommand("remove person", "Removes a person", personFilter));
-        put("search person", new ConsoleCommand("search person", "Searches for a person", personFilter));
+        put("set dead", new ConsoleCommand("set dead", "Changes a person's status to dead", personFilter));
+        put("search person", new ConsoleCommand("search person", "Searches for a person (Use \"include alive\" flag to include alive people at search)", personFilter));
         put("search relatives", new ConsoleCommand("search relatives", "Searches for relatives", new String[]{"generation_interval"}));
 
         put("view", new ConsoleCommand("view", "View", new String[]{"number"}));
