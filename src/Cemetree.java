@@ -963,7 +963,7 @@ public class Cemetree {
                         Cemetery cemeteryToView = selectCemeteryFromCommand(reader, command, 2, selectedCemeteries);
 
                         if (cemeteryToView != null) {
-                            System.out.println(cemeteryToView.getStatistics(people));
+                            System.out.println(cemeteryToView.getStatistics(people.values().iterator()));
                         }
                     }
                 }

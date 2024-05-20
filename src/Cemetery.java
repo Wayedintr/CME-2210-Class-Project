@@ -110,7 +110,7 @@ public class Cemetery {
         return result;
     }
 
-    public String getStatistics(Map<String, Person> people) {
+    public String getStatistics(Iterator<Person> personIterator) {
         String result = "Statistics of " + this.name + "\n";
 
         Map<String, Integer> deathCauses = new LinkedHashMap<>();
@@ -121,7 +121,7 @@ public class Cemetery {
 
         double deathCount = 0;
 
-        for (Person person : people.values()) {
+        for (Person person = personIterator.next(); personIterator.hasNext(); person = personIterator.next()) {
             if (person.dead && person.getCemetery() != null && person.getCemetery().getId().equals(this.getId())) {
                 sumOfAges += person.getAge();
                 if (person.getSex().equals("Male"))
