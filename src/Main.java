@@ -14,6 +14,11 @@ public class Main {
 
         c.consoleMode();
 
-        c.saveToFile(FILENAME);
+        try {
+            c.saveToFile(FILENAME);
+        } catch (IOException e) {
+            System.out.println("Failed to save");
+            throw e;
+        }
     }
 }
