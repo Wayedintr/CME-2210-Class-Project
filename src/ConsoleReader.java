@@ -18,7 +18,7 @@ public class ConsoleReader {
     public String getAnswer(Question question, int labelLength) throws CancellationException {
         String answer;
         do {
-            System.out.printf("%-" + labelLength + "s %s: ", question.label, question.isRequired ? "*" : " ");
+            System.out.printf("%" + (labelLength == 0 ? "" : "-" + labelLength) + "s %s: ", question.label, question.isRequired ? "*" : " ");
             answer = scanner.nextLine();
 
             if (answer.isBlank()) {
