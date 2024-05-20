@@ -115,6 +115,18 @@ public class Cemetree {
     public void loadFromFile(String fileName) throws IOException {
         String line;
 
+        if (!new File(fileName + "_cemeteries.csv").exists()) {
+            System.out.println("File not found: " + fileName + "_cemeteries.csv");
+            throw new IOException("File not found: " + fileName + "_cemeteries.csv");
+        } else if (!new File(fileName + "_people.csv").exists()) {
+            System.out.println("File not found: " + fileName + "_people.csv");
+            throw new IOException("File not found: " + fileName + "_people.csv");
+        } else if (!new File(fileName + "_visitors.csv").exists()) {
+            System.out.println("File not found: " + fileName + "_visitors.csv");
+            throw new IOException("File not found: " + fileName + "_visitors.csv");
+        }
+
+
         // Load cemeteries
         BufferedReader cemeteryReader = new BufferedReader(new FileReader(fileName + "_cemeteries.csv"));
         cemeteryReader.readLine();
