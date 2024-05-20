@@ -51,7 +51,7 @@ public class Cemetree {
         put("remove cemetery", new ConsoleCommand("remove cemetery", "Removes a cemetery", cemeteryFilter));
         put("edit cemetery", new ConsoleCommand("edit cemetery", "Edits a cemetery", cemeteryFilter));
         put("search cemetery", new ConsoleCommand("search cemetery", "Searches for a cemetery", cemeteryFilter));
-        put("show statistics", new ConsoleCommand("show statistics", "Shows statistics", cemeteryFilter));
+        put("show statistics", new ConsoleCommand("show statistics", "Shows statistics (Use \"group\" flag to show statistics of all selected cemeteries)", cemeteryFilter));
 
         put("view", new ConsoleCommand("view", "Views details of a person or cemetery (Use \"view person\" or \"view cemetery\" to view corresponding details)", new String[]{"number"}));
 
@@ -260,7 +260,7 @@ public class Cemetree {
         }
     }
 
-    public String showStatistics() {
+    public String showStatistics(Cemetery filter) {
         String result = "Statistics\n";
 
         Map<String, Integer> deathCauses = new LinkedHashMap<>();
@@ -273,7 +273,7 @@ public class Cemetree {
         double deadCount = 0;
 
         for (Person person : people.values()) {
-            if (person.dead && person.getCemetery() != null) {
+            if (person.dead && person.getCemetery() != null && (filter == null || person.getCemetery().matches(filter))) {
                 sumOfAges += person.getAge();
                 deadCount++;
 
@@ -917,10 +917,14 @@ public class Cemetree {
 
                 // Show statistics
                 else if (command.matches("(?i)^show statistics.*$")) {
+                    Map<String, String> argsMap = ConsoleReader.parseArguments(command);
+
                     if (!selectedPerson.isAdmin()) {
                         System.out.println("You do not have permission to view statistics.");
-                    } else if (command.split(" ").length < 3) {
-                        System.out.println(showStatistics());
+                    } else if (command.equalsIgnoreCase("show statistics")) {
+                        System.out.println(showStatistics(null));
+                    } else if (command.matches("(?i)^.*group.*$")) {
+                        System.out.println(showStatistics(new Cemetery(argsMap.get("id"), argsMap.get("name"), new Address(argsMap.get("country"), argsMap.get("city"), argsMap.get("district"), argsMap.get("neighbourhood"), argsMap.get("street")))));
                     } else {
                         Cemetery cemeteryToView = selectCemeteryFromCommand(reader, command, 2, selectedCemeteries);
 
