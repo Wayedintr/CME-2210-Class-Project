@@ -32,13 +32,13 @@ public class Cemetree {
         }
     }
 
-    private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name", "sort_by"};
+    private final String[] personFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "sort_by"};
 
-    private final String[] relativeFilter = {"id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "cemetery_name", "sort_by", "interval"};
+    private final String[] relativeFilter = {"interval", "id", "name", "surname", "sex", "birth_date", "death_date", "start_date", "end_date", "death_cause", "cemetery_id", "sort_by"};
 
     private final String[] cemeteryFilter = {"id", "name", "country", "city", "district", "neighbourhood", "street", "latitude", "longitude", "sort_by"};
 
-    private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>() {{
+    private final Map<String, ConsoleCommand> HELP = new LinkedHashMap<>(19) {{
         put("add person", new ConsoleCommand("add person", "Adds a new person", personFilter));
         put("remove person", new ConsoleCommand("remove person", "Removes a person", personFilter));
         put("edit person", new ConsoleCommand("edit person", "Edits a person", personFilter));
@@ -53,7 +53,7 @@ public class Cemetree {
         put("search cemetery", new ConsoleCommand("search cemetery", "Searches for a cemetery", cemeteryFilter));
         put("show statistics", new ConsoleCommand("show statistics", "Shows statistics", cemeteryFilter));
 
-        put("view", new ConsoleCommand("view", "Views details of a person or cemetery", new String[]{"number"}));
+        put("view", new ConsoleCommand("view", "Views details of a person or cemetery (Use \"view person\" or \"view cemetery\" to view corresponding details)", new String[]{"number"}));
 
         put("visit person", new ConsoleCommand("visit person", "Visits a person", personFilter));
         put("get visitor list", new ConsoleCommand("get visitor list", "Gets the visitor list of a person", personFilter));
