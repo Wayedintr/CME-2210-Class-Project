@@ -222,7 +222,7 @@ public class Cemetree {
         return result;
     }
 
-    public void searchRelativesAncestors(int generationInterval, Person person, Stack<Person> ancestorsStack, List<PersonRelationship> result, String relationship) {
+    private void searchRelativesAncestors(int generationInterval, Person person, Stack<Person> ancestorsStack, List<PersonRelationship> result, String relationship) {
         if (generationInterval > 0) {
             if (person.getMother() != null) {
                 Person mother = person.getMother();
@@ -243,7 +243,7 @@ public class Cemetree {
         }
     }
 
-    public void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<PersonRelationship> result, String relationship) {
+    private void searchRelativesChildren(int generationInterval, Person person, Stack<Person> childrenStack, List<PersonRelationship> result, String relationship) {
         if (generationInterval > 0) {
             for (Person child : person.getChildren()) {
                 childrenStack.push(child);
@@ -752,7 +752,7 @@ public class Cemetree {
 
                     Person personToSearch;
 
-                    if (!argsMap.isEmpty()) {
+                    if ((!argsMap.isEmpty() && !argsMap.containsKey("interval")) || argsMap.size() >= 2) {
                         if (!selectedPerson.isAdmin()) {
                             System.out.println("You do not have permission to search other people's relatives.");
                             personToSearch = selectedPerson;

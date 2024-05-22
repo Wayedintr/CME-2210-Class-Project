@@ -164,7 +164,12 @@ public class Person {
 
         this.name = name.isBlank() ? this.name : name;
         this.surname = surname.isBlank() ? this.surname : surname;
-        this.sex = sex.isBlank() ? this.sex : sex;
+        if (!sex.isBlank()) {
+            if (!sex.matches("(?i)^(male|m)$"))
+                this.sex = "Male";
+            else if (!sex.matches("(?i)^(female|f)$"))
+                this.sex = "Female";
+        }
         this.birthDate = birthDate;
         this.motherId = motherId.isBlank() ? this.motherId : motherId;
         this.fatherId = fatherId.isBlank() ? this.fatherId : fatherId;
