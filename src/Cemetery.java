@@ -30,7 +30,7 @@ public class Cemetery {
         }
     }
 
-    Map<Person, SortedSet<Visit>> visitorList = new HashMap<>();
+    private Map<Person, SortedSet<Visit>> visitorList = new HashMap<>();
 
     private Address address;
 
